@@ -46,6 +46,7 @@ class SummarySaveTest(project_tests.ManagerTest):
         content = (ROOT / 'tests/fixtures/equipment-real-ledger.md').read_text()
         revision = self.request('/api/ledger/info?project=' + p['id'])[1]['revision']
         endpoint = '?project=' + p['id']
+        existing_files = set(path.parent.glob('*.md'))
         status, preview = self.request('/api/ledger/preview' + endpoint, {'content': content, 'revision': revision})
         self.assertEqual(status, 200, preview)
         expected = content.replace('已验收 0/20 个最细功能点', '已验收 0/19 个最细功能点')
@@ -54,7 +55,7 @@ class SummarySaveTest(project_tests.ManagerTest):
         self.assertEqual(preview['summary']['issues'], 9)
         self.assertEqual(len(preview['adjustments']), 1)
         self.assertEqual(path.read_text(), original)
-        self.assertEqual(len(list(path.parent.glob('*.md'))), 2)
+        self.assertEqual(set(path.parent.glob('*.md')), existing_files)
         status, saved = self.request('/api/ledger/save' + endpoint, {'content': content, 'revision': revision})
         self.assertEqual(status, 200, saved)
         self.assertEqual(path.read_text(), expected)

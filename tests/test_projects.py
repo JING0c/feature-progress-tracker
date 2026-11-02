@@ -13,6 +13,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def project_plan(name='测试'):
+    return f'''# {name} 项目规划书
+## 目标
+帮助管理员在本机管理图书借阅，避免重复借出。
+## 范围
+包括图书登记、借还记录和逾期名单；不做支付。
+## 功能与验收
+图书登记后按编号可查到；借出的图书不能重复借出。
+'''
+
+
 def ledger(name, state='进行中', checked=False):
     return f'''# 功能执行情况
 ## 大功能 F01：{name}
@@ -27,10 +38,22 @@ class ManagerTest(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.workspace = Path(self.temp.name) / 'manager'
+        self.fake_bin = Path(self.temp.name) / 'bin'; self.fake_bin.mkdir()
+        self.fake_reply = Path(self.temp.name) / 'reply.txt'
+        self.fake_prompt = Path(self.temp.name) / 'prompt.txt'
+        self.fake_reply.write_text(project_plan())
+        fake = self.fake_bin / 'codex'
+        fake.write_text('#!' + sys.executable + '\nimport json, os, pathlib, sys\n'
+                        'pathlib.Path(os.environ["FAKE_CODEX_PROMPT"]).write_text(sys.stdin.read())\n'
+                        'reply = pathlib.Path(os.environ["FAKE_CODEX_REPLY"]).read_text()\n'
+                        'print(json.dumps({"type":"item.completed","item":{"type":"agent_message","text":reply}}))\n')
+        fake.chmod(0o755)
         self.start()
 
     def start(self):
-        self.proc = subprocess.Popen([sys.executable, str(ROOT / 'scripts/serve_dashboard.py'), '--workspace', str(self.workspace), '--port', '0'], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+        env = {**os.environ, 'PATH': str(self.fake_bin) + os.pathsep + os.environ.get('PATH',''),
+               'FAKE_CODEX_REPLY':str(self.fake_reply), 'FAKE_CODEX_PROMPT':str(self.fake_prompt)}
+        self.proc = subprocess.Popen([sys.executable, str(ROOT / 'scripts/serve_dashboard.py'), '--workspace', str(self.workspace), '--port', '0'], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, env=env)
         self.url = self.proc.stdout.readline().strip().split('：', 1)[1].rstrip('/')
         # The HTML asset can be supplied independently of backend integration tests.
         # Registration still requires the same token as the page.
@@ -56,7 +79,18 @@ class ManagerTest(unittest.TestCase):
     def register(self, name):
         status, data = self.request('/api/projects', {'name':name, 'directory':name})
         self.assertEqual(status, 200, data)
-        return data['project']
+        p = data['project']
+        self.generate_plan(p, project_plan(name))
+        doc = self.request('/api/plan?project='+p['id'])[1]
+        code, result = self.request('/api/plan/save?project='+p['id'], {'content':project_plan(name),'revision':doc['revision']})
+        self.assertEqual(code, 200, result)
+        return self.request('/api/project?project='+p['id'])[1]
+
+    def generate_plan(self, project, text=None):
+        self.fake_reply.write_text(text or project_plan())
+        code, result = self.request('/api/planning?project='+project['id'], {'intent':'plan','messages':[{'role':'user','content':'请生成项目规划书'}]})
+        self.assertEqual(code, 200, result)
+        return result['reply']
 
     def test_project_isolation_external_edits_and_restart(self):
         a, b = self.register('项目 A'), self.register('项目 B')
@@ -72,12 +106,12 @@ class ManagerTest(unittest.TestCase):
         by_id = {p['id']:p for p in self.request('/api/projects')[1]['projects']}
         self.assertEqual(by_id[a['id']]['summary']['blocked'], 1)
         doc = self.request('/api/plan?project='+a['id'])[1]
-        status, saved = self.request('/api/plan/save?project='+a['id'], {'content':'# A 的规划\n', 'revision':doc['revision']})
+        status, saved = self.request('/api/plan/save?project='+a['id'], {'content':project_plan('A 的规划'), 'revision':doc['revision']})
         self.assertEqual(status, 200, saved)
         self.assertTrue(Path(saved['backup']).is_file())
         self.assertNotIn('A 的规划', Path(b['plan_path']).read_text())
         self.stop(); self.start()
-        self.assertEqual(self.request('/api/plan?project='+a['id'])[1]['content'], '# A 的规划\n')
+        self.assertEqual(self.request('/api/plan?project='+a['id'])[1]['content'], project_plan('A 的规划'))
         self.assertEqual(len(self.request('/api/projects')[1]['projects']), 2)
         registry = (self.workspace/'项目列表.md').read_text()
         self.assertIn('名称：项目 A', registry)
@@ -131,7 +165,8 @@ class ManagerTest(unittest.TestCase):
         Path(p['plan_path']).unlink()
         empty = self.request('/api/plan?project='+p['id'])[1]
         self.assertEqual(empty['content'], '')
-        status, _ = self.request('/api/plan/save?project='+p['id'], {'content':'# 新规划', 'revision':empty['revision']})
+        self.generate_plan(p)
+        status, _ = self.request('/api/plan/save?project='+p['id'], {'content':project_plan(), 'revision':empty['revision']})
         self.assertEqual(status, 200)
 
 

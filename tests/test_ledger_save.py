@@ -8,6 +8,7 @@ import unittest
 import urllib.error
 import urllib.request
 from pathlib import Path
+from test_projects import project_plan
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('dashboard', ROOT / 'scripts/serve_dashboard.py')
@@ -39,6 +40,7 @@ class SaveTest(unittest.TestCase):
         self.ledger = Path(self.temp.name) / 'ledger.md'
         self.original = '# 原有内容\n'
         self.ledger.write_text(self.original, encoding='utf-8')
+        (self.ledger.parent / '项目规划书.md').write_text(project_plan(), encoding='utf-8')
         self.proc = subprocess.Popen([sys.executable, str(ROOT / 'scripts/serve_dashboard.py'), str(self.ledger), '--port', '0'], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
         self.url = self.proc.stdout.readline().strip().split('：', 1)[1].rstrip('/')
         page = urllib.request.urlopen(self.url + '/planning').read().decode()
