@@ -23,7 +23,16 @@ FIELD = re.compile(r'(?:^|[｜|])\s*([^：:｜|]+)\s*[：:]\s*([^｜|]*)')
 def parse(text):
     groups, group, item = [], None, None
     items_by_id = {}
+    fence = None
     for line in text.splitlines():
+        marker = re.match(r'^ {0,3}(`{3,}|~{3,})(.*)$', line)
+        if fence:
+            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence) and not marker[2].strip():
+                fence = None
+            continue
+        if marker:
+            fence = marker[1]
+            continue
         m = GROUP.match(line)
         if m:
             group = {'id': m[1], 'name': m[2], 'items': []}
@@ -131,8 +140,22 @@ def leaves(items):
 
 
 def has_issue(value):
-    value = (value or '').strip().rstrip('。.!！')
-    return bool(value) and value not in ('无', '暂无', '无问题', '无争议', '无新增待确认事项', '未发现', '不适用', '没有', '—', '-', '待确认')
+    value = re.sub(r'\s+', '', (value or '').strip()).rstrip('。.!！')
+    # Match the whole negative statement, never a prefix: "无权限" and
+    # "暂无问题，但需确认备份" still describe actionable information.
+    negative = (r'(?:(?:目前|当前|暂时))?'
+                r'(?:(?:无|暂无|没有)(?:已知|新增|额外|其他)*(?:问题|争议|待确认事项)?'
+                r'|(?:尚未|未)(?:发现|记录)(?:已知|新增|额外|其他)*(?:问题|争议)?'
+                r'|不适用|待确认|—|-)')
+    return bool(value) and re.fullmatch(negative, value) is None
+
+
+def item_flags(item):
+    fields = item['fields']
+    return {
+        'issue': fields.get('状态') == '受阻' or any(has_issue(fields.get(key)) for key in ('问题', '待解决问题')),
+        'dispute': any(has_issue(fields.get(key)) for key in ('争议', '争议事项', '争议问题')),
+    }
 
 
 def summarize(groups):
@@ -144,8 +167,8 @@ def summarize(groups):
         'working': sum(status(item) == '进行中' for item in items),
         'review': sum(status(item) == '待审核' or (status(item) == '已完成' and not item['checked']) for item in items),
         'blocked': sum(status(item) == '受阻' for item in items),
-        'issues': sum(status(item) == '受阻' or any(has_issue(item['fields'].get(key)) for key in ('问题', '待解决问题')) for item in items),
-        'disputes': sum(any(has_issue(item['fields'].get(key)) for key in ('争议', '争议事项', '争议问题')) for item in items),
+        'issues': sum(item_flags(item)['issue'] for item in items),
+        'disputes': sum(item_flags(item)['dispute'] for item in items),
     }
 
 
@@ -156,7 +179,80 @@ def parse_document(content):
         empty_template = content.lstrip().startswith('# 功能执行情况') and not has_items
         if not empty_template:
             raise RequestError('台账格式无法识别，请使用大功能标题与功能点列表。')
+    for group in groups:
+        for item in flatten(group['items']):
+            item.update(item_flags(item))
     return groups
+
+
+def normalize_progress_summary(content, groups):
+    """Correct explicit document-header progress only, leaving source prose alone."""
+    summary = summarize(groups)
+    adjustments, output = [], []
+    header, fence = True, None
+    progress = re.compile(r'^ {0,3}(?:\*\*)?进度(?:\*\*)?\s*[：:]\s*(?:\*\*)?\s*')
+    fraction = re.compile(r'(?P<prefix>(?:已验收|已完成)\s*)\d+(?P<slash>\s*/\s*)\d+'
+                          r'(?P<unit>\s*(?:个(?:最细)?功能点)?\s*)'
+                          r'(?P<percentage>[（(]\s*(?:\d+(?:\.\d+)?\s*%|不适用)\s*[）)])?'
+                          r'(?P<suffix>\s*[。.!！]?\s*)')
+    status_field = re.compile(r'(?P<prefix>\s*(?P<label>待审核|受阻|进行中|未开始|已完成)\s*)\d+(?P<suffix>\s*(?:个(?:最细)?功能点)?\s*[。.!！]?\s*)')
+    counts = {'待审核': summary['review'], '受阻': summary['blocked'], '进行中': summary['working'], '已完成': summary['done'],
+              '未开始': sum(item['fields'].get('状态', '未开始') == '未开始' for group in groups for item in leaves(group['items']))}
+    for line in content.splitlines(keepends=True):
+        marker = re.match(r'^ {0,3}(`{3,}|~{3,})(.*)$', line.rstrip('\r\n'))
+        if fence:
+            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence) and not marker[2].strip():
+                fence = None
+            output.append(line)
+            continue
+        if marker:
+            fence = marker[1]
+            output.append(line)
+            continue
+        if re.match(r'^ {0,3}#{2,6}\s', line) or ITEM.match(line):
+            header = False
+        prefix = progress.match(line)
+        if not header or not prefix:
+            output.append(line)
+            continue
+        # Parse independent summary fields, not arbitrary prose containing numbers.
+        # Stop at the first unknown field so inline history stays untouched too.
+        parts = re.split(r'([；;｜|])', line[prefix.end():])
+        completion = fraction.fullmatch(parts[0])
+        if not completion:
+            output.append(line)
+            continue
+        percent = str(round(summary['done'] / summary['total'] * 100)) + '%' if summary['total'] else '不适用'
+        def update_fraction(match):
+            percentage = match['percentage'] or ''
+            if percentage:
+                percentage = percentage[0] + percent + percentage[-1]
+            return f"{match['prefix']}{summary['done']}{match['slash']}{summary['total']}{match['unit']}{percentage}{match['suffix']}"
+        parts[0] = update_fraction(completion)
+        for index in range(2, len(parts), 2):
+            match = status_field.fullmatch(parts[index])
+            if not match:
+                break
+            parts[index] = match['prefix'] + str(counts[match['label']]) + match['suffix']
+        revised = line[:prefix.end()] + ''.join(parts)
+        if revised != line:
+            adjustments.append('台账进度已按实际最细功能点校正：' + line.strip() + ' → ' + revised.strip())
+        output.append(revised)
+    return ''.join(output), summary, adjustments
+
+
+def prepare_ledger(content, existing):
+    items = validate_ledger(content, existing)
+    normalized, summary, adjustments = normalize_progress_summary(content, parse_document(content))
+    return {'content': normalized, 'summary': summary, 'adjustments': adjustments, 'count': len(items)}
+
+
+def preserve_generated_source(target, content):
+    with tempfile.NamedTemporaryFile(prefix=target.name + '.generated-source-', suffix='.md', dir=target.parent, delete=False) as source:
+        source.write(content.encode('utf-8'))
+        source.flush()
+        os.fsync(source.fileno())
+        return source.name
 
 
 class ProjectStore:
@@ -406,7 +502,7 @@ def main():
                 if route == '/api/projects':
                     self.respond({'project': store.register(self.json_body())})
                     return
-                if route not in ('/api/ledger/save', '/api/plan/save', '/api/planning'):
+                if route not in ('/api/ledger/save', '/api/ledger/preview', '/api/plan/save', '/api/planning'):
                     raise RequestError('接口不存在。', 404)
                 project = self.project()
                 payload = self.json_body(100000 if route == '/api/planning' else 1000000)
@@ -414,18 +510,24 @@ def main():
                     self.respond(self.planning(project, payload))
                     return
                 content, revision = payload.get('content'), payload.get('revision')
-                if not isinstance(content, str) or not isinstance(revision, str) or not content.strip():
+                preview = route == '/api/ledger/preview'
+                if not isinstance(content, str) or not content.strip() or (not preview and not isinstance(revision, str)) or (preview and revision is not None and not isinstance(revision, str)):
                     raise RequestError('文档内容或版本信息无效。')
-                is_ledger = route == '/api/ledger/save'
+                is_ledger = route in ('/api/ledger/save', '/api/ledger/preview')
                 target = Path(project['ledger_path'] if is_ledger else project['plan_path'])
                 with store.lock_for('document', target):
                     current = read_document(target, optional=not is_ledger)
-                    if current['revision'] != revision:
+                    if revision is not None and current['revision'] != revision:
                         raise RequestError('文件已在别处发生变化，请重新读取后再保存。', 409)
-                    items = validate_ledger(content, current['content']) if is_ledger else None
-                    response = atomic_write(target, content, revision)
-                if items is not None:
-                    response['count'] = len(items)
+                    prepared = prepare_ledger(content, current['content']) if is_ledger else None
+                    if preview:
+                        self.respond(prepared)
+                        return
+                    source_backup = preserve_generated_source(target, content) if prepared and prepared['adjustments'] else None
+                    response = atomic_write(target, prepared['content'] if prepared else content, revision)
+                if prepared is not None:
+                    response.update({key: prepared[key] for key in ('count', 'summary', 'adjustments')})
+                    response['source_backup'] = source_backup
                 self.respond(response)
             except (RequestError, ValueError, OSError, UnicodeError, RuntimeError, subprocess.TimeoutExpired) as exc:
                 self.error(exc)
@@ -495,6 +597,14 @@ def main():
                 return
             route = urlparse(self.path).path
             try:
+                assets = {
+                    '/assets/planning-markdown.js': ('planning-markdown.js', 'text/javascript; charset=utf-8'),
+                    '/assets/planning-markdown.css': ('planning-markdown.css', 'text/css; charset=utf-8'),
+                }
+                if route in assets:
+                    filename, kind = assets[route]
+                    self.respond((BASE / filename).read_bytes(), kind=kind)
+                    return
                 if route == '/api/projects':
                     self.respond(store.overview())
                     return

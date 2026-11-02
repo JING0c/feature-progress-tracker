@@ -36,6 +36,10 @@ python3 scripts/serve_dashboard.py --workspace ./项目管理 --port 8765
 
 规划页根据所选项目的文件和对话进行梳理。点击“完成对话，生成规划书”后，规划书会显示并保存为 Markdown。点击“生成功能台账”后审阅结果，再“保存到看板”。保存前检查版本并保留备份，文件冲突时保留草稿。浏览器中的对话按项目保存；清空聊天不会删除 Markdown 文件。
 
+保存台账前会预览按实际最细功能计算的进度。如果页首明确的进度摘要与功能结构不一致，确认框会列出校正内容；保存后另存 `*.generated-source-*.md` 保留校正前的提交原文。功能验收、业务数字和历史说明不会作为进度摘要修改。问题与争议的标记由服务统一判断，纯粹表示没有问题的描述不会计入问题数。
+
+规划书支持标题、表格、引用、有序和无序列表以及代码块。Markdown 中的 HTML 和链接仅作为文本展示，不执行代码或加载外部资源。
+
 ## AI 更新约定
 
 - 先读项目规划书及已有台账，保留稳定编号、历史记录和审核证据。
@@ -56,6 +60,10 @@ python3 scripts/serve_dashboard.py examples/功能看板示例.md --port 8765
 
 ```bash
 python3 -m unittest discover -s tests -v
+
+# 有 Node.js 时可单独运行前端行为回归（无第三方依赖）
+node tests/test_markdown.cjs
+node tests/test_planning_save.cjs
 ```
 
 服务只监听本机；无需 Python 第三方依赖。服务停止后页面不能更新，已保存的 Markdown 仍在。

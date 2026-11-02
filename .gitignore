@@ -21,3 +21,4 @@ secrets.*
 
 # Local ledger backup files
 *.backup-*.md
+*.generated-source-*.md
