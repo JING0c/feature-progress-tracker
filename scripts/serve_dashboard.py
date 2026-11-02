@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Serve a local, read-only view of a feature ledger; Python standard library only."""
+"""Serve a local feature ledger dashboard and planning assistant."""
 import argparse
 import errno
 import hashlib
 import json
+import os
+import tempfile
 import re
 import secrets
 import shutil
@@ -35,7 +37,7 @@ def parse(text):
         if m and group is not None:
             pieces = re.split(r'[｜|]', m[3])
             item = {'id': m[2], 'name': pieces[0].strip(), 'checked': m[1].lower() == 'x', 'fields': {}, 'notes': [], 'children': []}
-            item['fields'].update({k.strip(): v.strip() for k, v in FIELD.findall('｜'.join(pieces[1:]))})
+            item['fields'].update({k.strip().strip('*_`').strip(): v.strip() for k, v in FIELD.findall('｜'.join(pieces[1:]))})
             parent = items_by_id.get(item['id'].rsplit('-', 1)[0])
             (parent['children'] if parent else group['items']).append(item)
             items_by_id[item['id']] = item
@@ -47,7 +49,7 @@ def parse(text):
             content = re.sub(r'[；;](?=\s*[^；;：:｜|]{1,30}[：:])', '｜', content)
             fields = FIELD.findall(content)
             if fields:
-                item['fields'].update({k.strip(): v.strip() for k, v in fields})
+                item['fields'].update({k.strip().strip('*_`').strip(): v.strip() for k, v in fields})
             else:
                 item['notes'].append(content)
     return groups
@@ -65,6 +67,7 @@ def main():
         parser.error(f'台账不存在: {ledger}')
     token = secrets.token_urlsafe(32)
     planning_lock = threading.Lock()
+    ledger_lock = threading.Lock()
     class Handler(BaseHTTPRequestHandler):
         def local_request(self):
             host = self.headers.get('Host', '')
@@ -75,6 +78,9 @@ def main():
         def do_POST(self):
             if not self.local_request() or self.headers.get('X-Planning-Token') != token:
                 self.send_error(403)
+                return
+            if self.path == '/api/ledger/save':
+                self.save_ledger()
                 return
             if self.path != '/api/planning':
                 self.send_error(404)
@@ -143,6 +149,71 @@ def main():
             self.end_headers()
             self.wfile.write(data)
 
+        def save_ledger(self):
+            code = 400
+            try:
+                length = int(self.headers.get('Content-Length', '0'))
+                if length <= 0 or length > 1000000:
+                    raise ValueError('台账内容为空或超过大小限制。')
+                payload = json.loads(self.rfile.read(length))
+                content = payload.get('content')
+                revision = payload.get('revision')
+                if not isinstance(content, str) or not isinstance(revision, str):
+                    raise ValueError('台账或版本信息无效。')
+                groups = parse(content)
+                all_items = []
+                def collect(items):
+                    for item in items:
+                        all_items.append(item)
+                        collect(item['children'])
+                for group in groups:
+                    collect(group['items'])
+                if not all_items:
+                    raise ValueError('未找到可识别的功能台账；请先生成含大功能和功能点的台账。')
+                if any(i['checked'] or i['fields'].get('状态') == '已完成' for i in all_items):
+                    raise ValueError('规划草稿包含已完成项；请先移除未经独立审核的完成标记。')
+                required = ('状态', '验收', '优先级', '依赖', '执行 Agent', '实现证据', '审核 Agent', '评分', '问题')
+                incomplete = [i['id'] for i in all_items if any(not i['fields'].get(k, '').strip() for k in required)]
+                if incomplete:
+                    raise ValueError('以下功能点缺少状态、验收、优先级、依赖、执行、证据、审核、评分或问题：' + '、'.join(incomplete[:8]))
+                with ledger_lock:
+                    old = ledger.read_bytes()
+                    if hashlib.sha256(old).hexdigest() != revision:
+                        code = 409
+                        raise ValueError('台账已在别处发生变化，请重新检查后再保存。')
+                    with tempfile.NamedTemporaryFile(prefix=ledger.name + '.backup-', suffix='.md', dir=ledger.parent, delete=False) as backup:
+                        backup.write(old)
+                        backup.flush()
+                        os.fsync(backup.fileno())
+                        backup_path = backup.name
+                    tmp_path = None
+                    try:
+                        with tempfile.NamedTemporaryFile(prefix='.ledger-', dir=ledger.parent, delete=False) as tmp:
+                            tmp_path = tmp.name
+                            tmp.write(content.encode('utf-8'))
+                            tmp.flush()
+                            os.fsync(tmp.fileno())
+                        os.chmod(tmp_path, ledger.stat().st_mode & 0o777)
+                        if hashlib.sha256(ledger.read_bytes()).hexdigest() != revision:
+                            code = 409
+                            raise ValueError('台账已在别处发生变化，请重新检查后再保存。')
+                        os.replace(tmp_path, ledger)
+                        tmp_path = None
+                    finally:
+                        if tmp_path and os.path.exists(tmp_path):
+                            os.unlink(tmp_path)
+                response = {'backup': backup_path, 'count': len(all_items)}
+                code = 200
+            except (ValueError, OSError, UnicodeError, json.JSONDecodeError) as exc:
+                response = {'error': str(exc)}
+            data = json.dumps(response, ensure_ascii=False).encode()
+            self.send_response(code)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Cache-Control', 'no-store')
+            self.send_header('Content-Length', str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
         def do_GET(self):
             if not self.local_request():
                 self.send_error(403)
@@ -151,6 +222,13 @@ def main():
                 data, status, kind = PLANNING_PAGE.replace('__PLANNING_TOKEN__', token).replace('__PLANNING_KEY__', hashlib.sha256(str(ledger).encode()).hexdigest()).encode(), 200, 'text/html; charset=utf-8'
             elif self.path == '/':
                 data, status, kind = PAGE.encode(), 200, 'text/html; charset=utf-8'
+            elif self.path == '/api/ledger/info':
+                try:
+                    data = json.dumps({'revision': hashlib.sha256(ledger.read_bytes()).hexdigest(), 'path': str(ledger)}, ensure_ascii=False).encode()
+                    status = 200
+                except OSError as exc:
+                    data, status = json.dumps({'error': str(exc)}, ensure_ascii=False).encode(), 500
+                kind = 'application/json; charset=utf-8'
             elif self.path == '/api/ledger':
                 try:
                     data = json.dumps({'groups': parse(ledger.read_text(encoding='utf-8'))}, ensure_ascii=False).encode()

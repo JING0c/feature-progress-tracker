@@ -12,7 +12,7 @@
 let last='';
 function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e}
 function status(i){return i.fields['状态']||(i.checked?'已完成':'未注明状态')}
-function present(v){return !!v&&!/^(无|暂无|无问题|无争议|未发现|不适用|没有|—|-|待确认)$/u.test(v.trim())}
+function present(v){return !!v&&!/^(无|暂无|无问题|无争议|无新增待确认事项|未发现|不适用|没有|—|-|待确认)$/u.test(v.trim())}
 function issue(i){return status(i)==='受阻'||present(i.fields['问题'])||present(i.fields['待解决问题'])}
 function dispute(i){return present(i.fields['争议'])||present(i.fields['争议事项'])||present(i.fields['争议问题'])}
 function render(data){const board=document.getElementById('board'),overview=document.getElementById('overview');const opened=new Set([...document.querySelectorAll('details[open]')].map(d=>d.dataset.key));board.replaceChildren();overview.replaceChildren();const leaves=items=>items.flatMap(i=>i.children&&i.children.length?leaves(i.children):[i]);const all=data.groups.flatMap(g=>leaves(g.items)),valid=all.filter(i=>status(i)!=='已取消'),done=valid.filter(i=>i.checked&&status(i)==='已完成');overview.append(el('strong','',valid.length?Math.round(done.length/valid.length*100)+'%':'—'),el('span','',`已验收 ${done.length} / ${valid.length} 个最细功能点`),el('span','hint','点击任一功能卡片查看详情'));
