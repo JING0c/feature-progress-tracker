@@ -46,6 +46,24 @@ function run() {
   view.error(); assert.match(container.textContent,/文档视图/);
   view.show({sheets:[{id:'cycle',name:'异常层级',columns,rows:[row('a','b',1,'甲'),row('b','a',1,'乙')]}]});
   assert.equal(bodyRows().length,2,'defensive cycle traversal terminates');
+  view.clear();
+  const listing={id:'list',kind:'feature-list',name:'功能清单',columns:['大功能','小功能','细分功能','功能介绍'],
+    rows:[
+      {key:'list1',parent:null,cells:['F01 借阅','F01-01 借出','居民校验','检查居民编号']},
+      {key:'list2',parent:null,cells:['F01 借阅','F01-01 借出','额度校验','检查借阅数量']},
+      {key:'list3',parent:null,cells:['F02 预约','F02-01 借出','日期校验','<img src=x>']}
+    ],merges:[{row:0,column:0,rowSpan:2},{row:0,column:1,rowSpan:2}]};
+  view.show({sheets:[model.sheets[0],listing]});
+  assert.equal(all(container,'th').filter(n=>n.attributes.scope==='col')[1].textContent,'大功能','prefer the reference-style list');
+  const cells=all(container,'td');
+  assert.equal(cells.filter(n=>n.attributes.rowspan==='2').length,2);
+  assert.equal(bodyRows()[1].children.length,3,'covered cells are omitted rather than repeated');
+  assert.equal(bodyRows()[2].children.length,5,'a different parent retains its own cells');
+  assert.equal(cells.filter(n=>n.textContent==='F01 借阅').length,1);
+  assert.equal(all(container,'img').length,0);
+  assert.ok(!button('全部展开'),'flat list has no misleading collapse controls');
+  button('查看功能明细').handlers.click();
+  assert.equal(all(container,'th').filter(n=>n.attributes.scope==='col')[1].textContent,'编号');
   console.log('Planning sheet view: hierarchy, nested collapse, tab state, batch controls, safe content, empty/error/cycle checks passed.');
 }
 module.exports=run;

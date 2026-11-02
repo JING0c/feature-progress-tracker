@@ -210,10 +210,18 @@ class _Rows:
         return result
 
 
-def _feature_rows(blocks, sheet_id):
+def _feature_rows(blocks, sheet_id, feature_keys=None):
     rows = _Rows(sheet_id, len(FEATURE_COLUMNS))
     heading_stack, current_feature = [], None
     id_refs, parent_refs = {}, {}
+
+    def feature(row):
+        # Keep presentation scaffolding distinguishable from actual features,
+        # without exposing temporary parser metadata in the source worksheets.
+        if feature_keys is not None and (row['cells'][0] or row['cells'][1] not in
+                                         ('', '补充说明', '代码示例', '补充表格', '表格行')):
+            feature_keys.add(row['key'])
+        return row
 
     def register(row, identity, explicit=None):
         if identity:
@@ -231,11 +239,11 @@ def _feature_rows(blocks, sheet_id):
             while heading_stack and heading_stack[-1][0] >= level:
                 heading_stack.pop()
             identity, name = _feature_title(block['text'])
-            current_feature = rows.add([identity, name], heading_parent(), 'section')
+            current_feature = feature(rows.add([identity, name], heading_parent(), 'section'))
             register(current_feature, identity)
             heading_stack.append((level, current_feature['key']))
         elif kind == 'feature':
-            current_feature = rows.add([block['identity'], block['text']], heading_parent())
+            current_feature = feature(rows.add([block['identity'], block['text']], heading_parent()))
             register(current_feature, block['identity'])
         elif kind == 'table':
             fields = [_field_kind(name) for name in block['columns']]
@@ -265,7 +273,7 @@ def _feature_rows(blocks, sheet_id):
                         target = {'priority': 3, 'dependency': 4, 'notes': 5}.get(field, 2 if field == 'description' else 5)
                         label = column + '：' if field in ('description', 'extra') and value else ''
                         cells[target] += ('\n' if cells[target] and value else '') + label + value
-                row = rows.add(cells, heading_parent())
+                row = feature(rows.add(cells, heading_parent()))
                 register(row, identity, explicit)
             # A following paragraph retains the section context, not the last table row.
         elif kind == 'list' and current_feature is not None:
@@ -354,6 +362,93 @@ def _general_sheet(blocks, sheet_id):
     return ['规划事项', '内容'], rows.finish()
 
 
+def _feature_list(title, sheets, feature_keys):
+    """Project recorded feature paths into a reference-style horizontal list.
+
+    The detailed worksheets stay intact. Group merges refer to row identities,
+    never just their names, so unrelated same-name modules cannot coalesce.
+    """
+    entries = []
+    money_label = re.compile(r'^(大概金额|预算(?:金额)?|预估金额|估算金额|预计金额|报价|成本)[：:]\s*(.*)$')
+    unknown_money = re.compile(r'^(?:待确认|待补充|待定|未知|未提供|暂无报价|无报价|不估价|不适用|'
+                               r'n/?a\b|tbd\b|无[。.!！]?\s*$)', re.I)
+    for source in sheets:
+        if source['columns'] != FEATURE_COLUMNS:
+            continue
+        rows = source['rows']
+        by_key = {row['key']: row for row in rows}
+        candidates = {row['key']: row for row in rows if row['key'] in feature_keys}
+        paths, children = {}, set()
+        for row in candidates.values():
+            chain, seen, current = [], set(), row
+            while current and current['key'] not in seen:
+                seen.add(current['key'])
+                if current['key'] in candidates:
+                    chain.append(current)
+                current = by_key.get(current['parent'])
+            chain.reverse()
+            paths[row['key']] = chain
+            if len(chain) > 1:
+                children.add(chain[-2]['key'])
+        for row in rows:
+            if row['key'] not in candidates:
+                continue
+            values = row['cells']
+            details = [values[2]] if values[2] else []
+            for label, value in zip(('优先级', '依赖', '备注'), values[3:6]):
+                if value:
+                    details.append(label + '：' + value)
+            # A parent with its own information receives its own row; child
+            # descriptions are never substituted for that parent's evidence.
+            if row['key'] in children and not details:
+                continue
+            recorded_money = []
+            for line in values[5].splitlines():
+                match = money_label.match(line.strip())
+                if match and match[2].strip() and not unknown_money.search(match[2].strip()):
+                    recorded_money.append((match[1], match[2].strip()))
+            amount = (recorded_money[0][1] if len(recorded_money) == 1 else
+                      '\n'.join(label + '：' + value for label, value in recorded_money))
+            entries.append({'key': 'feature-list-' + row['key'], 'path': paths[row['key']],
+                            'description': '\n'.join(details), 'money': amount})
+    if not entries:
+        return None
+    depth = max(3, max(len(entry['path']) for entry in entries))
+    columns = ['大功能', '小功能', '细分功能'] + ['第' + str(level) + '级功能' for level in range(4, depth + 1)]
+    columns.append('功能介绍')
+    has_money = any(entry['money'] for entry in entries)
+    if has_money:
+        columns.append('大概金额')
+    rows = []
+    for entry in entries:
+        labels = [(' '.join(value for value in ancestor['cells'][:2] if value)).strip()
+                  for ancestor in entry['path']]
+        cells = labels + [''] * (depth - len(labels)) + [entry['description']]
+        if has_money:
+            cells.append(entry['money'])
+        rows.append({'key': entry['key'], 'parent': None, 'depth': 0, 'kind': 'item', 'cells': cells})
+    merges = []
+    for column in range(depth):
+        start = 0
+        while start < len(entries):
+            path = entries[start]['path']
+            if column >= len(path):
+                start += 1
+                continue
+            identity = tuple(row['key'] for row in path[:column + 1])
+            end = start + 1
+            while end < len(entries):
+                following = entries[end]['path']
+                if column >= len(following) or tuple(row['key'] for row in following[:column + 1]) != identity:
+                    break
+                end += 1
+            if end - start > 1:
+                merges.append({'row': start, 'column': column, 'rowSpan': end - start})
+            start = end
+    return {'id': 'feature-list', 'name': '功能清单', 'kind': 'feature-list', 'title': title,
+            'hierarchyColumns': depth, 'columns': columns, 'rows': rows, 'merges': merges}
+
+
 def parse_plan_sheet(content):
     """Return JSON-serializable worksheets, with every row reachable from a root."""
     title, sections, current, fence = '项目规划书', [], None, None
@@ -381,13 +476,16 @@ def parse_plan_sheet(content):
                 current = {'name': '规划概览', 'lines': []}
                 sections.append(current)
             current['lines'].append(line)
-    sheets = []
+    sheets, feature_keys = [], set()
     for index, section in enumerate(sections, 1):
         identity = 'sheet-' + str(index)
         blocks = list(_blocks(section['lines']))
         if '功能' in section['name'] and not re.search(r'优先|依赖|风险|阶段', section['name']):
-            columns, rows = list(FEATURE_COLUMNS), _feature_rows(blocks, identity)
+            columns, rows = list(FEATURE_COLUMNS), _feature_rows(blocks, identity, feature_keys)
         else:
             columns, rows = _general_sheet(blocks, identity)
         sheets.append({'id': identity, 'name': section['name'], 'columns': columns, 'rows': rows})
+    feature_list = _feature_list(title, sheets, feature_keys)
+    if feature_list:
+        sheets.insert(0, feature_list)
     return {'title': title, 'sheets': sheets}

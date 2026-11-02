@@ -89,6 +89,79 @@ class ExcelPackageTest(unittest.TestCase):
                 selected = sheet.find('s:sheetViews/s:sheetView',NS).attrib['tabSelected']
                 self.assertEqual(selected, '1' if number == 2 else '0')
 
+    def feature_list_model(self, description='介绍'):
+        return {'title':'器材管理项目', 'sheets':[{
+            'kind':'feature-list', 'name':'功能清单',
+            'columns':['大功能','小功能','细分功能','功能介绍','大概金额'],
+            'rows':[
+                {'cells':['器材管理','预约管理','时间校验',description,'待确认']},
+                {'cells':['器材管理','预约管理','冲突校验','相邻时段允许，重叠时段拒绝。','待确认']},
+                {'cells':['器材管理','归还管理','归还登记','归还后显示可用。','待确认']},
+                {'cells':['基础资料','预约管理','查询','不同父功能下同名小功能独立显示。','待确认']},
+            ],
+            'merges':[{'row':0,'column':0,'rowSpan':3},{'row':0,'column':1,'rowSpan':2}],
+        }]}
+
+    def test_feature_list_has_project_title_vertical_merges_and_two_frozen_rows(self):
+        model = self.feature_list_model()
+        with ZipFile(BytesIO(xlsx.export_plan_xlsx(model,'原始规划'))) as package:
+            sheet = ET.fromstring(package.read('xl/worksheets/sheet1.xml'))
+            self.assertEqual([m.attrib['ref'] for m in sheet.findall('s:mergeCells/s:mergeCell',NS)],
+                             ['A1:E1','A3:A5','B3:B4'])
+            cells = {cell.attrib['r']:cell.find('s:is/s:t',NS).text for cell in sheet.findall('.//s:c',NS)}
+            self.assertEqual(cells['A1'],'器材管理项目')
+            self.assertEqual(cells['A2'],'大功能')
+            self.assertEqual(cells['E2'],'大概金额')
+            self.assertEqual(cells['A3'],'器材管理')
+            self.assertEqual(cells['B3'],'预约管理')
+            self.assertEqual(cells['B6'],'预约管理')
+            for omitted in ('B1','C1','D1','E1','A4','A5','B4'):
+                self.assertNotIn(omitted,cells,'covered merge cells must not contain duplicate values')
+            pane = sheet.find('s:sheetViews/s:sheetView/s:pane',NS)
+            self.assertEqual(pane.attrib['ySplit'],'2')
+            self.assertEqual(pane.attrib['topLeftCell'],'B3')
+
+    def test_feature_list_merges_map_long_description_continuation_rows(self):
+        long = '说明' * 9000
+        model = self.feature_list_model(long)
+        with ZipFile(BytesIO(xlsx.export_plan_xlsx(model,'原始规划'))) as package:
+            sheet = ET.fromstring(package.read('xl/worksheets/sheet1.xml'))
+            self.assertEqual([m.attrib['ref'] for m in sheet.findall('s:mergeCells/s:mergeCell',NS)],
+                             ['A1:E1','A3:A6','B3:B5'])
+            cells = {cell.attrib['r']:cell.find('s:is/s:t',NS).text or '' for cell in sheet.findall('.//s:c',NS)}
+            self.assertEqual(cells['D3']+cells['D4'],long)
+            self.assertNotIn('A4',cells)
+            self.assertNotIn('A6',cells)
+            self.assertEqual(cells['A7'],'基础资料','merge must not spill into the next logical parent')
+            self.assertEqual(cells['B6'],'归还管理')
+
+    def test_feature_list_long_parent_and_invalid_merge_never_discard_text(self):
+        model = self.feature_list_model()
+        long = '长父名称' * 6000
+        model['sheets'][0]['rows'][0]['cells'][0] = long
+        model['sheets'][0]['rows'][1]['cells'][0] = long
+        model['sheets'][0]['merges'] = [{'row':0,'column':0,'rowSpan':2},
+                                      {'row':0,'column':1,'rowSpan':3},
+                                      {'row':-1,'column':0,'rowSpan':2},
+                                      {'row':0,'column':9,'rowSpan':2}]
+        with ZipFile(BytesIO(xlsx.export_plan_xlsx(model,'原始规划'))) as package:
+            sheet = ET.fromstring(package.read('xl/worksheets/sheet1.xml'))
+            self.assertEqual([m.attrib['ref'] for m in sheet.findall('s:mergeCells/s:mergeCell',NS)],['A1:E1'])
+            cells = {cell.attrib['r']:cell.find('s:is/s:t',NS).text or '' for cell in sheet.findall('.//s:c',NS)}
+            self.assertEqual(cells['A3']+cells['A4'],long)
+            self.assertEqual(cells['A5']+cells['A6'],long)
+            self.assertEqual(cells['B7'],'归还管理')
+
+    def test_feature_list_is_preferred_over_legacy_feature_sheet(self):
+        model = self.feature_list_model()
+        model['sheets'].insert(0, self.model()['sheets'][0])
+        with ZipFile(BytesIO(xlsx.export_plan_xlsx(model,'原始规划'))) as package:
+            workbook = ET.fromstring(package.read('xl/workbook.xml'))
+            self.assertEqual(workbook.find('s:bookViews/s:workbookView',NS).attrib['activeTab'],'1')
+            legacy = ET.fromstring(package.read('xl/worksheets/sheet1.xml'))
+            self.assertEqual(legacy.find('s:sheetViews/s:sheetView/s:pane',NS).attrib['ySplit'],'1')
+            self.assertIsNone(legacy.find('s:mergeCells',NS))
+
     def test_invalid_and_duplicate_sheet_names_and_control_text(self):
         model = self.model('control\x00literal_x0001_')
         model['sheets'] *= 2

@@ -74,10 +74,10 @@ def _width(label, index):
 
 def _styles():
     root = ET.Element(_tag('styleSheet'))
-    fonts = ET.SubElement(root, _tag('fonts'), count='2')
-    for bold in (False, True):
+    fonts = ET.SubElement(root, _tag('fonts'), count='3')
+    for bold, size in ((False, 11), (True, 11), (True, 16)):
         font = ET.SubElement(fonts, _tag('font'))
-        ET.SubElement(font, _tag('sz'), val='11')
+        ET.SubElement(font, _tag('sz'), val=str(size))
         ET.SubElement(font, _tag('color'), rgb='FF382632')
         ET.SubElement(font, _tag('name'), val='Microsoft YaHei')
         if bold:
@@ -98,7 +98,7 @@ def _styles():
     ET.SubElement(border, _tag('diagonal'))
     base = ET.SubElement(root, _tag('cellStyleXfs'), count='1')
     ET.SubElement(base, _tag('xf'), numFmtId='0', fontId='0', fillId='0', borderId='0')
-    xfs = ET.SubElement(root, _tag('cellXfs'), count='20')
+    xfs = ET.SubElement(root, _tag('cellXfs'), count='22')
     # 0 normal, 1 header, 2 section, 3 alternate; then normal/section indent 1..8.
     formats = [(0, 0, 0), (1, 2, 0), (1, 3, 0), (0, 4, 0)]
     formats += [(font, fill, depth) for depth in range(1, 9) for font, fill in ((0, 0), (1, 3))]
@@ -109,15 +109,59 @@ def _styles():
         if indent:
             alignment['indent'] = str(indent)
         ET.SubElement(xf, _tag('alignment'), **alignment)
+    # 20 is the merged project title; 21 centers a shared parent name vertically.
+    for font, fill, horizontal in ((2, 2, 'center'), (1, 3, 'left')):
+        xf = ET.SubElement(xfs, _tag('xf'), numFmtId='49', fontId=str(font), fillId=str(fill),
+                           borderId='1', xfId='0', applyAlignment='1', applyNumberFormat='1')
+        ET.SubElement(xf, _tag('alignment'), vertical='center', horizontal=horizontal, wrapText='1')
     cell_styles = ET.SubElement(root, _tag('cellStyles'), count='1')
     ET.SubElement(cell_styles, _tag('cellStyle'), name='Normal', xfId='0', builtinId='0')
     return _xml(root)
 
 
-def _worksheet(columns, rows, source=False, selected=False):
+def _worksheet(columns, rows, source=False, selected=False, feature_list=False, title='', merges=None):
     widths = [_width(label, i) for i, label in enumerate(columns)]
     if source:
         widths = [12, 120]
+    elif feature_list:
+        widths = [74 if label == '功能介绍' else 18 if label == '大概金额' else 30 for label in columns]
+    header_row = 2 if feature_list else 1
+    physical_rows, logical_ranges = [], []
+    next_row = header_row + 1
+    for entry in rows:
+        values = list(entry.get('cells', []))
+        values += [''] * (len(columns) - len(values))
+        parts = [_chunks(value) for value in values]
+        count = max([1] + [len(p) for p in parts])
+        logical_ranges.append((next_row, next_row + count - 1, parts))
+        for continuation in range(count):
+            physical_rows.append((next_row, [p[continuation] if continuation < len(p) else '' for p in parts],
+                                  0 if feature_list else int(entry.get('depth', 0)), entry.get('kind', 'item')))
+            next_row += 1
+    merge_refs, covered, anchors, occupied = [], set(), set(), set()
+    if feature_list and len(columns) > 1:
+        merge_refs.append('A1:' + _column(len(columns)) + '1')
+    if feature_list:
+        hierarchy_columns = columns.index('功能介绍') if '功能介绍' in columns else len(columns)
+        for merge in merges or []:
+            start, column, span = (merge.get(key) for key in ('row', 'column', 'rowSpan'))
+            if (not all(isinstance(value, int) and not isinstance(value, bool) for value in (start, column, span))
+                    or start < 0 or span < 2 or column < 0 or column >= hierarchy_columns or start + span > len(rows)):
+                continue
+            ranges = logical_ranges[start:start + span]
+            values = [parts[column] for _, _, parts in ranges]
+            # Never merge away distinct text or a continuation of a long parent
+            # name. Long descriptions in other columns are safe to span over.
+            if not values[0][0] or any(len(parts) > 1 or parts[0] not in ('', values[0][0]) for parts in values):
+                continue
+            first, last = ranges[0][0], ranges[-1][1]
+            area = {(row, column) for row in range(first, last + 1)}
+            if area & occupied:
+                continue
+            occupied.update(area)
+            anchors.add((first, column))
+            covered.update(area - {(first, column)})
+            merge_refs.append(_column(column + 1) + str(first) + ':' + _column(column + 1) + str(last))
     root = ET.Element(_tag('worksheet'))
     properties = ET.SubElement(root, _tag('sheetPr'))
     ET.SubElement(properties, _tag('tabColor'), rgb='FF447A5F' if source else 'FFEA6993')
@@ -126,7 +170,7 @@ def _worksheet(columns, rows, source=False, selected=False):
     view = ET.SubElement(views, _tag('sheetView'), workbookViewId='0', showGridLines='0',
                          tabSelected='1' if selected else '0')
     split = min(1, len(columns) - 1)
-    pane = {'ySplit':'1', 'topLeftCell':_column(split + 1) + '2', 'state':'frozen',
+    pane = {'ySplit':str(header_row), 'topLeftCell':_column(split + 1) + str(header_row + 1), 'state':'frozen',
             'activePane':'bottomRight' if split else 'bottomLeft'}
     if split:
         pane['xSplit'] = str(split)
@@ -137,32 +181,44 @@ def _worksheet(columns, rows, source=False, selected=False):
         ET.SubElement(cols, _tag('col'), min=str(number), max=str(number), width=str(width), customWidth='1')
     data = ET.SubElement(root, _tag('sheetData'))
 
-    def add_row(values, number, depth=0, kind='item', header=False):
+    def add_row(values, number, depth=0, kind='item', header=False, title_row=False):
         cells = [_text(value) for value in values]
         # Height is capped by Excel, but the entire cell value remains available.
         lines = max([1] + [sum(max(1, math.ceil(len(part) * 1.65 / max(widths[i] - depth * 2, 12)))
-                              for part in str(value).split('\n')) for i, value in enumerate(values)])
-        row = ET.SubElement(data, _tag('row'), r=str(number), ht=str(min(409, max(30, lines * 16 + 12))),
+                              for part in str(value).split('\n')) for i, value in enumerate(values)
+                           if (number, i) not in covered])
+        height = max(30, lines * 16 + 12)
+        if title_row:
+            lines = sum(max(1, math.ceil(len(part) * 2.2 / max(sum(widths), 12))) for part in str(values[0]).split('\n'))
+            height = max(40, lines * 24 + 12)
+        row = ET.SubElement(data, _tag('row'), r=str(number), ht=str(min(409, height)),
                             customHeight='1', outlineLevel=str(min(7, max(0, depth))))
         for i, value in enumerate(cells):
+            if (number, i) in covered:
+                continue
             style = 1 if header else 2 if kind == 'section' else 3 if number % 2 else 0
             # Apply nesting to the name column, or the first column in generic views.
             name_column = 1 if '功能名称' in columns else 0
             if depth and i == name_column and not header:
                 style = 4 + (min(8, depth) - 1) * 2 + (1 if kind == 'section' else 0)
+            if (number, i) in anchors:
+                style = 21
+            if title_row:
+                style = 20
             cell = ET.SubElement(row, _tag('c'), r=_column(i + 1) + str(number), s=str(style), t='inlineStr')
             ET.SubElement(ET.SubElement(cell, _tag('is')), _tag('t'), {XML_SPACE:'preserve'}).text = value
 
-    add_row(columns, 1, header=True)
-    number = 2
-    for entry in rows:
-        values = list(entry.get('cells', []))
-        values += [''] * (len(columns) - len(values))
-        parts = [_chunks(value) for value in values]
-        for continuation in range(max([1] + [len(p) for p in parts])):
-            add_row([p[continuation] if continuation < len(p) else '' for p in parts], number,
-                    int(entry.get('depth', 0)), entry.get('kind', 'item'))
-            number += 1
+    if feature_list:
+        title_parts = _chunks(title or '项目规划书')
+        title_text = title_parts[0] + ('（完整标题见规划原文）' if len(title_parts) > 1 else '')
+        add_row([title_text], 1, title_row=True)
+    add_row(columns, header_row, header=True)
+    for number, values, depth, kind in physical_rows:
+        add_row(values, number, depth, kind)
+    if merge_refs:
+        merge_cells = ET.SubElement(root, _tag('mergeCells'), count=str(len(merge_refs)))
+        for ref in merge_refs:
+            ET.SubElement(merge_cells, _tag('mergeCell'), ref=ref)
     ET.SubElement(root, _tag('pageMargins'), left='0.3', right='0.3', top='0.5', bottom='0.5', header='0.2', footer='0.2')
     return _xml(root)
 
@@ -178,7 +234,8 @@ def export_plan_xlsx(model, markdown):
         names.append(_sheet_name(sheet.get('name', '规划'), used))
     workbook = ET.Element(_tag('workbook'))
     views = ET.SubElement(workbook, _tag('bookViews'))
-    active = next((i for i, sheet in enumerate(sheets) if '功能名称' in sheet.get('columns', [])), 0)
+    active = next((i for i, sheet in enumerate(sheets) if sheet.get('kind') == 'feature-list'),
+                  next((i for i, sheet in enumerate(sheets) if '功能名称' in sheet.get('columns', [])), 0))
     ET.SubElement(views, _tag('workbookView'), activeTab=str(active))
     listing = ET.SubElement(workbook, _tag('sheets'))
     relationships = ET.Element('Relationships', xmlns=PKG)
@@ -196,7 +253,8 @@ def export_plan_xlsx(model, markdown):
             ET.SubElement(relationships, 'Relationship', Id='rId' + str(index), Type=REL + '/worksheet', Target='worksheets/sheet' + str(index) + '.xml')
             ET.SubElement(content_types, 'Override', PartName='/xl/worksheets/sheet' + str(index) + '.xml', ContentType='application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml')
             archive.writestr('xl/worksheets/sheet' + str(index) + '.xml',
-                             _worksheet(sheet['columns'], sheet.get('rows', []), sheet.get('source', False), index - 1 == active))
+                             _worksheet(sheet['columns'], sheet.get('rows', []), sheet.get('source', False), index - 1 == active,
+                                        sheet.get('kind') == 'feature-list', model.get('title', ''), sheet.get('merges', [])))
         ET.SubElement(relationships, 'Relationship', Id='rIdStyles', Type=REL + '/styles', Target='styles.xml')
         archive.writestr('xl/workbook.xml', _xml(workbook))
         archive.writestr('xl/_rels/workbook.xml.rels', _xml(relationships))

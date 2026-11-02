@@ -17,10 +17,11 @@
     function render() {
       container.replaceChildren();
       const sheets = Array.isArray(model.sheets) ? model.sheets : [];
-      const sheet = sheets.find(item => item.id === active) || sheets.find(item => item.columns.includes('功能名称')) || sheets[0];
+      const sheet = sheets.find(item => item.id === active) || sheets.find(item => item.kind === 'feature-list') || sheets.find(item => item.columns.includes('功能名称')) || sheets[0];
       if (!sheet) { message('还没有规划内容，请先通过对话梳理项目。'); return; }
       active = sheet.id;
       const rows = sheet.rows || [], columns = sheet.columns || [];
+      const listing = sheet.kind === 'feature-list';
       const byKey = new Map(rows.map(row => [row.key, row]));
       const parents = new Set(rows.map(row => row.parent).filter(key => byKey.has(key)));
       const toolbar = el('div', 'sheet-toolbar');
@@ -29,16 +30,24 @@
       const expand = el('button', 'sheet-action', '全部展开');
       const fold = el('button', 'sheet-action', '收起层级');
       for (const button of [expand, fold]) { button.type = 'button'; button.disabled = !parents.size; }
-      toolbar.append(expand, fold);
+      if (listing) {
+        const details = sheets.find(item => item.kind !== 'feature-list' && item.columns.includes('功能名称'));
+        if (details) {
+          const open = el('button', 'sheet-action', '查看功能明细'); open.type = 'button';
+          open.addEventListener('click', () => { active = details.id; render(); }); toolbar.append(open);
+        }
+      } else toolbar.append(expand, fold);
 
       const scroll = el('div', 'sheet-scroll');
       scroll.setAttribute('tabindex', '0');
       scroll.setAttribute('role', 'region');
       scroll.setAttribute('aria-label', sheet.name + '表格，可横向滚动');
-      const table = el('table', 'planning-grid');
+      const table = el('table', 'planning-grid' + (listing ? ' feature-list-grid' : ''));
       const caption = el('caption', 'sheet-caption', sheet.name);
       table.append(caption);
-      const widths = columns.map(label => label === '编号' ? 108 : label === '功能名称' ? 230 :
+      const widths = columns.map(label => label === '大功能' ? 190 : label === '小功能' ? 200 :
+        label === '细分功能' || /^第\d+级功能$/.test(label) ? 230 : label === '功能介绍' ? 400 :
+        label === '大概金额' ? 160 : label === '编号' ? 108 : label === '功能名称' ? 230 :
         label === '说明与验收' ? 430 : label === '优先级' ? 90 : label === '依赖' ? 150 :
         label === '备注' ? 230 : columns.length === 2 ? (label === columns[0] ? 240 : 720) : 250);
       const colgroup = el('colgroup');
@@ -54,15 +63,29 @@
       head.append(header); table.append(head);
       const body = el('tbody'), controls = [], rendered = [];
       const hierarchyColumn = columns.indexOf('功能名称') >= 0 ? columns.indexOf('功能名称') : 0;
+      const mergeStarts = new Map(), covered = new Set();
+      if (listing) for (const merge of sheet.merges || []) {
+        const { row, column, rowSpan } = merge;
+        if (!Number.isInteger(row) || !Number.isInteger(column) || !Number.isInteger(rowSpan) ||
+            row < 0 || column < 0 || column >= columns.length || rowSpan < 2 || row + rowSpan > rows.length) continue;
+        mergeStarts.set(row + ':' + column, rowSpan);
+        for (let index = row + 1; index < row + rowSpan; index++) covered.add(index + ':' + column);
+      }
       rows.forEach((row, index) => {
         const tr = el('tr', parents.has(row.key) ? 'sheet-parent' : 'sheet-leaf');
         tr.setAttribute('data-row-key', row.key);
         const number = el('th', 'sheet-index', String(index + 1));
         number.setAttribute('scope', 'row'); tr.append(number);
         columns.forEach((_, column) => {
+          if (covered.has(index + ':' + column)) return;
           const cell = el('td', column === 0 ? 'sheet-first' : '');
           const value = String((row.cells || [])[column] ?? '');
-          if (column === hierarchyColumn) {
+          if (listing) {
+            const span = mergeStarts.get(index + ':' + column);
+            if (span) { cell.setAttribute('rowspan', String(span)); cell.className += ' sheet-merged'; }
+            if (column < columns.indexOf('功能介绍')) cell.className += ' sheet-level-cell';
+            cell.textContent = value || '—';
+          } else if (column === hierarchyColumn) {
             const content = el('div', 'sheet-hierarchy');
             content.style.paddingLeft = Math.min(Math.max(row.depth || 0, 0), 12) * 18 + 'px';
             if (parents.has(row.key)) {
@@ -100,7 +123,8 @@
           button.setAttribute('aria-expanded', String(open));
           button.setAttribute('aria-label', (open ? '收起 ' : '展开 ') + label);
         }
-        info.textContent = sheet.name + ' · 显示 ' + visible + ' / ' + rows.length + ' 行';
+        info.textContent = listing ? sheet.name + ' · 按列查看包含关系 · ' + rows.length + ' 行' :
+          sheet.name + ' · 显示 ' + visible + ' / ' + rows.length + ' 行';
       }
       expand.addEventListener('click', () => { parents.forEach(key => collapsed.delete(key)); update(); });
       fold.addEventListener('click', () => { parents.forEach(key => collapsed.add(key)); update(); });
