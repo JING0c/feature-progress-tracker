@@ -3,6 +3,7 @@
 import argparse
 import errno
 import hashlib
+import importlib.util
 import json
 import os
 import tempfile
@@ -12,7 +13,8 @@ import shutil
 import subprocess
 import threading
 from datetime import datetime, timezone
-from urllib.parse import urlparse, parse_qs
+from functools import lru_cache
+from urllib.parse import urlparse, parse_qs, quote
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -67,6 +69,20 @@ def parse(text):
 BASE = Path(__file__).resolve().parent
 VALID_ID = re.compile(r'^[A-Za-z0-9_-]{1,64}$')
 EMPTY_HASH = hashlib.sha256(b'').hexdigest()
+
+
+@lru_cache(maxsize=2)
+def planning_module(name):
+    # Resolve these local helpers independently of the caller's working directory
+    # (the dashboard can also be imported by an integration test).
+    spec = importlib.util.spec_from_file_location(name, BASE / (name + '.py'))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def planning_converters():
+    return planning_module('planning_sheet').parse_plan_sheet, planning_module('planning_xlsx').export_plan_xlsx
 
 
 class RequestError(Exception):
@@ -260,13 +276,30 @@ def inspect_plan(content):
     """Require actual prose under goal, scope, feature and acceptance labels."""
     categories = {'目标': r'目标|背景|概述|goal|objective', '范围': r'范围|边界|约束|scope',
                   '功能': r'功能|需求|feature|requirement', '验收': r'验收|acceptance'}
-    placeholder = re.compile(r'^(?:待(?:补充|完善|规划|填写|编写|定义|确定|定)|'
+    placeholder = re.compile(r'^(?:待(?:补充|完善|规划|填写|编写|定义|确定|确认|定)|'
                              r'(?:请|在此)?(?:填写|补充|描述)(?:项目)?(?:目标|范围|功能|需求|验收)|'
                              r'尚未生成|未生成|todo\b|tbd\b|'
                              r'(?:add|insert|write|enter|describe)\b.*\bhere\b|'
                              r'to be (?:decided|defined|determined)\b)', re.I)
-    found, section, fence = set(), set(), None
-    for line in content.splitlines():
+    def substantive(text):
+        if placeholder.search(text.strip('*_`[<>] ')):
+            return False
+        plain = re.sub(r'[*_`#\[\]（）()。.!！：:;；、，,\s-]', '', text)
+        return (len(plain) >= 6 and
+                not re.fullmatch(r'(?i)(?:todo|tbd|待补充|待规划|待确认|尚未生成|未生成|暂无|无|待定)+', plain) and
+                '尚未生成规划书' not in plain and '请在规划页面梳理需求' not in plain)
+
+    syntax = planning_module('planning_sheet')
+
+    def cells(line):
+        return syntax._table_row(line)[0]
+
+    def category_keys(label):
+        return {key for key, pattern in categories.items() if re.search(pattern, label, re.I)}
+
+    found, section, fence, table_headers = set(), set(), None, None
+    lines = content.splitlines()
+    for number, line in enumerate(lines):
         marker = re.match(r'^\s*(`{3,}|~{3,})', line)
         if marker:
             if fence == marker[1][0]:
@@ -278,7 +311,36 @@ def inspect_plan(content):
             continue
         heading = re.match(r'^\s*#{1,6}\s+(.+)', line)
         if heading:
-            section = {key for key, pattern in categories.items() if re.search(pattern, heading[1], re.I)}
+            section = category_keys(heading[1])
+            table_headers = None
+            continue
+        # A table's header/separator is structure, never evidence of a real plan.
+        table_start = syntax._table_start(lines, number)
+        if table_start:
+            table_headers = table_start
+            continue
+        if '|' in line and all(re.fullmatch(r':?-{3,}:?', c) for c in cells(line)):
+            continue
+        if table_headers and '|' in line:
+            values = cells(line)
+            if len(values) != len(table_headers):
+                # An unescaped pipe can shift fields; ambiguous columns must not
+                # turn a description into evidence for missing acceptance text.
+                continue
+            typed = set().union(*(category_keys(h) for h in table_headers))
+            row_keys = category_keys(values[0]) if values and not typed else set()
+            for column, value in enumerate(values):
+                header = table_headers[column] if column < len(table_headers) else ''
+                keys = category_keys(header) or (section - typed)
+                if re.search(r'说明|描述|内容|description', header, re.I) and '功能' in section:
+                    keys.add('功能')
+                if column > 0:
+                    keys |= row_keys
+                if substantive(value):
+                    found.update(keys)
+            continue
+        table_headers = None
+        if line.lstrip().startswith('|'):
             continue
         text = re.sub(r'^[\s*+\-\d.)]+', '', line).strip()
         if placeholder.search(text.strip('*_`[<>] ')):
@@ -288,14 +350,8 @@ def inspect_plan(content):
         if fields:
             keys.update(key for key, pattern in categories.items() if re.search(pattern, fields[1], re.I))
             text = fields[2]
-        if placeholder.search(text.strip('*_`[<>] ')):
-            continue
-        plain = re.sub(r'[*_`#\[\]（）()。.!！：:;；、，,\s-]', '', text)
-        if len(plain) < 6 or re.fullmatch(r'(?i)(?:todo|tbd|待补充|待规划|待确认|尚未生成|未生成|暂无|无|待定)+', plain):
-            continue
-        if '尚未生成规划书' in plain or '请在规划页面梳理需求' in plain:
-            continue
-        found.update(keys)
+        if substantive(text):
+            found.update(keys)
     missing = [key for key in categories if key not in found]
     return {'valid': not missing, 'missing': missing}
 
@@ -589,13 +645,15 @@ def main():
                 raise RequestError('请求格式无效。')
             return payload
 
-        def respond(self, data, status=200, kind='application/json; charset=utf-8'):
+        def respond(self, data, status=200, kind='application/json; charset=utf-8', headers=None):
             if not isinstance(data, bytes):
                 data = json.dumps(data, ensure_ascii=False).encode()
             self.send_response(status)
             self.send_header('Content-Type', kind)
             self.send_header('Cache-Control', 'no-store')
             self.send_header('Content-Length', str(len(data)))
+            for name, value in (headers or {}).items():
+                self.send_header(name, value)
             self.end_headers()
             self.wfile.write(data)
 
@@ -620,12 +678,26 @@ def main():
                 if route == '/api/projects':
                     self.respond({'project': store.register(self.json_body())})
                     return
-                if route not in ('/api/ledger/save', '/api/ledger/preview', '/api/plan/save', '/api/planning'):
+                if route not in ('/api/ledger/save', '/api/ledger/preview', '/api/plan/save', '/api/planning', '/api/plan/table', '/api/plan/export'):
                     raise RequestError('接口不存在。', 404)
                 project = self.project()
                 payload = self.json_body(100000 if route == '/api/planning' else 1000000)
                 if route == '/api/planning':
                     self.respond(self.planning(project, payload))
+                    return
+                if route in ('/api/plan/table', '/api/plan/export'):
+                    content = payload.get('content')
+                    if not isinstance(content, str) or not content.strip():
+                        raise RequestError('请先读取或生成项目规划书。')
+                    parse_sheet, export_xlsx = planning_converters()
+                    model = parse_sheet(content)
+                    if route == '/api/plan/table':
+                        self.respond(model)
+                    else:
+                        filename = quote(project['name'] + '-项目规划书.xlsx', safe='')
+                        self.respond(export_xlsx(model, content),
+                                     kind='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                     headers={'Content-Disposition': 'attachment; filename="project-plan.xlsx"; filename*=UTF-8\'\'' + filename})
                     return
                 content, revision = payload.get('content'), payload.get('revision')
                 preview = route == '/api/ledger/preview'
@@ -697,7 +769,12 @@ def main():
                 state = store.planning_state(store.project(project['id']))
                 workflow = ('项目尚未完成规划。当前只允许梳理需求或生成规划书，不输出功能台账，不声称可继续实施。' if not state['ready'] else '项目已保存有效规划书，可继续生成台账。')
                 if intent == 'plan':
-                    workflow += '本轮必须生成完整项目规划书，含目标、范围、功能与验收实质正文；只输出 Markdown 正文，不加代码围栏。'
+                    workflow += ('本轮必须生成完整项目规划书，含目标、范围、功能与验收实质正文；只输出 Markdown 正文，不加代码围栏。'
+                                 '为便于按 Excel 层级表格阅读，使用二级章节“项目目标与场景”“范围与边界”“功能规划与验收”“阶段与依赖”“风险与待确认”。'
+                                 '目标与范围用明确正文或信息表说明。功能规划必须使用 Markdown 表格，列按顺序为“编号|上级编号|功能名称|说明|验收标准|优先级|依赖|备注”。'
+                                 '大功能、小功能和更细功能各占一行，编号使用 F01、F01-01、F01-01-01，沿用已有稳定编号；上级编号明确对应父行，顶层填无。'
+                                 '父项和子项都必须保留具体名称与实质说明；验收标准写可检验结果，未确认内容明确标注，不填空模板。'
+                                 '依赖与优先级仅据已知信息，不编造人员、进度、工期或审核结果。其他章节也可用表格，完整保留风险、假设和范围外事项。')
                 elif intent == 'ledger':
                     workflow += '本轮根据已保存项目规划书生成功能台账。'
                 prompt = ("你是项目规划助手，参考 project-mngt 的项目经理方法，与用户多轮对话逐步完成规划。"
@@ -749,6 +826,8 @@ def main():
                 assets = {
                     '/assets/planning-markdown.js': ('planning-markdown.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-markdown.css': ('planning-markdown.css', 'text/css; charset=utf-8'),
+                    '/assets/planning-sheet-view.js': ('planning-sheet-view.js', 'text/javascript; charset=utf-8'),
+                    '/assets/planning-sheet.css': ('planning-sheet.css', 'text/css; charset=utf-8'),
                 }
                 if route in assets:
                     filename, kind = assets[route]

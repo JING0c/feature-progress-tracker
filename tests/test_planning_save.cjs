@@ -15,6 +15,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
     if (!nodes.has(id)) nodes.set(id, {
       textContent: '', className: '', disabled: false, value: '', handlers: {},
       addEventListener(name, fn) { this.handlers[name] = fn; },
+      setAttribute() {},
       replaceChildren() {}, append() {}, focus() {}, scrollIntoView() {},
       requestSubmit() { return this.handlers.submit({preventDefault() {}}); },
       querySelector() { return node('send'); }
@@ -29,6 +30,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
     localStorage: {getItem: k => storage.get(k) || null, setItem: (k,v) => storage.set(k,v), removeItem: k => storage.delete(k)},
     location: {search: '?project=project-a'}, URLSearchParams,
     setInterval() {}, setTimeout() {}, renderPlanningMarkdown() {},
+    createPlanningSheetView() { return {show() {}, loading() {}, error() {}, clear() {}}; },
     confirm: text => { prompts.push(text); return accept; },
     fetch: async (url, options = {}) => {
       const route = url.split('?')[0], payload = options.body ? JSON.parse(options.body) : undefined;
@@ -36,6 +38,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
       let status = 200, data;
       const planning = ready => ({ready, reason:ready ? '规划书已完成' : '请先生成并保存项目规划书', planning_url:'/planning?project=project-a'});
       if (route === '/api/plan') data = {content: '', revision: 'plan-r', path: '/A/plan.md', planning:planning(initialReady), source:'new'};
+      else if (route === '/api/plan/table') data = {title:'规划', sheets:[]};
       else if (route === '/api/project') data = {id:'project-a',name:'A',planning:planning(projectReads++ ? latestReady : initialReady),source:'new'};
       else if (route === '/api/projects') data = {projects: [{id:'project-a',name:'A',planning:planning(initialReady),source:'new'}]};
       else if (route === '/api/ledger/info') data = {path:'/A/ledger.md', revision: changed ? 'external-update' : 'initial-revision'};

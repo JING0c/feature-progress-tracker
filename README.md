@@ -46,6 +46,10 @@ python3 scripts/serve_dashboard.py --workspace ./项目管理 --port 8765
 
 规划书支持标题、表格、引用、有序和无序列表以及代码块。Markdown 中的 HTML 和链接仅作为文本展示，不执行代码或加载外部资源。
 
+规划页默认使用 Excel 风格的层级表格：按章节切换工作表，优先打开功能规划，点击功能名前的箭头逐级展开；也可全部展开、收起层级或切换到文档视图。已有标题、粗体编号、列表和表格混合的规划仍可查看。表格里的行数包含说明行，不是功能完成率；未明确的优先级、依赖等字段保持空白。
+
+点击“下载 Excel”可导出当前页面的规划，包括未保存草稿。真正的 `.xlsx` 包含各章节、冻结表头、层级大纲、自动换行和完整的“规划原文”工作表。导出仅生成副本，不代表规划已保存或流程已解锁；修改 Excel 不会回写 Markdown。项目文件仍是 AI 与网页共享的事实来源。新生成的功能规划使用“编号、上级编号、功能名称、说明、验收标准、优先级、依赖、备注”分列，包含关系和依赖分别记录。
+
 ## AI 更新约定
 
 - 先读项目规划书及已有台账，保留稳定编号、历史记录和审核证据。
@@ -71,6 +75,8 @@ python3 -m unittest discover -s tests -v
 node tests/test_markdown.cjs
 node tests/test_planning_save.cjs
 node tests/test_project_onboarding.cjs
+node tests/test_planning_sheet_view.cjs
+node tests/test_planning_table_flow.cjs
 ```
 
 服务只监听本机；无需 Python 第三方依赖。服务停止后页面不能更新，已保存的 Markdown 仍在。
