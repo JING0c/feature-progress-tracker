@@ -20,6 +20,22 @@ def values(model):
 
 
 class PlanningSheetTest(unittest.TestCase):
+    def test_feature_table_recovers_extra_divider_cell_only_for_aligned_data(self):
+        content = """# 表情包工具
+## 功能规划与验收
+| 编号 | 上级编号 | 功能名称 | 说明 | 验收标准 |
+|---|---|---|---|---|---|
+| F01 | 无 | 选择图片 | 提供图片来源 | 可打开编辑区 |
+| F01-01 | F01 | 选择模板 | 显示模板 | 能选中一张 |
+"""
+        model = sheet.parse_plan_sheet(content)
+        self.assertEqual(model['sheets'][0]['kind'], 'feature-list')
+        self.assertEqual(len(model['sheets'][0]['rows']), 2)
+        self.assertIn('F01-01 选择模板', values(model))
+        lines = content.splitlines()
+        self.assertIsNone(sheet._table_start(lines[:-1] + ['| F01-01 | F01 | 选择模板 |'], 2))
+        self.assertIsNone(sheet._table_start(lines[:2] + [lines[2].replace('上级编号', '其他列')] + lines[3:], 2))
+
     def test_reference_list_expresses_three_levels_and_preserves_parent_information(self):
         result = sheet.parse_plan_sheet('''# 预约工具
 ## 功能规划

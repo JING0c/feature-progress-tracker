@@ -61,9 +61,27 @@ def _table_start(lines, index):
         return None
     header, delimited = _table_row(lines[index])
     separators, _ = _table_row(lines[index + 1])
-    if delimited and header and len(header) == len(separators) and all(re.fullmatch(r':?-{3,}:?', item) for item in separators):
+    if not delimited or not header or not separators or not all(
+        re.fullmatch(r':?-{3,}:?', cell) for cell in separators
+    ):
+        return None
+    if len(header) == len(separators):
         return header
-    return None
+
+    # Some generated plans miscount divider cells while the data is aligned.
+    required = {'编号', '上级编号', '功能名称', '说明', '验收标准'}
+    if not required.issubset(header) or len(set(header)) != len(header):
+        return None
+    first_row = index + 2
+    row_index = first_row
+    while row_index < len(lines) and lines[row_index].strip():
+        cells, has_pipes = _table_row(lines[row_index])
+        if not has_pipes:
+            break
+        if len(cells) != len(header):
+            return None
+        row_index += 1
+    return header if row_index > first_row else None
 
 
 def _feature_title(text):
