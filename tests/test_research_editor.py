@@ -119,6 +119,34 @@ class WorkflowHttpTest(project_tests.ManagerTest):
         self.assertEqual(code,200,data);self.assertIn('最多两个关键问题',self.fake_prompt.read_text());self.assertIn('GitHub调研资料',self.fake_prompt.read_text())
         self.assertEqual(Path(p['plan_path']).read_text(),PLAN)
 
+    def test_new_feature_research_uses_its_description_and_keeps_selected_sources(self):
+        project, suffix = self.ready()
+        idea = '增加按仓库盘点和库存流水'
+        self.fake_reply.write_text('{"query": ""}')
+        code, _ = self.request('/api/research' + suffix, {'feature_idea': idea})
+        self.assertEqual(code, 400)
+        self.assertIn(idea, self.fake_prompt.read_text())
+        self.assertIn('优先按这次新增功能提取关键词', self.fake_prompt.read_text())
+
+        record = {'version': 1, 'completed': True, 'query': 'inventory', 'feature_idea': idea,
+                  'repositories': [{'name': 'test/inventory', 'readme': 'inventory movements evidence'},
+                                   {'name': 'test/other', 'readme': 'unselected repo evidence'}]}
+        Path(project['directory'], 'GitHub参考项目.md').write_text(research.research_markdown(record))
+        data = self.request('/api/research' + suffix)[1]
+        self.assertEqual(data['feature_idea'], idea)
+        code, selected = self.request('/api/research/selection' + suffix,
+                                      {'revision': data['revision'], 'selected': ['test/inventory']})
+        self.assertEqual(code, 200, selected)
+        self.assertEqual(selected['feature_idea'], idea)
+        code, reply = self.request('/api/planning' + suffix, {'intent': 'decompose', 'research_first': True,
+                                   'messages': [{'role': 'user', 'content': idea}]})
+        self.assertEqual(code, 200, reply)
+        prompt = self.fake_prompt.read_text()
+        self.assertIn('inventory movements evidence', prompt)
+        self.assertNotIn('unselected repo evidence', prompt)
+        self.assertIn('附仓库链接', prompt)
+        self.assertEqual(Path(project['plan_path']).read_text(), PLAN)
+
     def test_empty_technical_columns_and_multiline_content_remain_in_projection(self):
         _,suffix=self.ready()
         rows=editor.editable_table(PLAN)['rows']

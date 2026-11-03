@@ -66,6 +66,9 @@ def read_research(content):
     if not isinstance(data,dict): raise ValueError('调研记录格式无效，请重新搜索。')
     if data.get('version') != 1 or data.get('completed') is not True or not isinstance(data.get('repositories'),list):
         raise ValueError('调研记录无效，请重新搜索。')
+    feature_idea = data.get('feature_idea', '')
+    if not isinstance(feature_idea, str) or len(feature_idea) > 6000:
+        raise ValueError('新增功能调研记录无效，请重新搜索。')
     if len(data['repositories'])>20:raise ValueError('调研项目过多，请重新搜索。')
     for repo in data['repositories']:
         if not isinstance(repo,dict) or len(str(repo.get('name','')))>200 or not re.fullmatch(r'[\w.-]+/[\w.-]+',str(repo.get('name','')),re.ASCII):

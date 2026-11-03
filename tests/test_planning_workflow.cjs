@@ -9,10 +9,12 @@ async function run(){
  const source=fs.readFileSync(path.join(__dirname,'../scripts/planning-workflow.js'),'utf8');
  const sandbox={window:{},document:{getElementById:$,createElement:()=>new Node()},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},confirm:()=>true};
  vm.runInNewContext(source,sandbox);
- let researchFails=true,saves=0,guided='',plan={content:'BASE',revision:'r1',ready:true};
+ let researchFails=true,saves=0,guided='',guidedFromReferences=false,plan={content:'BASE',revision:'r1',ready:true};
  const table={columns:['采用','编号','上级编号','功能名称','所需技术','前期准备'],rows:[{'采用':'是','编号':'F01','上级编号':'无','功能名称':'模块'},{'采用':'是','编号':'F01-01','上级编号':'F01','功能名称':'细项','所需技术':'建议A'}]};
- const options={storageKey:'draft',notice:(...n)=>notices.push(n),getPlan:()=>plan,setBusy:v=>workflow.setBusy(v),guide:t=>guided=t,onSave:async c=>{saves++;plan.content=c;},request:async(route,payload)=>{
+ const options={storageKey:'draft',notice:(...n)=>notices.push(n),getPlan:()=>plan,setBusy:v=>workflow.setBusy(v),guide:(t,fromReferences)=>{guided=t;guidedFromReferences=fromReferences;},onSave:async c=>{saves++;plan.content=c;},request:async(route,payload)=>{
   calls.push({route,payload});if(route==='/api/research'&&!payload)return{completed:false,repositories:[]};
+  if(route==='/api/research/selection')return{completed:true,selection_confirmed:true,feature_idea:'增加库存',query:'inventory',repositories:[]};
+  if(route==='/api/research'&&payload.feature_idea)return{completed:true,selection_confirmed:false,feature_idea:payload.feature_idea,query:'inventory',repositories:[]};
   if(route==='/api/research'){if(researchFails)throw Error('GitHub rate limit');return{completed:true,selection_confirmed:true,query:'ticket',repositories:[{name:'org/repo',url:'https://github.com/org/repo',description:'资料',license:'MIT',stars:1}]};}
   if(payload.rows)return{content:'UPDATED'};
   return JSON.parse(JSON.stringify(table));
@@ -31,6 +33,19 @@ async function run(){
  await $('save-feature-edit').handlers.click();
  const written=calls.find(c=>c.payload?.rows);assert.equal(written.payload.rows[1]['所需技术'],'用户指定SQLite');assert.equal(saves,1);assert.equal(storage.has('draft'),false);
  $('new-feature-idea').value='增加库存';$('guide-feature').handlers.click();assert.match(guided,/增加库存/);assert.equal(saves,1,'decomposition does not save a proposal');
+ guided='';await $('research-feature').handlers.click();
+ assert.equal(calls.at(-1).payload.feature_idea,'增加库存');
+ assert.equal(calls.at(-1).payload.query,undefined,'feature search must ignore the old project keyword');
+ assert.equal(guided,'','decomposition waits for selection');
+ $('research-query').value='stock audit';
+ await $('search-references').handlers.click();
+ assert.equal(calls.at(-1).payload.feature_idea,'增加库存','keyword refinement retains the feature scope');
+ assert.equal(calls.at(-1).payload.query,'stock audit');
+ $('new-feature-idea').value='另一个未搜索的需求';
+ await $('save-reference-selection').handlers.click();
+ assert.match(guided,/增加库存/);assert.equal(guidedFromReferences,true);
+ assert.equal(saves,1,'reference-assisted proposal is also read-only');
+
  await $('edit-features').handlers.click();plan.revision='r2';await $('save-feature-edit').handlers.click();assert.match(notices.at(-1)[0],/已经变化/);assert.equal(saves,1,'stale editor cannot overwrite');
  console.log('Planning workflow: research failure/retry/cache, edited fields, adoption cascade, guided proposals and conflict retention passed.');
 }
