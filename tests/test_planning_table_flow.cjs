@@ -19,6 +19,7 @@ async function run(){
     location:{search:'?project=project-table'},URLSearchParams,
     localStorage:{getItem(){return null;},setItem(){},removeItem(){}},
     setInterval(){},setTimeout(){},renderPlanningMarkdown(){},
+    createPlanningWorkflow(){return{ensureResearch:async()=>{},setBusy(){},editing:false};},
     createPlanningSheetView(){return{show(data){shown.push(data);},loading(){},error(){shown.push('error');},clear(){}};},
     URL:{createObjectURL(){return 'blob:export';},revokeObjectURL(){}},
     fetch:async(url,options={})=>{

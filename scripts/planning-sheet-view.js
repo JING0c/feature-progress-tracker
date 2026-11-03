@@ -2,8 +2,8 @@
   'use strict';
 
   // The same read-only model is used by the webpage and the Excel exporter.
-  global.createPlanningSheetView = function (container) {
-    let model = { sheets: [] }, active = '', collapsed = new Set();
+  global.createPlanningSheetView = function (container, options = {}) {
+    let model = { sheets: [] }, active = '', collapsed = new Set(), adoptionEnabled=true, adoptionControls=[];
     const el = (tag, className, text) => {
       const node = document.createElement(tag);
       if (className) node.className = className;
@@ -15,7 +15,7 @@
     };
 
     function render() {
-      container.replaceChildren();
+      container.replaceChildren();adoptionControls=[];
       const sheets = Array.isArray(model.sheets) ? model.sheets : [];
       const sheet = sheets.find(item => item.id === active) || sheets.find(item => item.kind === 'feature-list') || sheets.find(item => item.columns.includes('功能名称')) || sheets[0];
       if (!sheet) { message('还没有规划内容，请先通过对话梳理项目。'); return; }
@@ -45,7 +45,7 @@
       const table = el('table', 'planning-grid' + (listing ? ' feature-list-grid' : ''));
       const caption = el('caption', 'sheet-caption', sheet.name);
       table.append(caption);
-      const widths = columns.map(label => label === '大功能' ? 190 : label === '小功能' ? 200 :
+      const widths = columns.map(label => label === '采用' ? 78 : label === '所需技术' ? 230 : label === '前期准备' ? 280 : label === '大功能' ? 190 : label === '小功能' ? 200 :
         label === '细分功能' || /^第\d+级功能$/.test(label) ? 230 : label === '功能介绍' ? 400 :
         label === '大概金额' ? 160 : label === '编号' ? 108 : label === '功能名称' ? 230 :
         label === '说明与验收' ? 430 : label === '优先级' ? 90 : label === '依赖' ? 150 :
@@ -80,7 +80,10 @@
           if (covered.has(index + ':' + column)) return;
           const cell = el('td', column === 0 ? 'sheet-first' : '');
           const value = String((row.cells || [])[column] ?? '');
-          if (listing) {
+          if (listing && columns[column] === '采用') {
+            const box=el('input','adoption-checkbox');box.type='checkbox';box.checked=value!=='否';box.setAttribute('aria-label','采用 '+(row.feature_id||row.key));
+            adoptionControls.push(box);box.disabled=!options.onAdopt||!adoptionEnabled;box.addEventListener('change',()=>options.onAdopt(row.feature_id,box.checked));cell.className+=' adoption-cell';cell.append(box);
+          } else if (listing) {
             const span = mergeStarts.get(index + ':' + column);
             if (span) { cell.setAttribute('rowspan', String(span)); cell.className += ' sheet-merged'; }
             if (column < columns.indexOf('功能介绍')) cell.className += ' sheet-level-cell';
@@ -138,6 +141,7 @@
       update();
     }
     return {
+      setAdoptionEnabled(value){adoptionEnabled=value;adoptionControls.forEach(box=>box.disabled=!value||!options.onAdopt);},
       show(value) { model = value || { sheets: [] }; render(); },
       loading() { message('正在整理规划表格…'); },
       error() { message('表格暂时无法加载，可切换到文档视图查看完整内容。'); },

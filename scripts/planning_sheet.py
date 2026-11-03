@@ -16,7 +16,7 @@ _NO_PARENT = {'', '-', '—', '无', '无上级', '根', '根级', 'null', 'none
 
 def _text(value):
     """Remove common inline decoration, retaining links/HTML as inert text."""
-    value = str(value).strip()
+    value = re.sub(r'<br\s*/?>', '\n', str(value), flags=re.I).strip()
     value = re.sub(r'\*\*(.+?)\*\*|__(.+?)__', lambda m: m[1] or m[2], value)
     value = re.sub(r'(`+)(.+?)\1', lambda m: m[2], value)
     return re.sub(r'\\([\\`*_{}\[\]()#+.!|>-])', r'\1', value)
@@ -410,7 +410,7 @@ def _feature_list(title, sheets, feature_keys):
             amount = (recorded_money[0][1] if len(recorded_money) == 1 else
                       '\n'.join(label + '：' + value for label, value in recorded_money))
             entries.append({'key': 'feature-list-' + row['key'], 'path': paths[row['key']],
-                            'description': '\n'.join(details), 'money': amount})
+                            'description': '\n'.join(details), 'money': amount, 'feature_id':values[0]})
     if not entries:
         return None
     depth = max(3, max(len(entry['path']) for entry in entries))
@@ -426,7 +426,7 @@ def _feature_list(title, sheets, feature_keys):
         cells = labels + [''] * (depth - len(labels)) + [entry['description']]
         if has_money:
             cells.append(entry['money'])
-        rows.append({'key': entry['key'], 'parent': None, 'depth': 0, 'kind': 'item', 'cells': cells})
+        rows.append({'key': entry['key'], 'parent': None, 'depth': 0, 'kind': 'item', 'cells': cells, 'feature_id':entry['feature_id']})
     merges = []
     for column in range(depth):
         start = 0
@@ -488,4 +488,21 @@ def parse_plan_sheet(content):
     feature_list = _feature_list(title, sheets, feature_keys)
     if feature_list:
         sheets.insert(0, feature_list)
+    technology = {}
+    for sheet in sheets:
+        if sheet['columns'] != FEATURE_COLUMNS: continue
+        for row in sheet['rows']:
+            fields = {}
+            for line in row['cells'][5].splitlines():
+                match = re.match(r'^(所需技术|技术方案|前期准备|准备条件)[：:]\s*(.*)',line)
+                if match: fields[match[1]]=match[2]
+            technology[row['key']] = [fields.get('所需技术',fields.get('技术方案','')),fields.get('前期准备',fields.get('准备条件',''))]
+    if any(any(values) for values in technology.values()):
+        for sheet in sheets:
+            if sheet['columns'] == FEATURE_COLUMNS:
+                sheet['columns'] = list(FEATURE_COLUMNS) + ['所需技术','前期准备']
+                for row in sheet['rows']: row['cells'] += technology.get(row['key'],['',''])
+            elif sheet.get('kind') == 'feature-list':
+                sheet['columns'] += ['所需技术','前期准备']
+                for row in sheet['rows']: row['cells'] += technology.get(row['key'].removeprefix('feature-list-'),['',''])
     return {'title': title, 'sheets': sheets}

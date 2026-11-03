@@ -5,7 +5,7 @@ const vm = require('node:vm');
 
 // Exercise the actual page event handler with an in-memory HTTP boundary.
 // No browser storage or real project is changed by these contract checks.
-async function scenario({accept = true, changed = false, previewFails = false, initialReady = true, latestReady = initialReady, action = 'save-ledger', planSaveFails = false} = {}) {
+async function scenario({accept = true, changed = false, previewFails = false, initialReady = true, latestReady = initialReady, action = 'save-ledger', planSaveFails = false, historyEmpty = false, researchFails = false} = {}) {
   const source = fs.readFileSync(path.join(__dirname, '../scripts/planning.html'), 'utf8');
   const script = source.match(/<script>([\s\S]*?)<\/script>/)[1];
   const original = '# 台账\n进度：已验收 0/20 个最细功能点\n## 大功能 F01：预约\n- [ ] F01-01 冲突校验｜状态：未开始';
@@ -22,7 +22,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
     });
     return nodes.get(id);
   };
-  const storage = new Map([['project-planning:__PLANNING_KEY__', JSON.stringify([
+  const storage = new Map([['project-planning:__PLANNING_KEY__', JSON.stringify(historyEmpty ? [] : [
     {role: 'assistant', content: original, ledgerRevision: 'initial-revision'}
   ])]]);
   const context = {
@@ -30,6 +30,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
     localStorage: {getItem: k => storage.get(k) || null, setItem: (k,v) => storage.set(k,v), removeItem: k => storage.delete(k)},
     location: {search: '?project=project-a'}, URLSearchParams,
     setInterval() {}, setTimeout() {}, renderPlanningMarkdown() {},
+    createPlanningWorkflow(){return{ensureResearch:async()=>{if(researchFails)throw Error('GitHub 检索失败');},setBusy(){},editing:false};},
     createPlanningSheetView() { return {show() {}, loading() {}, error() {}, clear() {}}; },
     confirm: text => { prompts.push(text); return accept; },
     fetch: async (url, options = {}) => {
@@ -58,7 +59,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
   vm.runInNewContext(script, context);
   await new Promise(resolve => setImmediate(resolve));
   const initialDisabled = {save:node('save-ledger').disabled, generate:node('generate-ledger').disabled, plan:node('save-plan').disabled};
-  await node(action).handlers.click();
+  if(action==='submit'){node('input').value='新项目需求';await node('form').handlers.submit({preventDefault(){}});}else await node(action).handlers.click();
   await new Promise(resolve => setImmediate(resolve));
   return {calls, prompts, original, status:node('status').textContent, initialDisabled, finalDisabled:{save:node('save-ledger').disabled,generate:node('generate-ledger').disabled,plan:node('save-plan').disabled}};
 }
@@ -108,7 +109,13 @@ async function run() {
   assert.equal(failedPlan.finalDisabled.generate, true);
   assert.equal(failedPlan.finalDisabled.plan, false, 'failed generated draft can retry saving');
   assert.match(failedPlan.status, /保存失败/);
-  console.log('Planning save: 9 scenarios passed, including prerequisite, generation, failure and relocking checks.');
+  const first=await scenario({initialReady:false,historyEmpty:true,action:'submit'});
+  assert.equal(first.calls.find(c=>c.route==='/api/planning').payload.intent,'plan','first need produces an editable plan');
+  assert.ok(first.calls.some(c=>c.route==='/api/plan/save'));
+  const noResearch=await scenario({initialReady:false,historyEmpty:true,action:'submit',researchFails:true});
+  assert.ok(!noResearch.calls.some(c=>c.route==='/api/planning'),'research failure stops planning');
+  assert.match(noResearch.status,/GitHub/);
+  console.log('Planning save: 11 scenarios passed, including prerequisite, generation, failure and relocking checks.');
 }
 module.exports = run;
 if (require.main === module) run().catch(error => { console.error(error); process.exitCode = 1; });
