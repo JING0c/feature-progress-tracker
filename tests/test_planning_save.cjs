@@ -5,12 +5,12 @@ const vm = require('node:vm');
 
 // Exercise the actual page event handler with an in-memory HTTP boundary.
 // No browser storage or real project is changed by these contract checks.
-async function scenario({accept = true, changed = false, previewFails = false, initialReady = true, latestReady = initialReady, action = 'save-ledger', planSaveFails = false, historyEmpty = false, researchFails = false} = {}) {
+async function scenario({accept = true, changed = false, previewFails = false, initialReady = true, latestReady = initialReady, action = 'save-ledger', planSaveFails = false, historyEmpty = false, researchFails = false, researchPause = false} = {}) {
   const source = fs.readFileSync(path.join(__dirname, '../scripts/planning.html'), 'utf8');
   const script = source.match(/<script>([\s\S]*?)<\/script>/)[1];
   const original = '# 台账\n进度：已验收 0/20 个最细功能点\n## 大功能 F01：预约\n- [ ] F01-01 冲突校验｜状态：未开始';
   const nodes = new Map(), calls = [], prompts = [];
-  let projectReads = 0;
+  let projectReads = 0, researchChecks = 0, workflowOptions;
   const node = id => {
     if (!nodes.has(id)) nodes.set(id, {
       textContent: '', className: '', disabled: false, value: '', handlers: {},
@@ -30,7 +30,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
     localStorage: {getItem: k => storage.get(k) || null, setItem: (k,v) => storage.set(k,v), removeItem: k => storage.delete(k)},
     location: {search: '?project=project-a'}, URLSearchParams,
     setInterval() {}, setTimeout() {}, renderPlanningMarkdown() {},
-    createPlanningWorkflow(){return{ensureResearch:async()=>{if(researchFails)throw Error('GitHub 检索失败');},setBusy(){},editing:false};},
+    createPlanningWorkflow(options){workflowOptions=options;return{ensureResearch:async()=>{if(researchFails)throw Error('GitHub 检索失败');if(researchPause&&!researchChecks++)throw Error('请保存参考选择');},setBusy(){},editing:false};},
     createPlanningSheetView() { return {show() {}, loading() {}, error() {}, clear() {}}; },
     confirm: text => { prompts.push(text); return accept; },
     fetch: async (url, options = {}) => {
@@ -61,6 +61,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
   const initialDisabled = {save:node('save-ledger').disabled, generate:node('generate-ledger').disabled, plan:node('save-plan').disabled};
   if(action==='submit'){node('input').value='新项目需求';await node('form').handlers.submit({preventDefault(){}});}else await node(action).handlers.click();
   await new Promise(resolve => setImmediate(resolve));
+  if(researchPause){workflowOptions.resumePlanning();await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));}
   return {calls, prompts, original, status:node('status').textContent, initialDisabled, finalDisabled:{save:node('save-ledger').disabled,generate:node('generate-ledger').disabled,plan:node('save-plan').disabled}};
 }
 
@@ -115,7 +116,10 @@ async function run() {
   const noResearch=await scenario({initialReady:false,historyEmpty:true,action:'submit',researchFails:true});
   assert.ok(!noResearch.calls.some(c=>c.route==='/api/planning'),'research failure stops planning');
   assert.match(noResearch.status,/GitHub/);
-  console.log('Planning save: 11 scenarios passed, including prerequisite, generation, failure and relocking checks.');
+  const resumed=await scenario({initialReady:false,action:'draft',researchPause:true});
+  assert.equal(resumed.calls.find(c=>c.route==='/api/planning').payload.intent,'plan','reference selection resumes the original explicit plan intent');
+  assert.ok(resumed.calls.some(c=>c.route==='/api/plan/save'));
+  console.log('Planning save: 12 scenarios passed, including prerequisite, generation, failure and relocking checks.');
 }
 module.exports = run;
 if (require.main === module) run().catch(error => { console.error(error); process.exitCode = 1; });

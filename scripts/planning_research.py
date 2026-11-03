@@ -39,7 +39,7 @@ def search_repositories(query):
                 'language':str(item.get('language') or '未标注')[:100],
                 'license':str(license_data.get('spdx_id') or '未标注')[:100],
                 'stars':item.get('stargazers_count',0), 'updated_at':str(item.get('updated_at') or '')[:100],
-                'readme':'', 'readme_note':'未读取'}
+                'readme':'', 'readme_note':'未读取', 'selected':False}
         if len(repositories) < 3:
             try:
                 readme = github_json('repos/' + name + '/readme')
@@ -49,12 +49,12 @@ def search_repositories(query):
             except (ValueError, TypeError):
                 repo['readme_note'] = 'README无法读取，仅有仓库元数据'
         repositories.append(repo)
-    return {'version':1, 'completed':True, 'query':query,
+    return {'version':1, 'completed':True, 'selection_confirmed':not repositories, 'query':query,
             'searched_at':datetime.now(timezone.utc).isoformat(), 'repositories':repositories}
 
 def research_markdown(result):
     # JSON strings escape embedded newlines, so a README cannot close the fence.
-    return ('# GitHub 参考项目\n\n以下仅为功能调研资料，尚未决定采用任何仓库。'
+    return ('# GitHub 参考项目\n\n勾选表示将仓库纳入功能参考，不代表采用其代码。'
             '星数不代表适用性，README声明不等于实现已验证，采用前需核对许可证及实际行为。\n\n'
             '```json\n' + json.dumps(result,ensure_ascii=False,indent=2) + '\n```\n')
 
@@ -66,8 +66,24 @@ def read_research(content):
     if not isinstance(data,dict): raise ValueError('调研记录格式无效，请重新搜索。')
     if data.get('version') != 1 or data.get('completed') is not True or not isinstance(data.get('repositories'),list):
         raise ValueError('调研记录无效，请重新搜索。')
+    if len(data['repositories'])>20:raise ValueError('调研项目过多，请重新搜索。')
     for repo in data['repositories']:
-        if not isinstance(repo,dict) or not re.fullmatch(r'[\w.-]+/[\w.-]+',str(repo.get('name','')),re.ASCII):
+        if not isinstance(repo,dict) or len(str(repo.get('name','')))>200 or not re.fullmatch(r'[\w.-]+/[\w.-]+',str(repo.get('name','')),re.ASCII):
             raise ValueError('调研仓库记录无效，请重新搜索。')
         repo['url'] = 'https://github.com/' + repo['name']
+        repo['selected'] = repo.get('selected') is True
+    data['selection_confirmed'] = data.get('selection_confirmed') is True or not data['repositories']
     return data
+
+
+def select_repositories(data, names):
+    if not isinstance(names,list) or any(not isinstance(name,str) for name in names) or len(names)!=len(set(names)):
+        raise ValueError('参考项目选择无效。')
+    known={repo['name'] for repo in data['repositories']}
+    if set(names)-known:raise ValueError('所选项目不在当前候选列表中，请重新读取调研结果。')
+    result=json.loads(json.dumps(data))
+    result.pop('revision',None)
+    for repo in result['repositories']:repo['selected']=repo['name'] in names
+    result['selection_confirmed']=True
+    result['selected_at']=datetime.now(timezone.utc).isoformat()
+    return result

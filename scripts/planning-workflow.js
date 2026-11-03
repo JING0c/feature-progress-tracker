@@ -3,19 +3,24 @@
  global.createPlanningWorkflow=function(options){
   const {request,notice,getPlan,onSave,guide,storageKey}=options;
   const $=id=>document.getElementById(id);
-  let research={completed:false,repositories:[]},editing=false,base=null,rows=[],columns=[],fields=[],busy=false;
+  let research={completed:false,repositories:[]},editing=false,base=null,rows=[],columns=[],fields=[],busy=false,referenceFields=[],referenceDirty=false;
   function text(tag,value){const node=document.createElement(tag);node.textContent=value;return node;}
   function renderResearch(data){
-   research=data;const box=$('research-results');box.replaceChildren();
-   if(!data.completed)return;
+   research=data;referenceDirty=false;referenceFields=[];const box=$('research-results');box.replaceChildren();
+   if(!data.completed){$('reference-choice-state').textContent='请先搜索候选项目。';return;}
    $('research-query').value=data.query||'';
    $('research-state').textContent=(data.repositories.length?'找到 '+data.repositories.length+' 个参考项目':'未找到相似项目，可调整关键词重新搜索')+' · '+(data.searched_at?new Date(data.searched_at).toLocaleString('zh-CN'):'');
    for(const repo of data.repositories){
     const card=document.createElement('article');card.className='reference-card';
     const link=text('a',repo.name);link.href=repo.url;link.target='_blank';link.rel='noopener noreferrer';
-    card.append(link,text('p',repo.description||'暂无仓库说明'),text('small',(repo.language||'未标注语言')+' · 许可证 '+(repo.license||'未标注')+' · ★ '+repo.stars),text('small',(repo.updated_at?'仓库更新 '+new Date(repo.updated_at).toLocaleDateString('zh-CN')+' · ':'')+(repo.readme_note||'')));box.append(card);
+    const label=document.createElement('label');label.className='reference-choice';
+    const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=repo.selected===true;checkbox.disabled=busy;checkbox.setAttribute('aria-label','参考 '+repo.name);
+    checkbox.addEventListener('change',()=>{repo.selected=checkbox.checked;referenceDirty=true;choiceState();});referenceFields.push(checkbox);
+    label.append(checkbox,text('span','选作功能参考'));card.append(label,link,text('p',repo.description||'暂无仓库说明'),text('small',(repo.language||'未标注语言')+' · 许可证 '+(repo.license||'未标注')+' · ★ '+repo.stars),text('small',(repo.updated_at?'仓库更新 '+new Date(repo.updated_at).toLocaleDateString('zh-CN')+' · ':'')+(repo.readme_note||'')));box.append(card);
    }
+   choiceState();
   }
+  function choiceState(){if(research.completed&&!research.repositories.length){$('reference-choice-state').textContent='当前无候选，可继续按需求规划或修改关键词重搜。';return;}const count=research.repositories.filter(repo=>repo.selected===true).length;$('reference-choice-state').textContent=referenceDirty||!research.selection_confirmed?'已勾选 '+count+' 个；请保存参考选择后继续。':'参考选择已保存：'+(count?count+' 个项目':'明确不选任何项目');}
   const loaded=request('/api/research').then(renderResearch).catch(error=>{$('research-state').textContent=error.message;});
   async function search(need){
    $('research-state').textContent='正在提取关键词并检索 GitHub…';
@@ -25,8 +30,18 @@
   }
   $('search-references').addEventListener('click',async()=>{
    if(busy)return;options.setBusy(true);
-   try{await search($('input').value.trim()||getPlan().content.slice(0,6000));notice('GitHub参考已更新，后续规划会引用这些资料。');}
+   try{await search($('input').value.trim()||getPlan().content.slice(0,6000));notice('GitHub候选项目已更新，请勾选并保存参考选择后继续。');}
    catch(error){notice(error.message,true);}finally{options.setBusy(false);}
+  });
+  $('save-reference-selection').addEventListener('click',async()=>{
+   if(busy)return;
+   if(!research.completed){notice('请先搜索GitHub参考项目。',true);return;}
+   options.setBusy(true);let saved=false;
+   try{
+    const data=await request('/api/research/selection',{revision:research.revision,selected:research.repositories.filter(repo=>repo.selected===true).map(repo=>repo.name)});
+    renderResearch(data);saved=true;notice('参考选择已保存，后续规划只使用勾选的项目。');
+   }catch(error){notice(error.message,true);}finally{options.setBusy(false);}
+   if(saved&&options.resumePlanning)options.resumePlanning();
   });
   function retain(){try{localStorage.setItem(storageKey,JSON.stringify({base,rows,columns}));}catch(error){notice('编辑草稿无法暂存，请及时保存。',true);}}
   function setSelection(id,selected){
@@ -86,8 +101,8 @@
   });
   return{
    get editing(){return editing;},
-   async ensureResearch(need){await loaded;if(!research.completed)await search(need);},
-   setBusy(value){busy=value;for(const id of ['search-references','edit-features','add-feature-row','cancel-feature-edit','save-feature-edit','guide-feature'])$(id).disabled=value;fields.forEach(f=>f.disabled=value);},
+   async ensureResearch(need){await loaded;if(!research.completed)await search(need);if(referenceDirty||!research.selection_confirmed)throw Error('请在GitHub项目卡片中多选参考，保存参考选择后继续；也可明确不选。');},
+   setBusy(value){busy=value;for(const id of ['search-references','edit-features','add-feature-row','cancel-feature-edit','save-feature-edit','guide-feature','save-reference-selection'])$(id).disabled=value;fields.forEach(f=>f.disabled=value);referenceFields.forEach(f=>f.disabled=value);},
    async choose(id,selected){
     if(editing)throw Error('请先完成正在编辑的功能表。');
     return request('/api/plan/features',{content:getPlan().content,selection:{id,selected}});

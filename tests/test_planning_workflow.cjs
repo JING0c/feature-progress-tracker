@@ -13,7 +13,7 @@ async function run(){
  const table={columns:['采用','编号','上级编号','功能名称','所需技术','前期准备'],rows:[{'采用':'是','编号':'F01','上级编号':'无','功能名称':'模块'},{'采用':'是','编号':'F01-01','上级编号':'F01','功能名称':'细项','所需技术':'建议A'}]};
  const options={storageKey:'draft',notice:(...n)=>notices.push(n),getPlan:()=>plan,setBusy:v=>workflow.setBusy(v),guide:t=>guided=t,onSave:async c=>{saves++;plan.content=c;},request:async(route,payload)=>{
   calls.push({route,payload});if(route==='/api/research'&&!payload)return{completed:false,repositories:[]};
-  if(route==='/api/research'){if(researchFails)throw Error('GitHub rate limit');return{completed:true,query:'ticket',repositories:[{name:'org/repo',url:'https://github.com/org/repo',description:'资料',license:'MIT',stars:1}]};}
+  if(route==='/api/research'){if(researchFails)throw Error('GitHub rate limit');return{completed:true,selection_confirmed:true,query:'ticket',repositories:[{name:'org/repo',url:'https://github.com/org/repo',description:'资料',license:'MIT',stars:1}]};}
   if(payload.rows)return{content:'UPDATED'};
   return JSON.parse(JSON.stringify(table));
  }};
