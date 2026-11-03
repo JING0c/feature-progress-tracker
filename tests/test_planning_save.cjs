@@ -23,7 +23,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
     return nodes.get(id);
   };
   const storage = new Map([['project-planning:__PLANNING_KEY__', JSON.stringify(historyEmpty ? [] : [
-    {role: 'assistant', content: original, ledgerRevision: 'initial-revision'}
+    {role: 'assistant', content: action==='apply-feature-proposal'?original+'\n<!-- feature-proposal -->':original, ledgerRevision: 'initial-revision', intent: action==='apply-feature-proposal'?'decompose':undefined}
   ])]]);
   const context = {
     document: {getElementById: node, querySelector: node, createElement: () => node(Symbol())},
@@ -130,7 +130,10 @@ async function run() {
   const referenceFailure = await scenario({initialReady:false, historyEmpty:true, referenceOnly:true, planSaveFails:true});
   assert.match(referenceFailure.progress,/文件保存失败/);
   assert.equal(referenceFailure.progressHidden,true);
-  console.log('Planning save: 14 scenarios passed, including prerequisite, generation, failure and relocking checks.');
+  const feature = await scenario({action:'apply-feature-proposal'});
+  assert.equal(feature.calls.find(c=>c.route==='/api/planning').payload.merge_feature,true);
+  assert.ok(feature.calls.some(c=>c.route==='/api/plan/save'),'confirmed proposal must be written through versioned save');
+  console.log('Planning save: 15 scenarios passed, including prerequisite, generation, failure and relocking checks.');
 }
 module.exports = run;
 if (require.main === module) run().catch(error => { console.error(error); process.exitCode = 1; });

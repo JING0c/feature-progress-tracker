@@ -8,6 +8,7 @@
   function text(tag,value){const node=document.createElement(tag);node.textContent=value;return node;}
   function renderResearch(data){
    research=data;featureSearchTarget=data.feature_idea||'';referenceDirty=false;referenceFields=[];const box=$('research-results');box.replaceChildren();
+   $(data.feature_idea?'feature-reference-slot':'project-reference-slot').append($('github-research'));
    $('research-scope').textContent=data.feature_idea?'本次新增功能调研：'+data.feature_idea:'';
    $('save-reference-selection').textContent=data.feature_idea?'保存参考选择并拆分新功能':'保存参考选择并继续';
    if(!data.completed){$('reference-choice-state').textContent='请先搜索候选项目。';return;}
@@ -95,7 +96,7 @@
   $('cancel-feature-edit').addEventListener('click',()=>{
    if(!confirm('放弃尚未保存的功能表修改？'))return;editing=false;$('feature-editor').hidden=true;localStorage.removeItem(storageKey);options.setBusy(false);
   });
-  $('save-feature-edit').addEventListener('click',async()=>{
+  async function saveEdits(){
    if(busy)return;const plan=getPlan();
    if(plan.revision!==base.revision||plan.content!==base.content){notice('规划已经变化，编辑草稿已保留。请复制修改内容，核对最新规划后重新编辑。',true);return;}
    options.setBusy(true);
@@ -104,7 +105,8 @@
     try{await onSave(data.content);}catch(error){base.content=data.content;retain();throw error;}
     editing=false;$('feature-editor').hidden=true;localStorage.removeItem(storageKey);notice('功能表已保存，后续对话与 Excel 将使用你的修改。');
    }catch(error){notice(error.message,true);}finally{options.setBusy(false);}
-  });
+  }
+  $('save-feature-edit').addEventListener('click',saveEdits);
   function guideFeature(idea,fromReferences=false){
    return guide('我希望新增功能：'+idea+'。请先引导我明确使用者、边界及验收，用最多两个关键问题逐轮澄清，再建议大功能/小功能/细分功能、所需技术和前期准备。现在先讨论拆分，暂不改动现有功能表。',fromReferences);
   }
@@ -127,14 +129,15 @@
    try{
     await loaded;
     featureSearchTarget=idea;
+    $('feature-reference-slot').append($('github-research'));
     const data=await search(idea,idea,false);
     status.textContent=data.repositories.length?'请勾选候选仓库，再保存并拆分。':'未找到候选仓库，可保存空选择继续拆分。';
-    $('github-research').scrollIntoView({block:'start'});
    }catch(error){status.textContent=error.message;notice(error.message,true);}
    finally{progress.hidden=true;options.setBusy(false);}
   });
   return{
    get editing(){return editing;},
+   saveEdits,
    async ensureResearch(need){await loaded;if(!research.completed)await search(need);if(referenceDirty||!research.selection_confirmed)throw Error('请在GitHub项目卡片中多选参考，保存参考选择后继续；也可明确不选。');},
    setBusy(value){busy=value;for(const id of ['search-references','edit-features','add-feature-row','cancel-feature-edit','save-feature-edit','guide-feature','research-feature','save-reference-selection'])$(id).disabled=value;fields.forEach(f=>f.disabled=value);referenceFields.forEach(f=>f.disabled=value);},
    async choose(id,selected){

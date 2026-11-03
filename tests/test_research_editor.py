@@ -147,6 +147,29 @@ class WorkflowHttpTest(project_tests.ManagerTest):
         self.assertIn('附仓库链接', prompt)
         self.assertEqual(Path(project['plan_path']).read_text(), PLAN)
 
+    def test_confirmed_feature_merge_preserves_existing_rows_and_saves_new_rows(self):
+        project, suffix = self.ready()
+        previous = editor.editable_table(PLAN)['rows']
+        changed = [dict(row) for row in previous]
+        changed[0]['功能名称'] = '模型改写的旧名称'
+        new = dict(previous[-1], 编号='F02', 上级编号='无', 功能名称='参考图片')
+        duplicate = dict(previous[0], 编号='F03')
+        self.fake_reply.write_text(editor.replace_features(PLAN, changed + [new, duplicate]))
+        proposal_text = '新增参考图片，能保存并打开原图。\n<!-- feature-proposal -->'
+        code, proposal = self.request('/api/planning' + suffix, {'intent': 'plan', 'merge_feature': True,
+                                      'feature_proposal': proposal_text,
+                                      'messages': [{'role': 'assistant', 'content': proposal_text},
+                                                   {'role': 'user', 'content': '确认追加参考图片'}]})
+        self.assertEqual(code, 200, proposal)
+        merged = editor.editable_table(proposal['reply'])['rows']
+        self.assertEqual(merged, previous + [new])
+        self.assertEqual(Path(project['plan_path']).read_text(), PLAN)
+        version = self.request('/api/plan' + suffix)[1]['revision']
+        code, saved = self.request('/api/plan/save' + suffix,
+                                   {'revision': version, 'content': proposal['reply']})
+        self.assertEqual(code, 200, saved)
+        self.assertIn('history_version', saved)
+
     def test_empty_technical_columns_and_multiline_content_remain_in_projection(self):
         _,suffix=self.ready()
         rows=editor.editable_table(PLAN)['rows']
