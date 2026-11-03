@@ -5,7 +5,7 @@ const vm = require('node:vm');
 
 // Exercise the actual page event handler with an in-memory HTTP boundary.
 // No browser storage or real project is changed by these contract checks.
-async function scenario({accept = true, changed = false, previewFails = false, initialReady = true, latestReady = initialReady, action = 'save-ledger', planSaveFails = false, historyEmpty = false, researchFails = false, researchPause = false} = {}) {
+async function scenario({accept = true, changed = false, previewFails = false, initialReady = true, latestReady = initialReady, action = 'save-ledger', planSaveFails = false, historyEmpty = false, researchFails = false, researchPause = false, referenceOnly = false} = {}) {
   const source = fs.readFileSync(path.join(__dirname, '../scripts/planning.html'), 'utf8');
   const script = source.match(/<script>([\s\S]*?)<\/script>/)[1];
   const original = '# 台账\n进度：已验收 0/20 个最细功能点\n## 大功能 F01：预约\n- [ ] F01-01 冲突校验｜状态：未开始';
@@ -35,7 +35,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
     confirm: text => { prompts.push(text); return accept; },
     fetch: async (url, options = {}) => {
       const route = url.split('?')[0], payload = options.body ? JSON.parse(options.body) : undefined;
-      calls.push({url, route, payload});
+      calls.push({url, route, payload, progress: node('reference-progress-status').textContent, progressHidden: node('reference-progress').hidden});
       let status = 200, data;
       const planning = ready => ({ready, reason:ready ? '规划书已完成' : '请先生成并保存项目规划书', planning_url:'/planning?project=project-a'});
       if (route === '/api/plan') data = {content: '', revision: 'plan-r', path: '/A/plan.md', planning:planning(initialReady), source:'new'};
@@ -59,10 +59,10 @@ async function scenario({accept = true, changed = false, previewFails = false, i
   vm.runInNewContext(script, context);
   await new Promise(resolve => setImmediate(resolve));
   const initialDisabled = {save:node('save-ledger').disabled, generate:node('generate-ledger').disabled, plan:node('save-plan').disabled};
-  if(action==='submit'){node('input').value='新项目需求';await node('form').handlers.submit({preventDefault(){}});}else await node(action).handlers.click();
+  if(referenceOnly){await workflowOptions.resumePlanning();}else if(action==='submit'){node('input').value='新项目需求';await node('form').handlers.submit({preventDefault(){}});}else await node(action).handlers.click();
   await new Promise(resolve => setImmediate(resolve));
   if(researchPause){workflowOptions.resumePlanning();await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));}
-  return {calls, prompts, original, status:node('status').textContent, initialDisabled, finalDisabled:{save:node('save-ledger').disabled,generate:node('generate-ledger').disabled,plan:node('save-plan').disabled}};
+  return {calls, prompts, original, progress:node('reference-progress-status').textContent, progressHidden:node('reference-progress').hidden, status:node('status').textContent, initialDisabled, finalDisabled:{save:node('save-ledger').disabled,generate:node('generate-ledger').disabled,plan:node('save-plan').disabled}};
 }
 
 async function run() {
@@ -119,7 +119,18 @@ async function run() {
   const resumed=await scenario({initialReady:false,action:'draft',researchPause:true});
   assert.equal(resumed.calls.find(c=>c.route==='/api/planning').payload.intent,'plan','reference selection resumes the original explicit plan intent');
   assert.ok(resumed.calls.some(c=>c.route==='/api/plan/save'));
-  console.log('Planning save: 12 scenarios passed, including prerequisite, generation, failure and relocking checks.');
+  const reference = await scenario({initialReady:false, historyEmpty:true, referenceOnly:true});
+  const generation = reference.calls.find(c=>c.route==='/api/planning');
+  assert.equal(generation.payload.intent,'plan');
+  assert.match(generation.progress,/正在.*生成功能表/);
+  assert.equal(generation.progressHidden,false);
+  assert.match(reference.calls.find(c=>c.route==='/api/plan/save').progress,/正在保存规划书/);
+  assert.match(reference.progress,/功能表已生成并保存/);
+  assert.equal(reference.progressHidden,true);
+  const referenceFailure = await scenario({initialReady:false, historyEmpty:true, referenceOnly:true, planSaveFails:true});
+  assert.match(referenceFailure.progress,/文件保存失败/);
+  assert.equal(referenceFailure.progressHidden,true);
+  console.log('Planning save: 14 scenarios passed, including prerequisite, generation, failure and relocking checks.');
 }
 module.exports = run;
 if (require.main === module) run().catch(error => { console.error(error); process.exitCode = 1; });

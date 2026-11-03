@@ -37,11 +37,12 @@
    if(busy)return;
    if(!research.completed){notice('请先搜索GitHub参考项目。',true);return;}
    options.setBusy(true);let saved=false;
+   options.referenceProgress?.('正在保存参考选择…',true);
    try{
     const data=await request('/api/research/selection',{revision:research.revision,selected:research.repositories.filter(repo=>repo.selected===true).map(repo=>repo.name)});
     renderResearch(data);saved=true;notice('参考选择已保存，后续规划只使用勾选的项目。');
-   }catch(error){notice(error.message,true);}finally{options.setBusy(false);}
-   if(saved&&options.resumePlanning)options.resumePlanning();
+   }catch(error){notice(error.message,true);options.referenceProgress?.(error.message,false);}finally{options.setBusy(false);}
+   if(saved&&options.resumePlanning)return options.resumePlanning();
   });
   function retain(){try{localStorage.setItem(storageKey,JSON.stringify({base,rows,columns}));}catch(error){notice('编辑草稿无法暂存，请及时保存。',true);}}
   function setSelection(id,selected){
