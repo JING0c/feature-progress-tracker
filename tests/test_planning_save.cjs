@@ -10,7 +10,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
   const script = source.match(/<script>([\s\S]*?)<\/script>/)[1];
   const original = '# 台账\n进度：已验收 0/20 个最细功能点\n## 大功能 F01：预约\n- [ ] F01-01 冲突校验｜状态：未开始';
   const nodes = new Map(), calls = [], prompts = [];
-  let projectReads = 0, researchChecks = 0, workflowOptions;
+  let projectReads = 0, researchChecks = 0, workflowOptions, clearedTimers = 0;
   const node = id => {
     if (!nodes.has(id)) nodes.set(id, {
       textContent: '', className: '', disabled: false, value: '', handlers: {},
@@ -29,13 +29,13 @@ async function scenario({accept = true, changed = false, previewFails = false, i
     document: {getElementById: node, querySelector: node, createElement: () => node(Symbol())},
     localStorage: {getItem: k => storage.get(k) || null, setItem: (k,v) => storage.set(k,v), removeItem: k => storage.delete(k)},
     location: {search: '?project=project-a'}, URLSearchParams,
-    setInterval() {}, setTimeout() {}, renderPlanningMarkdown() {},
+    setInterval() { return 1; }, clearInterval() { clearedTimers++; }, setTimeout() {}, renderPlanningMarkdown() {},
     createPlanningWorkflow(options){workflowOptions=options;return{ensureResearch:async()=>{if(researchFails)throw Error('GitHub 检索失败');if(researchPause&&!researchChecks++)throw Error('请保存参考选择');},setBusy(){},editing:false};},
     createPlanningSheetView() { return {show() {}, loading() {}, error() {}, clear() {}}; },
     confirm: text => { prompts.push(text); return accept; },
     fetch: async (url, options = {}) => {
       const route = url.split('?')[0], payload = options.body ? JSON.parse(options.body) : undefined;
-      calls.push({url, route, payload, progress: node('reference-progress-status').textContent, progressHidden: node('reference-progress').hidden});
+      calls.push({url, route, payload, progress: node('reference-progress-status').textContent, progressHidden: node('reference-progress').hidden, elapsed: node('reference-progress-elapsed').textContent});
       let status = 200, data;
       const planning = ready => ({ready, reason:ready ? '规划书已完成' : '请先生成并保存项目规划书', planning_url:'/planning?project=project-a'});
       if (route === '/api/plan') data = {content: '', revision: 'plan-r', path: '/A/plan.md', planning:planning(initialReady), source:'new'};
@@ -47,6 +47,9 @@ async function scenario({accept = true, changed = false, previewFails = false, i
         status = previewFails ? 400 : 200;
         data = previewFails ? {error: '台账格式无效'} : {content: original.replace('0/20', '0/19'), summary:{done:0,total:19}, adjustments:['已验收 0/20 → 0/19'], count:21};
       } else if (route === '/api/ledger/save') data = {count:21, summary:{done:0,total:19}, adjustments:['已验收 0/20 → 0/19'], source_backup:'/A/source.md'};
+      else if (route === '/api/planning' && action==='feature-timeout') {
+        status=400;data={error:'智能体回复超时，请重试。'};
+      }
       else if (route === '/api/planning') data = {reply:'# 项目规划书\n## 目标\n记录借阅。\n## 范围\n本机图书登记。\n## 功能与验收\n能够登记并查看图书。'};
       else if (route === '/api/plan/save') {
         status = planSaveFails ? 409 : 200;
@@ -59,10 +62,10 @@ async function scenario({accept = true, changed = false, previewFails = false, i
   vm.runInNewContext(script, context);
   await new Promise(resolve => setImmediate(resolve));
   const initialDisabled = {save:node('save-ledger').disabled, generate:node('generate-ledger').disabled, plan:node('save-plan').disabled};
-  if(referenceOnly){await workflowOptions.resumePlanning();}else if(action==='submit'){node('input').value='新项目需求';await node('form').handlers.submit({preventDefault(){}});}else await node(action).handlers.click();
+  if(action==='feature-timeout'){await workflowOptions.guide('拆分新增功能',true);}else if(referenceOnly){await workflowOptions.resumePlanning();}else if(action==='submit'){node('input').value='新项目需求';await node('form').handlers.submit({preventDefault(){}});}else await node(action).handlers.click();
   await new Promise(resolve => setImmediate(resolve));
   if(researchPause){workflowOptions.resumePlanning();await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));}
-  return {calls, prompts, original, progress:node('reference-progress-status').textContent, progressHidden:node('reference-progress').hidden, status:node('status').textContent, initialDisabled, finalDisabled:{save:node('save-ledger').disabled,generate:node('generate-ledger').disabled,plan:node('save-plan').disabled}};
+  return {calls, prompts, original, clearedTimers, progress:node('reference-progress-status').textContent, progressHidden:node('reference-progress').hidden, status:node('status').textContent, initialDisabled, finalDisabled:{save:node('save-ledger').disabled,generate:node('generate-ledger').disabled,plan:node('save-plan').disabled}};
 }
 
 async function run() {
@@ -133,7 +136,16 @@ async function run() {
   const feature = await scenario({action:'apply-feature-proposal'});
   assert.equal(feature.calls.find(c=>c.route==='/api/planning').payload.merge_feature,true);
   assert.ok(feature.calls.some(c=>c.route==='/api/plan/save'),'confirmed proposal must be written through versioned save');
-  console.log('Planning save: 15 scenarios passed, including prerequisite, generation, failure and relocking checks.');
+  const timeout = await scenario({action:'feature-timeout'});
+  const split = timeout.calls.find(c=>c.route==='/api/planning');
+  assert.equal(split.payload.intent,'decompose');
+  assert.equal(split.progressHidden,false);
+  assert.match(split.progress,/第 2 步.*拆分/);
+  assert.match(split.elapsed,/已等待 \d+ 秒/);
+  assert.equal(timeout.clearedTimers,1);
+  assert.equal(timeout.progressHidden,true);
+  assert.match(timeout.progress,/参考选择已保存.*超时.*重试/);
+  console.log('Planning save: 16 scenarios passed, including prerequisite, generation, failure and relocking checks.');
 }
 module.exports = run;
 if (require.main === module) run().catch(error => { console.error(error); process.exitCode = 1; });

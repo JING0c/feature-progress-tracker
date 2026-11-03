@@ -44,13 +44,14 @@
     notice('请先成功搜索当前需求的 GitHub 参考项目。',true);return;
    }
    options.setBusy(true);let saved=false;
-   options.referenceProgress?.('正在保存参考选择…',true);
+   options.referenceProgress?.(research.feature_idea?'第 1 步：正在保存参考选择…':'正在保存参考选择…',true);
    try{
     const data=await request('/api/research/selection',{revision:research.revision,selected:research.repositories.filter(repo=>repo.selected===true).map(repo=>repo.name)});
     renderResearch(data);saved=true;notice('参考选择已保存，后续规划只使用勾选的项目。');
    }catch(error){notice(error.message,true);options.referenceProgress?.(error.message,false);}finally{options.setBusy(false);}
    if(saved&&research.feature_idea){
-    $('feature-research-status').textContent='参考选择已保存。请在规划对话中查看拆分建议。';
+    options.referenceProgress?.('第 2 步：参考选择已保存，正在准备拆分…',true);
+    $('feature-research-status').textContent='参考选择已保存，正在准备拆分。';
     return guideFeature(research.feature_idea,true);
    }
    if(saved&&options.resumePlanning)return options.resumePlanning();

@@ -20,3 +20,8 @@
 
 #feature-reference-slot:not(:empty){margin-top:14px}
 #feature-proposal{white-space:pre-wrap;overflow-wrap:anywhere;max-height:22rem;overflow:auto;background:#fff;padding:14px;border:1px solid #d9c9d0;border-radius:8px;font:inherit}
+
+.reference-progress-details{width:100%}
+.reference-progress-details:has(#reference-progress-status:empty){display:none}
+.reference-progress-caption{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.reference-progress-details progress{margin-top:8px}
