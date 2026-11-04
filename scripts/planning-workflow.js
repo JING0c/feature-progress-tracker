@@ -11,7 +11,7 @@
    research=data;featureSearchTarget=data.feature_idea||'';referenceDirty=false;referenceFields=[];const box=$('research-results');box.replaceChildren();
    $(data.feature_idea?'feature-reference-slot':'project-reference-slot').append($('github-research'));
    $('research-scope').textContent=data.feature_idea?'本次新增功能调研：'+data.feature_idea:'';
-   $('save-reference-selection').textContent=data.feature_idea?'保存参考选择并拆分新功能':'保存参考选择并继续';
+   $('save-reference-selection').textContent=data.feature_idea?'确认参考并拆分':'确认参考并继续';
    if(!data.completed){$('reference-choice-state').textContent='请先搜索候选项目。';return;}
    $('research-query').value=data.query||'';
    $('research-state').textContent=(data.repositories.length?'找到 '+data.repositories.length+' 个参考项目':'未找到相似项目，可调整关键词重新搜索')+' · '+(data.searched_at?new Date(data.searched_at).toLocaleString('zh-CN'):'');
@@ -21,7 +21,10 @@
     const label=document.createElement('label');label.className='reference-choice';
     const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=repo.selected===true;checkbox.disabled=busy;checkbox.setAttribute('aria-label','参考 '+repo.name);
     checkbox.addEventListener('change',()=>{repo.selected=checkbox.checked;referenceDirty=true;options.onReferencesChanged?.();choiceState();});referenceFields.push(checkbox);
-    label.append(checkbox,text('span','选作功能参考'));card.append(label,link,text('p',repo.description||'暂无仓库说明'),text('small',(repo.language||'未标注语言')+' · 许可证 '+(repo.license||'未标注')+' · ★ '+repo.stars),text('small',(repo.updated_at?'仓库更新 '+new Date(repo.updated_at).toLocaleDateString('zh-CN')+' · ':'')+(repo.readme_note||'')));box.append(card);
+    label.append(checkbox,text('span','参考此项目'));
+    const detail=document.createElement('details');detail.className='reference-description';
+    detail.append(text('summary','项目说明与资料范围'),text('p',repo.description||'暂无仓库说明'),text('small',(repo.updated_at?'仓库更新 '+new Date(repo.updated_at).toLocaleDateString('zh-CN')+' · ':'')+(repo.readme_note||'')));
+    card.append(label,link,text('small',(repo.language||'未标注语言')+' · 许可证 '+(repo.license||'未标注')+' · ★ '+repo.stars),detail);box.append(card);
    }
    choiceState();
   }

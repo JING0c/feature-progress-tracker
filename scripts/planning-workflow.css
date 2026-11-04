@@ -63,3 +63,16 @@
  .version-save-note input,.research-search input{min-width:0;width:100%}
  .research-results{grid-template-columns:minmax(0,1fr)}
 }
+
+/* Keep one feature request area; optional search tuning and save notes stay folded. */
+#feature-reference-slot .research-panel{border:0;border-top:1px solid #d6ddc1;border-radius:0;padding:18px 0 0;margin:0;background:transparent}
+.research-keywords{margin:12px 0}
+.research-keywords summary,.reference-description summary,.save-note-details summary{cursor:pointer;color:#71354f;font-size:13px;line-height:1.6}
+.reference-description{margin-top:10px}
+.reference-description p{font-size:12px;line-height:1.7}
+.reference-card>a{display:block;margin-bottom:8px;font-size:14px}
+.research-results{align-items:start}
+.save-note-details{padding:4px 12px 8px;min-width:0}
+.plan-sidebar .version-save-note{padding:8px 0 0;gap:6px;border:0;background:transparent}
+.plan-sidebar .version-save-note label{font-size:12px}
+.plan-sidebar .version-save-note input{width:100%;min-width:0;flex-basis:100%;font-size:12px;line-height:1.5}
