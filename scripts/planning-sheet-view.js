@@ -30,11 +30,13 @@
       const toolbar = el('div', 'sheet-toolbar');
       const info = el('span', 'sheet-count');
       toolbar.append(info);
-      if(changedIds.size&&featureSheet){
+      if(changedIds.size&&(featureSheet||listing)){
         const preview=el('span','sheet-preview-notice','本次建议预览 · '+changedIds.size+' 个功能已修改 · 尚未保存');
         preview.setAttribute('role','status');toolbar.append(preview);
-        const toggle=el('button','sheet-action',onlyChanged?'显示全部功能':'只看本次修改');toggle.type='button';
-        toggle.addEventListener('click',()=>{onlyChanged=!onlyChanged;collapsed.clear();render();});toolbar.append(toggle);
+        if(featureSheet){
+          const toggle=el('button','sheet-action',onlyChanged?'显示全部功能':'只看本次修改');toggle.type='button';
+          toggle.addEventListener('click',()=>{onlyChanged=!onlyChanged;collapsed.clear();render();});toolbar.append(toggle);
+        }
       }
       const expand = el('button', 'sheet-action', '全部展开');
       const fold = el('button', 'sheet-action', '收起层级');
@@ -83,7 +85,7 @@
       rows.forEach((row, index) => {
         const tr = el('tr', parents.has(row.key) ? 'sheet-parent' : 'sheet-leaf');
         tr.setAttribute('data-row-key', row.key);
-        if(featureSheet&&changedIds.has(identity(row))){tr.className+=' sheet-changed';tr.setAttribute('aria-label','本次修改 '+identity(row));}
+        if((featureSheet||listing)&&changedIds.has(identity(row))){tr.className+=' sheet-changed';tr.setAttribute('aria-label','本次修改 '+identity(row));}
         const number = el('th', 'sheet-index', String(index + 1));
         number.setAttribute('scope', 'row'); tr.append(number);
         columns.forEach((_, column) => {
@@ -155,7 +157,7 @@
       setAdoptionEnabled(value){adoptionEnabled=value;adoptionControls.forEach(box=>box.disabled=!value||!options.onAdopt);},
       show(value, display = {}) {
         model = value || { sheets: [] };changedIds=new Set(display.changedIds||[]);onlyChanged=changedIds.size>0;
-        if(onlyChanged){active=(model.sheets.find(s=>s.kind!=='feature-list'&&s.columns.includes('功能名称'))||{}).id||'';collapsed.clear();}
+        if(onlyChanged){active=(model.sheets.find(s=>s.kind==='feature-list')||model.sheets.find(s=>s.columns.includes('功能名称'))||{}).id||'';collapsed.clear();}
         render();
       },
       loading() { message('正在整理规划表格…'); },

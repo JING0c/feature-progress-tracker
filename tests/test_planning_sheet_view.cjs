@@ -72,6 +72,21 @@ function run() {
   assert.ok(!button('全部展开'),'flat list has no misleading collapse controls');
   button('查看功能明细').handlers.click();
   assert.equal(all(container,'th').filter(n=>n.attributes.scope==='col')[1].textContent,'编号');
+  listing.rows.forEach((r,i)=>r.feature_id=['F01-01-01','F01-01-02','F02'][i]);
+  view.show({sheets:[model.sheets[0],listing]},{changedIds:['F01-01-02','F02']});
+  assert.equal(button('功能清单').attributes['aria-pressed'],'true','suggestion preview defaults to feature list');
+  assert.equal(bodyRows().length,3,'list retains full hierarchy and original merge coordinates');
+  assert.match(container.textContent,/本次建议预览.*尚未保存/);
+  assert.deepEqual(bodyRows().map(r=>r.className.includes('sheet-changed')),[false,true,true]);
+  assert.equal(all(container,'td').filter(n=>n.attributes.rowspan==='2').length,2,'preview preserves parent merges');
+  button('查看功能明细').handlers.click();
+  assert.match(container.textContent,/本次建议预览/);
+  button('功能清单').handlers.click();
+  assert.equal(bodyRows()[1].attributes['aria-label'],'本次修改 F01-01-02');
+  view.finishPreview();
+  assert.equal(button('功能清单').attributes['aria-pressed'],'true');
+  assert.ok(bodyRows().every(r=>!r.className.includes('sheet-changed')));
+  assert.ok(!container.textContent.includes('尚未保存'));
   console.log('Planning sheet view: hierarchy, nested collapse, tab state, batch controls, safe content, empty/error/cycle checks passed.');
 }
 module.exports=run;
