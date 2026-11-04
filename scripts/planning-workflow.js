@@ -9,7 +9,7 @@
   function renderResearch(data){
    if(research.revision!==data.revision)options.onReferencesChanged?.();
    research=data;featureSearchTarget=data.feature_idea||'';referenceDirty=false;referenceFields=[];const box=$('research-results');box.replaceChildren();
-   $(data.feature_idea?'feature-reference-slot':'project-reference-slot').append($('github-research'));
+   $(data.feature_idea?'feature-reference-slot':'project-reference-slot').append($('github-research'));$('github-research').hidden=!data.completed;
    $('research-scope').textContent=data.feature_idea?'本次新增功能调研：'+data.feature_idea:'';
    $('save-reference-selection').textContent=data.feature_idea?'确认参考并拆分':'确认参考并继续';
    if(!data.completed){$('reference-choice-state').textContent='请先搜索候选项目。';return;}
@@ -23,15 +23,15 @@
     checkbox.addEventListener('change',()=>{repo.selected=checkbox.checked;referenceDirty=true;options.onReferencesChanged?.();choiceState();});referenceFields.push(checkbox);
     label.append(checkbox,text('span','参考此项目'));
     const detail=document.createElement('details');detail.className='reference-description';
-    detail.append(text('summary','项目说明与资料范围'),text('p',repo.description||'暂无仓库说明'),text('small',(repo.updated_at?'仓库更新 '+new Date(repo.updated_at).toLocaleDateString('zh-CN')+' · ':'')+(repo.readme_note||'')));
-    card.append(label,link,text('small',(repo.language||'未标注语言')+' · 许可证 '+(repo.license||'未标注')+' · ★ '+repo.stars),detail);box.append(card);
+    detail.append(text('summary','资料来源与更新时间'),text('small',(repo.updated_at?'仓库更新 '+new Date(repo.updated_at).toLocaleDateString('zh-CN')+' · ':'')+(repo.readme_note||'')));
+    card.append(label,link,text('p',repo.description||'暂无仓库说明，请打开项目查看资料。'),text('small',(repo.language||'未标注语言')+' · 许可证 '+(repo.license||'未标注')+' · ★ '+repo.stars),detail);box.append(card);
    }
    choiceState();
   }
   function choiceState(){if(research.completed&&!research.repositories.length){$('reference-choice-state').textContent='当前无候选，可继续按需求规划或修改关键词重搜。';return;}const count=research.repositories.filter(repo=>repo.selected===true).length;$('reference-choice-state').textContent=referenceDirty||!research.selection_confirmed?'已勾选 '+count+' 个；请保存参考选择后继续。':'参考选择已保存：'+(count?count+' 个项目':'明确不选任何项目');}
   const loaded=request('/api/research').then(renderResearch).catch(error=>{$('research-state').textContent=error.message;});
   async function search(need,featureIdea='',useKeyword=true){
-   $('research-state').textContent='正在提取关键词并检索 GitHub…';
+   $('github-research').hidden=false;$('research-state').textContent='正在提取关键词并检索 GitHub…';
    const query=useKeyword?$('research-query').value.trim():'';
    const payload=featureIdea?(query?{feature_idea:featureIdea,query}:{feature_idea:featureIdea}):query?{query}:{need};
    try{const data=await request('/api/research',payload);renderResearch(data);return data;}
@@ -69,15 +69,17 @@
   }
   function renderEditor(){
    const table=$('feature-editor-table');table.replaceChildren();fields=[];
+   const order=['采用','功能名称','说明','验收标准','所需技术','前期准备','优先级','编号','上级编号','依赖','备注'];
+   columns.sort((a,b)=>(order.includes(a)?order.indexOf(a):99)-(order.includes(b)?order.indexOf(b):99));
    const head=document.createElement('tr');columns.forEach(c=>head.append(text('th',c)));table.append(head);
    rows.forEach(row=>{const tr=document.createElement('tr');columns.forEach(column=>{
-    const td=document.createElement('td');let field;
+    const td=document.createElement('td');td.setAttribute('data-column',column);let field;
     if(column==='采用'){
      field=document.createElement('input');field.type='checkbox';field.checked=row[column]!=='否';
      field.setAttribute('aria-label','采用 '+(row['编号']||'新增功能'));
      field.addEventListener('change',()=>{setSelection(row['编号'],field.checked);renderEditor();retain();});
     }else{
-     field=document.createElement('textarea');field.rows=3;field.value=row[column]||'';
+     field=document.createElement('textarea');field.rows=['编号','上级编号','优先级','功能名称'].includes(column)?2:3;field.value=row[column]||'';
      field.setAttribute('aria-label',(row['编号']||'新增功能')+' '+column);
      field.addEventListener('input',()=>{row[column]=field.value;retain();});
     }
@@ -143,8 +145,8 @@
   return{
    get editing(){return editing;},
    saveEdits,
-   async ensureResearch(need){await loaded;if(!research.completed)await search(need);if(referenceDirty||!research.selection_confirmed)throw Error('请在GitHub项目卡片中多选参考，保存参考选择后继续；也可明确不选。');},
-   setBusy(value){busy=value;for(const id of ['search-references','edit-features','add-feature-row','cancel-feature-edit','save-feature-edit','guide-feature','research-feature','save-reference-selection'])$(id).disabled=value;fields.forEach(f=>f.disabled=value);referenceFields.forEach(f=>f.disabled=value);},
+   async ensureResearch(need){await loaded;if(!research.completed)await search(need);if(referenceDirty||!research.selection_confirmed){const error=Error('请选择要参考的项目，再点击确认继续；也可以不选。');error.referenceSelection=true;throw error;}},
+   setBusy(value){busy=value;for(const id of ['search-references','edit-features','add-feature-row','cancel-feature-edit','save-feature-edit','guide-feature','research-feature','save-reference-selection'])$(id).disabled=value;$('edit-features').disabled=value||editing;fields.forEach(f=>f.disabled=value);referenceFields.forEach(f=>f.disabled=value);},
    async choose(id,selected){
     if(editing)throw Error('请先完成正在编辑的功能表。');
     return request('/api/plan/features',{content:getPlan().content,selection:{id,selected}});

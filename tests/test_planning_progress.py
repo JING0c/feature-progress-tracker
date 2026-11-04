@@ -70,3 +70,27 @@ class ProgressHttpTests(test_projects.ManagerTest):
         self.assertEqual(failed['status'],'failed');self.assertLess(failed['percent'],100)
         self.assertEqual(self.request('/api/planning'+suffix,{}, {'X-Operation-ID':op})[0],400)
         self.assertEqual(self.request(path)[1]['status'],'completed','duplicate id cannot overwrite completed operation')
+
+    def test_cancel_codex_is_scoped_and_preserves_plan(self):
+        project=self.request('/api/projects',{'name':'cancel','directory':'cancel','mode':'new'})[1]['project']
+        other=self.request('/api/projects',{'name':'other','directory':'other','mode':'new'})[1]['project']
+        from pathlib import Path
+        before=Path(project['plan_path']).read_text()
+        suffix='?project='+project['id']; op='operation-cancel-test'
+        fake=self.fake_bin/'codex'
+        fake.write_text(fake.read_text().replace('reply = ', 'import time\ntime.sleep(30)\nreply = '))
+        with concurrent.futures.ThreadPoolExecutor() as pool:
+            pending=pool.submit(self.request,'/api/planning'+suffix,{'intent':'plan','messages':[{'role':'user','content':'检查取消'}]},{'X-Operation-ID':op})
+            deadline=time.monotonic()+4
+            while time.monotonic()<deadline:
+                state=self.request('/api/operation-progress'+suffix+'&operation='+op)[1]
+                if state.get('cancellable'):break
+                time.sleep(.02)
+            self.assertTrue(state.get('cancellable'), state)
+            self.assertEqual(self.request('/api/operation-cancel?project='+other['id'],{'operation':op})[0],409)
+            self.assertEqual(self.request('/api/operation-cancel'+suffix,{'operation':op})[0],200)
+            code,result=pending.result(timeout=5)
+            self.assertNotEqual(code,200);self.assertIn('已取消',result['error'])
+        self.assertEqual(Path(project['plan_path']).read_text(),before)
+        self.assertEqual(self.request('/api/operation-progress'+suffix+'&operation='+op)[1]['status'],'cancelled')
+        self.assertEqual(self.request('/api/operation-cancel'+suffix,{'operation':op})[0],409)

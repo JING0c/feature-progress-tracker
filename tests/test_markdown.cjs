@@ -55,6 +55,10 @@ function runTests(source) {
   let checks = 0;
   function test(name, check) { check(); checks += 1; console.log('PASS ' + name); }
 
+  test('reference links are readable and unsafe protocols stay inert', () => {
+    const article=render('[参考项目](https://github.com/example/project) [危险](javascript:alert)');
+    assert.equal(elements(article,'A').length,1);assert.equal(elements(article,'A')[0].textContent,'参考项目');assert.equal(elements(article,'A')[0].getAttribute('href'),'https://github.com/example/project');
+  });
   test('deep headings and tables from real planning output become semantic elements', () => {
     const article = render('# 项目规划\n## 功能\n### 借阅\n#### 2.1 借出\n##### 校验\n###### 边界\n\n| 子功能 | 验收 |\n|---|---|\n| 居民校验 | 不存在的编号不能借出 |\n| 额度校验 | 最多借 **3 本** |');
     assert.equal(elements(article, 'H4')[0]?.textContent, '2.1 借出');
@@ -97,7 +101,7 @@ function runTests(source) {
     assert.equal(elements(article, 'H4')[0]?.textContent, 'After');
   });
 
-  test('Markdown source cannot create active HTML, image requests, or links', () => {
+  test('Markdown source cannot create active HTML, image requests, or unsafe links', () => {
     const text = '<img src=x onerror=alert(1)>\n\n[run](javascript:alert(1)) ![remote](https://example.com/image.png)\n\n**<script>alert(1)</script>**';
     const article = render(text);
     for (const tag of ['SCRIPT', 'IMG', 'A', 'IFRAME']) assert.equal(elements(article, tag).length, 0);

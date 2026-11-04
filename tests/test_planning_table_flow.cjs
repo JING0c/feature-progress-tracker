@@ -5,7 +5,7 @@ const vm=require('node:vm');
 
 async function run(){
   const nodes=new Map(),pending=[],calls=[],shown=[],downloads=[];
-  let exportFails=false,suggestionOptions,finishedPreviews=0;
+  let exportFails=false,suggestionOptions,finishedPreviews=0,editing=false,editSaves=0;
   const storage=new Map([['project-planning:__PLANNING_KEY__:document-draft-v2',JSON.stringify({content:'# stale browser draft',revision:'old'})]]);
   const node=id=>{
     if(!nodes.has(id))nodes.set(id,{value:'',attributes:{},handlers:{},hidden:false,
@@ -21,7 +21,7 @@ async function run(){
     localStorage:{getItem(k){return storage.get(k)||null;},setItem(k,v){storage.set(k,v);},removeItem(k){storage.delete(k);}},
     setInterval(){},setTimeout(){},renderPlanningMarkdown(){},
     createPlanningSuggestions(options){suggestionOptions=options;return{setBusy(){}};},
-    createPlanningWorkflow(){return{ensureResearch:async()=>{},setBusy(){},editing:false};},
+    createPlanningWorkflow(){return{ensureResearch:async()=>{},setBusy(){},get editing(){return editing;},async saveEdits(){editSaves++;editing=false;}};},
     createPlanningSheetView(){return{finishPreview(){finishedPreviews++;},show(data){shown.push(data);},loading(){},error(){shown.push('error');},clear(){}};},
     URL:{createObjectURL(){return 'blob:export';},revokeObjectURL(){}},
     fetch:async(url,options={})=>{
@@ -88,6 +88,7 @@ async function run(){
   assert.equal(vm.runInContext('planText',context),'# suggestion preview');assert.equal(vm.runInContext('dirty',context),false);
   await vm.runInContext('savePlan()',context);assert.equal(node('save-plan').disabled,true,'saved content does not invite duplicate saves');assert.equal(node('document-save-state').textContent,'已保存');assert.equal(finishedPreviews,1,'successful save must end preview filtering and unsaved status');
   vm.runInContext("notice('保存冲突，请重新读取。',true)",context);assert.equal(node('page-feedback').hidden,false);assert.match(node('page-feedback-text').textContent,/保存冲突/);node('dismiss-feedback').handlers.click();assert.equal(node('page-feedback').hidden,true);
+  editing=true;vm.runInContext('setBusy(false)',context);assert.equal(node('save-plan').disabled,false,'sticky save must work while editing');await node('save-plan').handlers.click();assert.equal(editSaves,1,'sticky save submits editor fields, not stale document');
   console.log('Planning table flow: baseline and suggestion rendering/failure scenarios passed (race, draft export, no unlock, failed export, source fallback).');
 }
 module.exports=run;

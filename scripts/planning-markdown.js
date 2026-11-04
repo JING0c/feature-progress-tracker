@@ -1,4 +1,4 @@
-/* A small, inert Markdown renderer for project plans. No HTML or URL execution. */
+/* A small, inert Markdown renderer for project plans. No HTML execution or automatic image requests; HTTP(S) links only. */
 (function (global) {
   'use strict';
 
@@ -24,6 +24,10 @@
           index = end + ticks.length;
           continue;
         }
+      }
+      if(text[index]==='['&&text[index-1]!=='!'){
+        const link=text.slice(index).match(/^\[([^\]\n]+)\]\((https?:\/\/[^\s<>]+?)\)/i);
+        if(link){flush();const anchor=document.createElement('a');anchor.setAttribute('href',link[2]);anchor.setAttribute('target','_blank');anchor.setAttribute('rel','noopener noreferrer');anchor.textContent=link[1];parent.append(anchor);index+=link[0].length;continue;}
       }
       const marker = text.slice(index, index + 2);
       if (marker === '**' || marker === '__') {
@@ -183,6 +187,7 @@
     }
   }
 
+  global.renderPlanningInline=function(container,text){container.replaceChildren();appendInline(container,String(text||''));};
   global.renderPlanningMarkdown = function (container, markdown) {
     container.replaceChildren();
     renderBlocks(container, String(markdown || '').replace(/\r\n?/g, '\n').split('\n'));

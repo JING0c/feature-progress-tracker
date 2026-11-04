@@ -14,13 +14,13 @@ async function references(){
   calls.push({route,payload});if(!payload)return JSON.parse(JSON.stringify(result));if(fail)throw Error('调研结果已变化');
   return{...result,revision:'r2',selection_confirmed:true,repositories:result.repositories.map(r=>({...r,selected:payload.selected.includes(r.name)}))};
  }});
- await assert.rejects(()=>workflow.ensureResearch('need'),/保存参考选择/);
+ await assert.rejects(()=>workflow.ensureResearch('need'),/请选择要参考的项目/);
  const field=name=>descendants(d.$('research-results')).find(n=>n.attributes['aria-label']==='参考 '+name);
  for(const name of ['a/one','c/three']){field(name).checked=true;field(name).handlers.change();}
  await d.$('save-reference-selection').handlers.click();
  assert.deepEqual(JSON.parse(JSON.stringify(calls.at(-1).payload)),{revision:'r1',selected:['a/one','c/three']});assert.equal(resumed,1);await workflow.ensureResearch('next');
  field('a/one').checked=false;field('a/one').handlers.change();fail=true;await d.$('save-reference-selection').handlers.click();
- assert.equal(field('a/one').checked,false);assert.equal(field('c/three').checked,true);assert.equal(resumed,1);await assert.rejects(()=>workflow.ensureResearch('next'),/保存参考选择/);
+ assert.equal(field('a/one').checked,false);assert.equal(field('c/three').checked,true);assert.equal(resumed,1);await assert.rejects(()=>workflow.ensureResearch('next'),/请选择要参考的项目/);
  fail=false;field('c/three').checked=false;field('c/three').handlers.change();await d.$('save-reference-selection').handlers.click();assert.equal(calls.at(-1).payload.selected.length,0);await workflow.ensureResearch('none');
 }
 async function history(){

@@ -14,6 +14,7 @@ def step(percent, stage, detail=''):
 class Progress:
     def __init__(self):
         self.records = {}
+        self.cancellers = {}
         self.lock = RLock()
 
     def start(self, project, identity):
@@ -38,12 +39,34 @@ class Progress:
             if record['status'] != 'running': return
             record.update(percent=max(record['percent'], min(95, max(0, int(percent)))), stage=stage, detail=detail)
 
+    def enable_cancel(self, key, callback):
+        with self.lock:
+            if key in self.records and self.records[key]['status']=='running':
+                self.cancellers[key]=callback
+                self.records[key]['cancellable']=True
+
+    def disable_cancel(self, key):
+        with self.lock:
+            self.cancellers.pop(key,None)
+            if key in self.records:self.records[key]['cancellable']=False
+
+    def cancel(self, project, identity):
+        if not isinstance(identity,str): return False
+        key=(project,identity)
+        with self.lock:
+            callback=self.cancellers.get(key)
+            if not callback or self.records[key]['status']!='running': return False
+            self.records[key].update(cancel_requested=True,cancellable=False,stage='正在停止 Codex')
+            callback()
+            self.cancellers.pop(key,None)
+            return True
+
     def finish(self, key, error=None):
         with self.lock:
             record = self.records.get(key)
             if not record: return
             if record['status'] != 'running': return
-            if error: record.update(status='failed', detail=str(error))
+            if error: record.update(status='cancelled' if record.get('cancel_requested') else 'failed', detail=str(error),cancellable=False)
             else: record.update(percent=100, stage='处理完成', status='completed')
 
     def read(self, project, identity):

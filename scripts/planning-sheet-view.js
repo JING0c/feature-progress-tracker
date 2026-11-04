@@ -3,7 +3,7 @@
 
   // The same read-only model is used by the webpage and the Excel exporter.
   global.createPlanningSheetView = function (container, options = {}) {
-    let model = { sheets: [] }, active = '', collapsed = new Set(), adoptionEnabled=true, adoptionControls=[],changedIds=new Set(),onlyChanged=false;
+    let model = { sheets: [] }, active = '', collapsed = new Set(), adoptionEnabled=true, adoptionControls=[],changedIds=new Set(),onlyChanged=false,showTechnical=false;
     const el = (tag, className, text) => {
       const node = document.createElement(tag);
       if (className) node.className = className;
@@ -56,20 +56,22 @@
       const table = el('table', 'planning-grid' + (listing ? ' feature-list-grid' : ''));
       const caption = el('caption', 'sheet-caption', sheet.name);
       table.append(caption);
-      const widths = columns.map(label => label === '采用' ? 78 : label === '所需技术' ? 230 : label === '前期准备' ? 280 : label === '大功能' ? 190 : label === '小功能' ? 200 :
-        label === '细分功能' || /^第\d+级功能$/.test(label) ? 230 : label === '功能介绍' ? 400 :
+      const technical=label=>listing&&!showTechnical&&['所需技术','前期准备'].includes(label);
+      if(listing&&columns.some(c=>['所需技术','前期准备'].includes(c))){const toggle=el('button','sheet-action',showTechnical?'收起技术与准备列':'展开技术与准备列');toggle.type='button';toggle.addEventListener('click',()=>{showTechnical=!showTechnical;render();});toolbar.append(toggle);}
+      const widths = columns.map(label => technical(label)?0: label === '采用' ? 56 : label === '所需技术' ? 230 : label === '前期准备' ? 280 : label === '大功能' ? 120 : label === '小功能' ? 140 :
+        label === '细分功能' || /^第\d+级功能$/.test(label) ? 155 : label === '功能介绍' ? 340 :
         label === '大概金额' ? 160 : label === '编号' ? 108 : label === '功能名称' ? 230 :
         label === '说明与验收' ? 430 : label === '优先级' ? 90 : label === '依赖' ? 150 :
         label === '备注' ? 230 : columns.length === 2 ? (label === columns[0] ? 240 : 720) : 250);
       const colgroup = el('colgroup');
-      [44, ...widths].forEach(width => { const col = el('col'); col.style.width = width + 'px'; colgroup.append(col); });
-      table.append(colgroup); table.style.width = (44 + widths.reduce((sum, width) => sum + width, 0)) + 'px';
+      [44, ...widths].forEach(width => { const col = el('col'); col.style.width = width + 'px';if(!width)col.hidden=true; colgroup.append(col); });
+      table.append(colgroup); table.style.width = (44 + widths.reduce((sum, width) => sum + width, 0)) + 'px';if(columns.length===2)table.style.width='100%';
       const head = el('thead'), header = el('tr');
       const corner = el('th', 'sheet-index', '#');
       corner.setAttribute('scope', 'col'); header.append(corner);
       columns.forEach((label, index) => {
         const cell = el('th', index === 0 ? 'sheet-first' : '', label);
-        cell.setAttribute('scope', 'col'); header.append(cell);
+        cell.setAttribute('scope', 'col');cell.hidden=technical(label); header.append(cell);
       });
       head.append(header); table.append(head);
       const body = el('tbody'), controls = [], rendered = [];
@@ -91,6 +93,7 @@
         columns.forEach((_, column) => {
           if (covered.has(index + ':' + column)) return;
           const cell = el('td', column === 0 ? 'sheet-first' : '');
+          cell.hidden=technical(columns[column]);
           const value = String((row.cells || [])[column] ?? '');
           if (listing && columns[column] === '采用') {
             const box=el('input','adoption-checkbox');box.type='checkbox';box.checked=value!=='否';box.setAttribute('aria-label','采用 '+(row.feature_id||row.key));
@@ -99,10 +102,10 @@
             const span = mergeStarts.get(index + ':' + column);
             if (span) { cell.setAttribute('rowspan', String(span)); cell.className += ' sheet-merged'; }
             if (column < columns.indexOf('功能介绍')) cell.className += ' sheet-level-cell';
-            if(columns[column]==='功能介绍'&&value.length>100){
+            if(columns[column]==='功能介绍'){
               const brief=el('p','sheet-intro-brief',value.split('\n')[0].replace(/^说明[：:]\s*/,''));
-              const detail=el('details','sheet-intro-detail');detail.append(el('summary','','展开完整说明与验收'),el('div','',value));cell.append(brief,detail);
-            }else cell.textContent = value || '—';
+              const detail=el('details','sheet-intro-detail');detail.append(el('summary','','验收、技术与准备'),el('div','',value));for(const field of ['所需技术','前期准备']){const index=columns.indexOf(field);if(index>=0)detail.append(el('p','',field+'：'+(row.cells[index]||'待确认')));}cell.append(brief,detail);
+            }else{const label=el('span','sheet-cell-label',value||'—');if(typeof global.renderPlanningInline==='function')global.renderPlanningInline(label,value||'—');cell.append(label);}
           } else if (column === hierarchyColumn) {
             const content = el('div', 'sheet-hierarchy');
             content.style.paddingLeft = Math.min(Math.max(row.depth || 0, 0), 12) * 18 + 'px';
@@ -116,7 +119,7 @@
               controls.push({ button, row, label }); content.append(button);
             } else content.append(el('span', 'sheet-indent', '·'));
             content.append(el('span', 'sheet-cell-text', value || '—')); cell.append(content);
-          } else cell.textContent = value || '—';
+          } else if(typeof global.renderPlanningInline==='function')global.renderPlanningInline(cell,value||'—');else cell.textContent = value || '—';
           tr.append(cell);
         });
         body.append(tr); rendered.push({ tr, row });
@@ -141,7 +144,7 @@
           button.setAttribute('aria-expanded', String(open));
           button.setAttribute('aria-label', (open ? '收起 ' : '展开 ') + label);
         }
-        info.textContent = listing ? sheet.name + ' · 显示 ' + rows.length + ' / ' + allRows.length + ' 行 · 左右滚动查看技术与准备' :
+        info.textContent = listing ? sheet.name + ' · 显示 ' + rows.length + ' / ' + allRows.length + ' 行 · 点击每行详情查看验收、技术与准备' :
           sheet.name + ' · 显示 ' + visible + ' / ' + allRows.length + ' 行';
       }
       expand.addEventListener('click', () => { parents.forEach(key => collapsed.delete(key)); update(); });
@@ -160,7 +163,7 @@
       setAdoptionEnabled(value){adoptionEnabled=value;adoptionControls.forEach(box=>box.disabled=!value||!options.onAdopt);},
       show(value, display = {}) {
         model = value || { sheets: [] };changedIds=new Set(display.changedIds||[]);onlyChanged=changedIds.size>0;
-        if(onlyChanged){active=(model.sheets.find(s=>s.kind==='feature-list')||model.sheets.find(s=>s.columns.includes('功能名称'))||{}).id||'';collapsed.clear();}
+        if(onlyChanged||display.preferFeatures){active=(model.sheets.find(s=>s.kind==='feature-list')||model.sheets.find(s=>s.columns.includes('功能名称'))||{}).id||'';collapsed.clear();}
         render();
       },
       loading() { message('正在整理规划表格…'); },

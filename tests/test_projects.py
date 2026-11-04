@@ -92,6 +92,16 @@ class ManagerTest(unittest.TestCase):
         self.assertEqual(code, 200, result)
         return result['reply']
 
+    def test_new_project_can_use_safe_default_folder(self):
+        code, data = self.request('/api/projects', {'name':'../自动/记账', 'directory':'', 'mode':'new'})
+        self.assertEqual(code, 200, data)
+        folder = Path(data['project']['directory'])
+        self.assertEqual(folder.parent, (self.workspace / '项目').resolve())
+        self.assertTrue(folder.is_dir())
+        second = self.request('/api/projects', {'name':'../自动/记账', 'directory':'', 'mode':'new'})[1]['project']
+        self.assertNotEqual(second['directory'], str(folder))
+        self.assertEqual(self.request('/api/projects', {'name':'导入', 'directory':'', 'mode':'import'})[0], 400)
+
     def test_project_isolation_external_edits_and_restart(self):
         a, b = self.register('项目 A'), self.register('项目 B')
         Path(a['ledger_path']).write_text(ledger('A'), encoding='utf-8')

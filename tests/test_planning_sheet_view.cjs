@@ -93,6 +93,7 @@ function run() {
   assert.equal(button('功能清单').attributes['aria-pressed'],'true');
   assert.ok(bodyRows().every(r=>!r.className.includes('sheet-changed')));
   assert.ok(!container.textContent.includes('尚未保存'));
+  button('查看功能明细').handlers.click();view.show({sheets:[model.sheets[0],listing]},{preferFeatures:true});assert.equal(button('功能清单').attributes['aria-pressed'],'true','newly generated plan opens its feature list');
   console.log('Planning sheet view: hierarchy, nested collapse, tab state, batch controls, safe content, empty/error/cycle checks passed.');
 }
 module.exports=run;

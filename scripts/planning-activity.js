@@ -15,7 +15,7 @@
      card.addEventListener('toggle',()=>{if(current===displayGeneration){card.open?expanded.add(record.id):expanded.delete(record.id);}});
      const time=new Date(record.time);const summary=node('summary',(Number.isNaN(time.getTime())?record.time:time.toLocaleString())+' · '+record.title);
      const lines=record.detail.split('\n').filter(line=>line.trim());
-     const description=lines.filter(line=>/^(F\d|新增 F|移除 F)/.test(line)).join('；')||lines.find(line=>!/^历史版本：|^来源：/.test(line))||'查看详情';
+     const description=lines.filter(line=>/^(F\d|新增 F|移除 F)/.test(line)).join('；')||lines.find(line=>!/^历史版本：|^来源：|^[-+#@|`]|^\s*$/.test(line))||(/保存/.test(record.title)?'规划内容已保存，可展开查看完整变更':'已生成规划内容，可展开查看详情');
      summary.append(node('span',description.slice(0,160)+(description.length>160?'…':'')));
      card.append(summary,node('pre',record.detail));list.append(card);
     }

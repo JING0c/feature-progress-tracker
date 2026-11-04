@@ -14,6 +14,8 @@ import re
 import secrets
 import shutil
 import subprocess
+import signal
+import time
 import threading
 from datetime import datetime, timezone
 from functools import lru_cache
@@ -106,8 +108,34 @@ def codex_reply(project, prompt):
     codex = shutil.which('codex')
     if not codex: raise RequestError('未找到 Codex 命令行，请检查安装与登录状态。')
     operation_step(50, 'Codex 正在处理', '等待智能体输出；百分比按已完成阶段计算')
-    result = subprocess.run([codex, 'exec', '--sandbox', 'read-only', '--skip-git-repo-check', '--ephemeral', '--json', '-'],
-                input=prompt, text=True, capture_output=True, cwd=project['directory'], timeout=180)
+    command=[codex, 'exec', '--sandbox', 'read-only', '--skip-git-repo-check', '--ephemeral', '--json', '-']
+    cancelled=threading.Event(); current=planning_module('planning_progress').CURRENT.get()
+    with subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                          text=True, cwd=project['directory'], start_new_session=True) as process:
+        if current: current[0].enable_cancel(current[1],cancelled.set)
+        started=time.monotonic(); first=True
+        def stop():
+            try: os.killpg(process.pid,signal.SIGTERM)
+            except ProcessLookupError: pass
+            try: process.communicate(timeout=2)
+            except subprocess.TimeoutExpired:
+                try: os.killpg(process.pid,signal.SIGKILL)
+                except ProcessLookupError: pass
+                process.communicate()
+        try:
+            while True:
+                if cancelled.is_set():
+                    stop();raise RequestError('操作已取消，原规划文件未改变；可以修改需求后重试。')
+                if time.monotonic()-started>=180:
+                    stop();raise subprocess.TimeoutExpired(command,180)
+                try:
+                    output,errors=process.communicate(input=prompt if first else None,timeout=.2)
+                    break
+                except subprocess.TimeoutExpired: first=False
+        finally:
+            if current: current[0].disable_cancel(current[1])
+        if cancelled.is_set(): raise RequestError('操作已取消，原规划文件未改变；可以修改需求后重试。')
+        result=subprocess.CompletedProcess(command,process.returncode,output,errors)
     if result.returncode:
         raise RequestError('Codex 未能完成回复，请检查 Codex 登录状态及网络连接。')
     replies = []
@@ -585,6 +613,9 @@ class ProjectStore:
         name, folder = payload.get('name'), payload.get('directory')
         if not isinstance(name, str) or not name.strip() or len(name) > 150 or any(c in name for c in '\r\n\0'):
             raise RequestError('请输入有效的项目名称。')
+        if payload.get('mode') == 'new' and (folder is None or isinstance(folder, str) and not folder.strip()):
+            label=re.sub(r'[^\w\-\u3400-\u9fff]+','-',name.strip()).strip('-')[:60] or '新项目'
+            folder=str(self.workspace / '项目' / (label+'-'+secrets.token_hex(4)))
         if not isinstance(folder, str) or not folder.strip() or any(c in folder for c in '\r\n\0'):
             raise RequestError('请输入项目目录。')
         directory = Path(folder).expanduser()
@@ -763,6 +794,11 @@ def main():
             self.activity_context = None
             self.activity_before = ''
             try:
+                if route == '/api/operation-cancel':
+                    project=self.project();payload=self.json_body()
+                    if not store.operation_progress.cancel(project['id'],payload.get('operation')):
+                        raise RequestError('此任务当前不可取消，可能已完成或正在保存。',409)
+                    self.respond({'requested':True});return
                 if route == '/api/projects':
                     self.respond({'project': store.register(self.json_body())})
                     return

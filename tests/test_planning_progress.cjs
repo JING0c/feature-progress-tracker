@@ -1,15 +1,17 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 async function run(){
- const nodes=new Map(),timers=new Set();
+ const nodes=new Map(),timers=new Set(),timeouts=new Set();
  const $=id=>{if(!nodes.has(id))nodes.set(id,{hidden:true,handlers:{},setAttribute(k,v){this[k]=v;},addEventListener(k,f){this.handlers[k]=f;}});return nodes.get(id);};
- const box={window:{},document:{getElementById:$},setInterval(f){timers.add(f);return f;},clearInterval(f){timers.delete(f);}};
+ const box={window:{},document:{getElementById:$},setInterval(f){timers.add(f);return f;},clearInterval(f){timers.delete(f);},setTimeout(f){timeouts.add(f);return f;},clearTimeout(f){timeouts.delete(f);}};
  vm.runInNewContext(fs.readFileSync('scripts/planning-progress.js','utf8'),box);
- let state={percent:50,stage:'Codex 分析',detail:'等待输出',status:'running'},release;
- const progress=box.window.createPlanningProgress({poll:async()=>state});
+ let state={percent:50,stage:'Codex 分析',detail:'等待输出',status:'running',cancellable:true},release,cancelled; 
+ const progress=box.window.createPlanningProgress({poll:async()=>state,cancel:async id=>{cancelled=id;}});
  const task=progress.run('生成建议',()=>new Promise(r=>release=r));
  assert.equal($('operation-bar').value,0);await [...timers][0]();assert.equal($('operation-bar').value,50);assert.match($('operation-stage').textContent,/Codex/);
+ assert.equal($('operation-cancel').hidden,false);await $('operation-cancel').handlers.click();assert.match(cancelled,/^op-/);assert.equal($('operation-cancel').disabled,true);
  state.percent=20;await [...timers][0]();assert.equal($('operation-bar').value,50,'server stages never go backwards');
  release('ok');assert.equal(await task,'ok');assert.equal($('operation-bar').value,100);assert.equal(timers.size,0);
+ assert.equal(timeouts.size,1,'completed notice schedules dismissal');[...timeouts][0]();assert.equal($('operation-progress-panel').hidden,true,'completed notice leaves reading space');
  let fail;
  const rejected=progress.run('保存',()=>new Promise((r,j)=>fail=j));const check=assert.rejects(rejected,/失败/);
  state.percent=75;await [...timers][0]();fail(Error('写入失败'));await check;

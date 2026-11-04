@@ -123,3 +123,29 @@ button:disabled{cursor:not-allowed}
 .plan-document{overflow:clip}.plan-document-title{position:sticky;top:0;z-index:6;background:#fff;border-bottom:1px solid #ecd7e1}
 
 :is(#new-feature-section,#view-section,#review-section){scroll-margin-top:calc(var(--plan-toolbar-height,90px) + 16px)}
+
+/* First visit starts with the need; saved projects keep the full workspace. */
+.first-use .layout{grid-template-columns:minmax(0,1fr)}
+.first-use .side,.first-use .planning-activity,.first-use .chat-head{display:none}
+.first-use #messages:has(.welcome){min-height:0;padding:16px 20px}
+.first-use .welcome{margin:0;text-align:left}
+.first-use .planning-discussion{margin-top:0}
+.first-use .planning-discussion>summary{font-size:17px;font-weight:600}
+.first-use .composer textarea{min-height:100px}
+.plan-file-details{margin-top:8px;font-size:13px;color:#705664}
+.plan-file-details summary{cursor:pointer}.plan-file-details p{overflow-wrap:anywhere}
+.plan-sidebar .plan-header{padding:14px 16px}
+.plan-sidebar .plan-actions{gap:10px;padding:12px}
+.plan-action-group{gap:2px}.plan-action-group+.plan-action-group{padding-top:10px}
+.plan-sidebar button{min-height:34px;padding:6px 10px}
+.plan-document[data-editing=true] :is(#plan-sheet,#plan-content,#view-section,#review-section,#new-feature-section){display:none}
+.feature-editor{scroll-margin-top:calc(var(--plan-toolbar-height,90px) + 16px)}
+.feature-editor textarea{min-width:210px;min-height:64px;font-size:14px}
+.feature-editor td[data-column="功能名称"] textarea{min-width:170px;width:170px}
+.feature-editor :is(td[data-column="编号"],td[data-column="上级编号"],td[data-column="优先级"]) textarea{min-width:95px;width:95px}
+.feature-editor-scroll{max-height:55vh}.feature-editor p{margin-top:0}
+#reference-progress-elapsed,#source-review-elapsed{display:none}
+#operation-cancel{margin-top:10px;font-size:13px;padding:7px 10px}
+.reference-card small{font-size:12px}.status,.plan-viewbar p,.sheet-count{font-size:13px}
+button:disabled{opacity:1;background:#f3eef0;color:#887780}
+.operation-progress-panel[data-state=cancelled]{border-color:#d7bbc8;color:#705664}
