@@ -9,7 +9,7 @@
    $('operation-title').textContent=task.title;
    $('operation-percent').textContent=task.percent+'%';
    const bar=$('operation-bar');bar.max=100;bar.value=task.percent;bar.setAttribute('aria-valuetext',task.percent+'%，'+task.stage);
-   $('operation-stage').textContent=(task.status==='failed'?'失败于：':'当前步骤：')+task.stage;
+   $('operation-stage').textContent=task.status==='cancelled'?'当前步骤：已取消':(task.status==='failed'?'失败于：':'当前步骤：')+task.stage;
    $('operation-detail').textContent=task.detail||'';
    $('operation-elapsed').textContent='已用时 '+Math.floor((Date.now()-task.started)/1000)+' 秒';
    $('operation-dismiss').hidden=task.status==='running';

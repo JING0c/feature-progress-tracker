@@ -26,6 +26,7 @@ async function run(){
  assert.equal($('operation-title').textContent,'长期 Codex','short local action must restore the running operation');
  assert.equal($('operation-dismiss').hidden,true);longRelease();await long;
  $('operation-dismiss').handlers.click();assert.equal($('operation-progress-panel').hidden,true);
+ state={status:'cancelled',percent:50,stage:'正在停止 Codex'};await assert.rejects(progress.run('取消验证',async()=>{throw Error('已取消')}),/已取消/);assert.equal($('operation-stage').textContent,'当前步骤：已取消');assert.equal($('operation-bar').value,50);
  console.log('Progress: percentages, current step, monotonic milestones, errors, cleanup and overlapping tasks passed.');
 }
 module.exports=run;if(require.main===module)run().catch(e=>{console.error(e);process.exitCode=1;});
