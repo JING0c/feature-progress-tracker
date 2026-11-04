@@ -3,7 +3,7 @@
 
   // The same read-only model is used by the webpage and the Excel exporter.
   global.createPlanningSheetView = function (container, options = {}) {
-    let model = { sheets: [] }, active = '', collapsed = new Set(), adoptionEnabled=true, adoptionControls=[];
+    let model = { sheets: [] }, active = '', collapsed = new Set(), adoptionEnabled=true, adoptionControls=[],changedIds=new Set(),onlyChanged=false;
     const el = (tag, className, text) => {
       const node = document.createElement(tag);
       if (className) node.className = className;
@@ -20,13 +20,22 @@
       const sheet = sheets.find(item => item.id === active) || sheets.find(item => item.kind === 'feature-list') || sheets.find(item => item.columns.includes('功能名称')) || sheets[0];
       if (!sheet) { message('还没有规划内容，请先通过对话梳理项目。'); return; }
       active = sheet.id;
-      const rows = sheet.rows || [], columns = sheet.columns || [];
+      const allRows = sheet.rows || [], columns = sheet.columns || [];
+      const featureSheet=sheet.kind!=='feature-list'&&columns.includes('功能名称');
+      const identity=row=>row.feature_id||row.cells[columns.indexOf('编号')];
+      const rows=onlyChanged&&featureSheet?allRows.filter(row=>changedIds.has(identity(row))):allRows;
       const listing = sheet.kind === 'feature-list';
       const byKey = new Map(rows.map(row => [row.key, row]));
       const parents = new Set(rows.map(row => row.parent).filter(key => byKey.has(key)));
       const toolbar = el('div', 'sheet-toolbar');
       const info = el('span', 'sheet-count');
       toolbar.append(info);
+      if(changedIds.size&&featureSheet){
+        const preview=el('span','sheet-preview-notice','本次建议预览 · '+changedIds.size+' 个功能已修改 · 尚未保存');
+        preview.setAttribute('role','status');toolbar.append(preview);
+        const toggle=el('button','sheet-action',onlyChanged?'显示全部功能':'只看本次修改');toggle.type='button';
+        toggle.addEventListener('click',()=>{onlyChanged=!onlyChanged;collapsed.clear();render();});toolbar.append(toggle);
+      }
       const expand = el('button', 'sheet-action', '全部展开');
       const fold = el('button', 'sheet-action', '收起层级');
       for (const button of [expand, fold]) { button.type = 'button'; button.disabled = !parents.size; }
@@ -74,6 +83,7 @@
       rows.forEach((row, index) => {
         const tr = el('tr', parents.has(row.key) ? 'sheet-parent' : 'sheet-leaf');
         tr.setAttribute('data-row-key', row.key);
+        if(featureSheet&&changedIds.has(identity(row))){tr.className+=' sheet-changed';tr.setAttribute('aria-label','本次修改 '+identity(row));}
         const number = el('th', 'sheet-index', String(index + 1));
         number.setAttribute('scope', 'row'); tr.append(number);
         columns.forEach((_, column) => {
@@ -127,7 +137,7 @@
           button.setAttribute('aria-label', (open ? '收起 ' : '展开 ') + label);
         }
         info.textContent = listing ? sheet.name + ' · 按列查看包含关系 · ' + rows.length + ' 行' :
-          sheet.name + ' · 显示 ' + visible + ' / ' + rows.length + ' 行';
+          sheet.name + ' · 显示 ' + visible + ' / ' + allRows.length + ' 行';
       }
       expand.addEventListener('click', () => { parents.forEach(key => collapsed.delete(key)); update(); });
       fold.addEventListener('click', () => { parents.forEach(key => collapsed.add(key)); update(); });
@@ -141,11 +151,16 @@
       update();
     }
     return {
+      finishPreview(){if(changedIds.size){changedIds.clear();onlyChanged=false;render();}},
       setAdoptionEnabled(value){adoptionEnabled=value;adoptionControls.forEach(box=>box.disabled=!value||!options.onAdopt);},
-      show(value) { model = value || { sheets: [] }; render(); },
+      show(value, display = {}) {
+        model = value || { sheets: [] };changedIds=new Set(display.changedIds||[]);onlyChanged=changedIds.size>0;
+        if(onlyChanged){active=(model.sheets.find(s=>s.kind!=='feature-list'&&s.columns.includes('功能名称'))||{}).id||'';collapsed.clear();}
+        render();
+      },
       loading() { message('正在整理规划表格…'); },
       error() { message('表格暂时无法加载，可切换到文档视图查看完整内容。'); },
-      clear() { model = { sheets: [] }; active = ''; collapsed.clear(); container.replaceChildren(); }
+      clear() { model = { sheets: [] }; active = ''; changedIds.clear();onlyChanged=false;collapsed.clear(); container.replaceChildren(); }
     };
   };
 })(window);

@@ -101,3 +101,5 @@
 :is(#new-feature-section,#view-section,#suggestions-section,#review-section){scroll-margin-top:20px}
 
 .review-ledger-actions{display:flex;gap:8px;flex-wrap:wrap;float:right;margin-left:12px}.review-ledger-actions button{font-size:13px}
+
+.sheet-preview-notice{font-weight:600;color:#315b46;background:#edf3dd;padding:8px 12px;border-radius:8px}.planning-grid tr.sheet-changed td,.planning-grid tr.sheet-changed th{background:#f5f8ea}.planning-grid tr.sheet-changed th.sheet-index{box-shadow:inset 4px 0 #447a5f;color:#315b46}

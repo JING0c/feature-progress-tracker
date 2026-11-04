@@ -110,14 +110,20 @@ async function loadPlan(force=false){
 async function savePlan(source='用户保存'){
  if(planRevision===null)throw Error('尚未读取文件版本，请先读取文件后再生成。');
  const data=await request('/api/plan/save',{content:planText,revision:planRevision,source,note:document.getElementById('version-note').value.trim()});
- planRevision=data.revision;planPath=data.path||planPath;dirty=false;generatedDraft=false;
+ planRevision=data.revision;planPath=data.path||planPath;dirty=false;generatedDraft=false;sheetView.finishPreview?.();
  applyPlanningState(data.planning,data.source);
  try{localStorage.removeItem(PLAN_KEY);localStorage.removeItem(DRAFT_KEY)}catch(e){}
  document.getElementById('version-note').value='';
  planSync.textContent='已保存到 Markdown：'+planPath+(data.history_version?'；历史版本 '+data.history_version.id.slice(0,14):'');return data;
 }
 workflow=typeof createPlanningWorkflow==='function'?createPlanningWorkflow({request,notice,setBusy,storageKey:KEY+':feature-editor',getPlan:()=>({content:planText,revision:planRevision,ready:planningState.ready}),onSave:async content=>{showPlan(content);dirty=true;retainDraft();await savePlan('功能表编辑');},referenceProgress,onReferencesChanged:invalidateSourceReview,resumePlanning:resumeReferencePlanning,guide:(text,fromReferences=false)=>{featureAction=true;referenceFlow=fromReferences;requestIntent='decompose';input.value=text;return form.requestSubmit();}}):null;
-suggestionsView=typeof createPlanningSuggestions==='function'?createPlanningSuggestions({request,setBusy,getPlan:()=>({revision:planRevision,ready:planningState.ready,dirty:dirty||!!workflow?.editing}),onPreview:data=>{showPlan(data.content,true);dirty=true;generatedDraft=false;retainDraft();planSync.textContent='当前显示已采纳建议的预览，尚未保存；可编辑后保存功能表。';}}):null;
+suggestionsView=typeof createPlanningSuggestions==='function'?createPlanningSuggestions({request,setBusy,getPlan:()=>({revision:planRevision,ready:planningState.ready,dirty:dirty||!!workflow?.editing}),onPreview:async data=>{
+ const model=await request('/api/plan/table',{content:data.content});
+ if(data.revision!==planRevision||dirty||workflow?.editing)throw Error('当前功能表已变化，请保存或重新读取后重试。');
+ dirty=true;generatedDraft=false;showPlan(data.content,false,{model,changedIds:data.changedIds});setPlanView('sheet');retainDraft();
+ planSync.textContent='当前显示已采纳建议的预览，尚未保存；可编辑后保存功能表。';
+ document.getElementById('plan-document').scrollIntoView({behavior:'smooth',block:'start'});
+}}):null;
 for(const [key,target] of [['feature','new-feature-section'],['view','view-section'],['suggestions','suggestions-section'],['discussion','planning-discussion'],['review','review-section']]){
  document.getElementById('nav-'+key).addEventListener('click',()=>{const section=document.getElementById(target);if(target==='planning-discussion')section.open=true;if(section.hidden||!planText){document.getElementById('planning-discussion').open=true;document.getElementById('planning-discussion').scrollIntoView({block:'start'});return;}section.scrollIntoView({behavior:'smooth',block:'start'});});
 }
@@ -260,7 +266,7 @@ document.getElementById('export-excel').addEventListener('click',async()=>{
 if(typeof createPlanningHistoryView==='function')createPlanningHistoryView({request,downloadExcel:downloadPlanningExcel});
 document.getElementById('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(messages.map(m=>(m.role==='user'?'你':'规划助手')+'：\n'+m.content).join('\n\n'));notice('已复制对话')}catch(e){notice('复制失败，请手动选择文字。',true)}});
 
-function showPlan(text,scroll=false){
+function showPlan(text,scroll=false,display={}){
  if(text!==planText)invalidateSourceReview();
  planText=text;
  const section=document.getElementById('plan-document'),article=document.getElementById('plan-content');
@@ -268,7 +274,8 @@ function showPlan(text,scroll=false){
  document.getElementById('plan-sidebar').hidden=!text&&!recoveryDrafts.length;
  renderPlanningMarkdown(article,text);
  const version=++sheetRequest;
- if(text.trim()){
+ if(display.model){sheetView.show(display.model,{changedIds:display.changedIds});}
+ else if(text.trim()){
   sheetView.loading();
   request('/api/plan/table',{content:text}).then(data=>{if(version===sheetRequest)sheetView.show(data)}).catch(()=>{if(version===sheetRequest)sheetView.error()});
  }else sheetView.clear();

@@ -42,6 +42,14 @@ function run() {
   assert.ok(bodyRows().every(n=>!n.hidden));
   button('收起层级').handlers.click();
   assert.deepEqual(bodyRows().map(n=>n.hidden),[false,true,true,false]);
+  button('风险事项').handlers.click();
+  view.show(model,{changedIds:['F01-01-01','F02']});
+  assert.equal(bodyRows().length,2,'preview immediately shows only changed features, not previous chapter');
+  assert.match(container.textContent,/本次建议预览.*尚未保存/);
+  assert.ok(bodyRows().every(n=>n.className.includes('sheet-changed')));
+  button('显示全部功能').handlers.click();assert.equal(bodyRows().length,4);
+  view.finishPreview();assert.ok(!container.textContent.includes('本次建议预览'));assert.equal(bodyRows().length,4);assert.ok(bodyRows().every(n=>!n.className.includes('sheet-changed')));
+  view.show(model);assert.ok(!container.textContent.includes('本次建议预览'));
   view.show({sheets:[]}); assert.match(container.textContent,/还没有规划内容/);
   view.error(); assert.match(container.textContent,/文档视图/);
   view.show({sheets:[{id:'cycle',name:'异常层级',columns,rows:[row('a','b',1,'甲'),row('b','a',1,'乙')]}]});

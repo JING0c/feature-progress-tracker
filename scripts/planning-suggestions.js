@@ -40,7 +40,8 @@
    try{
     const data=await options.request('/api/plan/suggestions/preview',{revision:state.revision,suggestion_id:record.id,selected:[...selected]});
     $('suggestion-diff').hidden=false;$('suggestion-diff-text').textContent=data.diff;
-    options.onPreview(data);$('suggestions-status').textContent='所选建议已放入功能表预览，尚未保存；可继续编辑，再点击表格上方“保存功能表”。';
+    const changedIds=[...new Set(record.suggestions.filter(item=>selected.has(item.id)).flatMap(item=>item.changes.map(change=>change.id)))];
+    await options.onPreview({...data,changedIds});$('suggestions-status').textContent='所选建议已放入功能表预览，尚未保存；可继续编辑，再点击表格上方“保存功能表”。';
    }catch(error){$('suggestions-status').textContent=error.message;}
    finally{options.setBusy(false);}
   });

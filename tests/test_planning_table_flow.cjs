@@ -5,7 +5,7 @@ const vm=require('node:vm');
 
 async function run(){
   const nodes=new Map(),pending=[],calls=[],shown=[],downloads=[];
-  let exportFails=false;
+  let exportFails=false,suggestionOptions,finishedPreviews=0;
   const storage=new Map([['project-planning:__PLANNING_KEY__:document-draft-v2',JSON.stringify({content:'# stale browser draft',revision:'old'})]]);
   const node=id=>{
     if(!nodes.has(id))nodes.set(id,{value:'',attributes:{},handlers:{},hidden:false,
@@ -20,13 +20,15 @@ async function run(){
     location:{search:'?project=project-table'},URLSearchParams,
     localStorage:{getItem(k){return storage.get(k)||null;},setItem(k,v){storage.set(k,v);},removeItem(k){storage.delete(k);}},
     setInterval(){},setTimeout(){},renderPlanningMarkdown(){},
+    createPlanningSuggestions(options){suggestionOptions=options;return{setBusy(){}};},
     createPlanningWorkflow(){return{ensureResearch:async()=>{},setBusy(){},editing:false};},
-    createPlanningSheetView(){return{show(data){shown.push(data);},loading(){},error(){shown.push('error');},clear(){}};},
+    createPlanningSheetView(){return{finishPreview(){finishedPreviews++;},show(data){shown.push(data);},loading(){},error(){shown.push('error');},clear(){}};},
     URL:{createObjectURL(){return 'blob:export';},revokeObjectURL(){}},
     fetch:async(url,options={})=>{
       const route=url.split('?')[0],payload=options.body?JSON.parse(options.body):null;
       calls.push({url,route,payload});
       if(route==='/api/plan/table')return new Promise(resolve=>pending.push({payload,resolve}));
+      if(route==='/api/plan/save')return{ok:true,json:async()=>({revision:'saved',planning:{ready:true}})};
       if(route==='/api/plan/export')return{ok:!exportFails,json:async()=>({error:'导出失败'}),blob:async()=>({})};
       return{ok:true,json:async()=>route==='/api/plan'?{content:'',revision:'r',path:'/P/项目规划书.md',planning:{ready:false}}:{name:'P',source:'new',planning:{ready:false}}};
     }
@@ -69,7 +71,23 @@ async function run(){
   assert.equal(node('plan-content').hidden,false);assert.equal(node('plan-sheet').hidden,true);
   node('view-sheet').handlers.click();
   assert.equal(node('plan-content').hidden,true);assert.equal(node('view-sheet').attributes['aria-pressed'],'true');
-  console.log('Planning table flow: 5 scenarios passed (race, draft export, no unlock, failed export, source fallback).');
+  vm.runInContext("planRevision='r';dirty=false;setPlanView('document');",context);
+  let previewFinished=false;
+  const previewTask=suggestionOptions.onPreview({content:'# suggestion preview',revision:'r',changedIds:['F01']}).then(()=>{previewFinished=true;});
+  await new Promise(r=>setImmediate(r));
+  assert.equal(previewFinished,false,'preview must wait until table is ready');
+  assert.notEqual(vm.runInContext('planText',context),'# suggestion preview','failed table requests must not replace current draft');
+  pending.at(-1).resolve({ok:true,json:async()=>({title:'suggestion',sheets:[]})});await previewTask;
+  assert.equal(shown.at(-1).title,'suggestion');assert.equal(vm.runInContext('planText',context),'# suggestion preview');
+  assert.equal(vm.runInContext('dirty',context),true);assert.equal(node('plan-sheet').hidden,false);
+  assert.ok(!calls.some(c=>c.route.endsWith('/save')));
+  vm.runInContext('dirty=false',context);
+  const failed=suggestionOptions.onPreview({content:'# invalid preview',revision:'r',changedIds:['F01']});
+  const failure=assert.rejects(failed,/cannot parse/);
+  pending.at(-1).resolve({ok:false,json:async()=>({error:'cannot parse'})});await failure;
+  assert.equal(vm.runInContext('planText',context),'# suggestion preview');assert.equal(vm.runInContext('dirty',context),false);
+  await vm.runInContext('savePlan()',context);assert.equal(finishedPreviews,1,'successful save must end preview filtering and unsaved status');
+  console.log('Planning table flow: baseline and suggestion rendering/failure scenarios passed (race, draft export, no unlock, failed export, source fallback).');
 }
 module.exports=run;
 if(require.main===module)run().catch(e=>{console.error(e);process.exitCode=1;});

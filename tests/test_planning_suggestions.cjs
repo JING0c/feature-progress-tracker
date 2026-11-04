@@ -10,7 +10,7 @@ async function run(){
  await new Promise(r=>setImmediate(r));
  const check=$('suggestions-list').children[0].children[0].children[0];assert.equal(check.checked,false);assert.equal($('preview-suggestions').disabled,true);
  check.checked=true;check.handlers.change();assert.equal($('preview-suggestions').disabled,false);
- await $('preview-suggestions').handlers.click();assert.equal(preview.content,'PREVIEW');assert.equal($('suggestion-diff').hidden,false);assert.ok(!calls.some(c=>c.route.endsWith('/save')),'preview must never save');
+ await $('preview-suggestions').handlers.click();assert.equal(preview.content,'PREVIEW');assert.equal(preview.changedIds.join(','),'F01');assert.equal($('suggestion-diff').hidden,false);assert.ok(!calls.some(c=>c.route.endsWith('/save')),'preview must never save');
  assert.equal($('preview-suggestions').disabled,true);await $('generate-suggestions').handlers.click();assert.match($('suggestions-status').textContent,/先保存/);
  state={revision:'r2',ready:true,dirty:false};view.setBusy(false);assert.equal(check.disabled,true);assert.match($('suggestions-status').textContent,/过期/);
  state.revision='r1';view.setBusy(false);assert.equal(check.disabled,false);assert.doesNotMatch($('suggestions-status').textContent,/过期/);state.revision='r2';
