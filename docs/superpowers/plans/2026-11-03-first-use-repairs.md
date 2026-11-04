@@ -20,7 +20,9 @@
 - 新任务开始后，旧任务完成提示的定时器不能隐藏新进度。
 
 ## Tasks
-- [ ] 1. 主流程：planning.html、planning-workflow.js、planning-sheet-view.js。在已有 VM 测试先覆盖顶部编辑保存、首次状态、生成后的清单切换；修复并运行 CJS。
-- [ ] 2. 阅读和反馈：planning-workflow.css、planning-sheet.css、planning-activity.js、planning-markdown.js。显示简短说明、压缩编号列、技术准备收进逐行详情、合并父标题置顶、编辑时隐藏原表、完成通知定时消失；安全链接和摘要用现有测试验证。
-- [ ] 3. 新建目录及取消：projects.html、serve_dashboard.py、planning_progress.py。空目录仅新建时分配独立目录，导入仍要求路径；取消必须终止当前 Codex 子进程再解锁。先写真实 HTTP 回归。
-- [ ] 4. 全套测试与独立审核；从交付副本真实 Codex 重走基线路线，截图编号、总览及点击对比；更新报告、台账并本地提交，不推送。
+- [x] 1. 主流程：planning.html、planning-workflow.js、planning-sheet-view.js。在已有 VM 测试先覆盖顶部编辑保存、首次状态、生成后的清单切换；修复并运行 CJS。
+- [x] 2. 阅读和反馈：planning-workflow.css、planning-sheet.css、planning-activity.js、planning-markdown.js。显示简短说明、压缩编号列、技术准备收进逐行详情、合并父标题置顶、编辑时隐藏原表、完成通知定时消失；安全链接和摘要用现有测试验证。
+- [x] 3. 新建目录及取消：projects.html、serve_dashboard.py、planning_progress.py。空目录仅新建时分配独立目录，导入仍要求路径；取消必须终止当前 Codex 子进程再解锁。先写真实 HTTP 回归。
+- [x] 4. 全套测试与独立审核；从交付副本真实 Codex 重走基线路线，截图编号、总览及点击对比；更新报告、台账并本地提交，不推送。
+
+执行结果：最终产品1deb484；独立审核94分。主路线两轮真实重走，最终12点击/25张含附加截图；剩余A06、A07细节和A10打磨另列F09-07，未宣称15项全清。
