@@ -25,3 +25,5 @@
 .reference-progress-details:has(#reference-progress-status:empty){display:none}
 .reference-progress-caption{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .reference-progress-details progress{margin-top:8px}
+
+.source-review-panel{padding:16px 24px;background:#f4f7eb;border-bottom:1px solid #cfdd9d;color:#294c3a}.source-review-panel progress{width:min(520px,100%);accent-color:#447a5f;margin-right:16px}.source-review-panel pre{white-space:pre-wrap;line-height:1.7;color:#243b2e;max-height:480px;overflow:auto}.source-review-panel summary{cursor:pointer;font-weight:600}

@@ -6,6 +6,7 @@ const vm=require('node:vm');
 async function run(){
   const nodes=new Map(),pending=[],calls=[],shown=[],downloads=[];
   let exportFails=false;
+  const storage=new Map([['project-planning:__PLANNING_KEY__:document-draft-v2',JSON.stringify({content:'# stale browser draft',revision:'old'})]]);
   const node=id=>{
     if(!nodes.has(id))nodes.set(id,{value:'',attributes:{},handlers:{},hidden:false,
       addEventListener(k,fn){this.handlers[k]=fn;},setAttribute(k,v){this.attributes[k]=v;},
@@ -17,7 +18,7 @@ async function run(){
   const context=vm.createContext({
     document:{getElementById:node,querySelector:node,createElement:()=>node(Symbol()),body:node('body')},
     location:{search:'?project=project-table'},URLSearchParams,
-    localStorage:{getItem(){return null;},setItem(){},removeItem(){}},
+    localStorage:{getItem(k){return storage.get(k)||null;},setItem(k,v){storage.set(k,v);},removeItem(k){storage.delete(k);}},
     setInterval(){},setTimeout(){},renderPlanningMarkdown(){},
     createPlanningWorkflow(){return{ensureResearch:async()=>{},setBusy(){},editing:false};},
     createPlanningSheetView(){return{show(data){shown.push(data);},loading(){},error(){shown.push('error');},clear(){}};},
@@ -33,6 +34,15 @@ async function run(){
   const source=fs.readFileSync(path.join(__dirname,'../scripts/planning.html'),'utf8');
   vm.runInContext(source.match(/<script>([\s\S]*?)<\/script>/)[1],context);
   await new Promise(r=>setImmediate(r));
+  assert.equal(vm.runInContext('planText',context),'','old cached draft must not replace disk version');
+  assert.equal(node('restore-plan-draft').hidden,false);
+  assert.match(storage.get('project-planning:__PLANNING_KEY__:recoverable-draft'),/stale browser draft/);
+  storage.delete('project-planning:__PLANNING_KEY__:document-draft-v2');
+  assert.match(storage.get('project-planning:__PLANNING_KEY__:recoverable-draft'),/stale browser draft/,'saving latest plan must not delete recovery copy');
+  storage.set('project-planning:__PLANNING_KEY__:document-draft-v2',JSON.stringify({content:'# new unsaved draft',revision:'new'}));
+  vm.runInContext("loadRecoverableDrafts({content:'',revision:'r'})",context);
+  const recovered=JSON.parse(storage.get('project-planning:__PLANNING_KEY__:recoverable-draft'));
+  assert.equal(recovered.length,2);assert.equal(recovered[0].content,'# new unsaved draft');assert.equal(recovered[1].content,'# stale browser draft');
   vm.runInContext('showPlan("# older");showPlan("# current draft");dirty=true;',context);
   assert.equal(pending.length,2);
   pending[1].resolve({ok:true,json:async()=>({title:'current',sheets:[]})});

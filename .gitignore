@@ -18,6 +18,7 @@ dist/
 *.pfx
 credentials.json
 secrets.*
+.reference-code/
 
 # Local ledger backup files
 *.backup-*.md

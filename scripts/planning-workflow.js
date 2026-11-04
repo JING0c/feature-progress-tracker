@@ -7,6 +7,7 @@
   let featureSearchTarget='';
   function text(tag,value){const node=document.createElement(tag);node.textContent=value;return node;}
   function renderResearch(data){
+   if(research.revision!==data.revision)options.onReferencesChanged?.();
    research=data;featureSearchTarget=data.feature_idea||'';referenceDirty=false;referenceFields=[];const box=$('research-results');box.replaceChildren();
    $(data.feature_idea?'feature-reference-slot':'project-reference-slot').append($('github-research'));
    $('research-scope').textContent=data.feature_idea?'本次新增功能调研：'+data.feature_idea:'';
@@ -19,7 +20,7 @@
     const link=text('a',repo.name);link.href=repo.url;link.target='_blank';link.rel='noopener noreferrer';
     const label=document.createElement('label');label.className='reference-choice';
     const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=repo.selected===true;checkbox.disabled=busy;checkbox.setAttribute('aria-label','参考 '+repo.name);
-    checkbox.addEventListener('change',()=>{repo.selected=checkbox.checked;referenceDirty=true;choiceState();});referenceFields.push(checkbox);
+    checkbox.addEventListener('change',()=>{repo.selected=checkbox.checked;referenceDirty=true;options.onReferencesChanged?.();choiceState();});referenceFields.push(checkbox);
     label.append(checkbox,text('span','选作功能参考'));card.append(label,link,text('p',repo.description||'暂无仓库说明'),text('small',(repo.language||'未标注语言')+' · 许可证 '+(repo.license||'未标注')+' · ★ '+repo.stars),text('small',(repo.updated_at?'仓库更新 '+new Date(repo.updated_at).toLocaleDateString('zh-CN')+' · ':'')+(repo.readme_note||'')));box.append(card);
    }
    choiceState();
