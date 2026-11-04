@@ -6,7 +6,7 @@ async function run(){
  const data={id:'batch',plan_revision:'r1',suggestions:[{id:'S01',title:'异常处理',reason:'边界缺失',changes:[{action:'update',id:'F01',fields:{说明:'重试'}}]}]};
  const sandbox={window:{},document:{getElementById:$,createElement:()=>new Node()},setInterval(){return 1;},clearInterval(){}};
  vm.runInNewContext(fs.readFileSync('scripts/planning-suggestions.js','utf8'),sandbox);
- view=sandbox.window.createPlanningSuggestions({getPlan:()=>state,getDiscussion:()=>'用户：希望支持离线记账。',setBusy:v=>view.setBusy(v),onPreview:d=>{preview=d;state.dirty=true;},request:async(route,payload)=>{calls.push({route,payload});if(failGenerate&&route==='/api/plan/suggestions')throw Error('network failure');return route.endsWith('/preview')?{content:'PREVIEW',revision:'r1',diff:'+ retry'}:data;}});
+ view=sandbox.window.createPlanningSuggestions({getPlan:()=>state,getFocus:()=>$('input').value.trim(),getDiscussion:()=>'用户：希望支持离线记账。',setBusy:v=>view.setBusy(v),onPreview:d=>{preview=d;state.dirty=true;},request:async(route,payload)=>{calls.push({route,payload});if(failGenerate&&route==='/api/plan/suggestions')throw Error('network failure');return route.endsWith('/preview')?{content:'PREVIEW',revision:'r1',diff:'+ retry'}:data;}});
  await new Promise(r=>setImmediate(r));
  const check=$('suggestions-list').children[0].children[0].children[0];assert.equal(check.checked,false);assert.equal($('preview-suggestions').disabled,true);
  check.checked=true;check.handlers.change();assert.equal($('preview-suggestions').disabled,false);
@@ -19,7 +19,10 @@ async function run(){
  view.discardPreview();state={revision:'r1',ready:true,dirty:false};view.setBusy(false);assert.match($('suggestions-status').textContent,/已放弃上次预览/);assert.equal($('suggestion-diff').hidden,true);state={revision:'unrelated',ready:true,dirty:false};view.onSaved('unrelated');view.setBusy(false);assert.doesNotMatch($('suggestions-status').textContent,/编辑结果已保存/,'discarded preview cannot claim unrelated save');
  state={revision:'r1',ready:true,dirty:false};view.setBusy(false);await $('preview-suggestions').handlers.click();state={revision:'r2',ready:true,dirty:false};view.onSaved('r2');
  failGenerate=true;await $('generate-suggestions').handlers.click();assert.match($('suggestions-status').textContent,/network failure/,'old success cannot mask new generation failure');failGenerate=false;
- $('suggestions-focus').value=' 边界 ';await $('generate-suggestions').handlers.click();assert.equal(calls.at(-1).payload.focus,'边界');assert.equal(calls.at(-1).payload.discussion,'用户：希望支持离线记账。');assert.equal(calls.at(-1).payload.revision,'r2');assert.equal($('suggestions-progress').hidden,true);
+ $('input').value=' 边界 ';await $('generate-suggestions').handlers.click();assert.equal(calls.at(-1).payload.focus,'边界');assert.equal(calls.at(-1).payload.discussion,'用户：希望支持离线记账。');assert.equal(calls.at(-1).payload.revision,'r2');assert.equal($('suggestions-progress').hidden,true);
+ assert.equal($('input').value,' 边界 ','generation preserves the shared input');
+ $('input').value='';await $('generate-suggestions').handlers.click();assert.equal(calls.at(-1).payload.focus,'','blank input analyzes current plan');
+ $('input').value='x'.repeat(3001);const before=calls.length;await $('generate-suggestions').handlers.click();assert.equal(calls.length,before);assert.match($('suggestions-status').textContent,/3000/);assert.equal($('input').value.length,3001);
  console.log('Suggestions: explicit selection, preview without save, dirty guard, stale revision, generation progress passed.');
 }
 module.exports=run;if(require.main===module)run().catch(e=>{console.error(e);process.exitCode=1;});

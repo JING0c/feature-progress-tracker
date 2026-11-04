@@ -167,7 +167,8 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 .suggestions-panel .actions{gap:10px;flex-wrap:wrap}
 .suggestions-panel .controls{gap:6px;flex-wrap:wrap}
 .suggestions-panel .controls button{font-size:13px;padding:8px 12px}
-.suggestion-focus-options,.suggestion-activity{margin:14px 0}
-.suggestion-focus-options>summary,.suggestion-activity>summary{cursor:pointer;color:#633a4c;font-size:14px}
-.suggestion-focus-options label{display:block;margin-top:10px}
+.suggestion-activity{margin:14px 0}
+.suggestion-activity>summary{cursor:pointer;color:#633a4c;font-size:14px}
 .suggestion-activity .planning-activity{margin-top:10px;border:1px solid #d6ddc1;border-radius:10px;padding:14px}
+
+#generate-suggestions[hidden]{display:none}
