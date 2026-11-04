@@ -10,7 +10,7 @@ async function run(){
   const node=id=>{
     if(!nodes.has(id))nodes.set(id,{value:'',attributes:{},handlers:{},hidden:false,
       addEventListener(k,fn){this.handlers[k]=fn;},setAttribute(k,v){this.attributes[k]=v;},
-      replaceChildren(){},append(){},focus(){},scrollIntoView(){},remove(){},
+      replaceChildren(){},append(){},focus(){},scrollIntoView(){this.scrolls=(this.scrolls||0)+1;},remove(){},
       click(){downloads.push({href:this.href,filename:this.download});},querySelector(){return node('send');}
     });
     return nodes.get(id);
@@ -86,8 +86,9 @@ async function run(){
   const failure=assert.rejects(failed,/cannot parse/);
   pending.at(-1).resolve({ok:false,json:async()=>({error:'cannot parse'})});await failure;
   assert.equal(vm.runInContext('planText',context),'# suggestion preview');assert.equal(vm.runInContext('dirty',context),false);
-  await vm.runInContext('savePlan()',context);assert.equal(node('save-plan').disabled,true,'saved content does not invite duplicate saves');assert.equal(node('document-save-state').textContent,'已保存');assert.equal(finishedPreviews,1,'successful save must end preview filtering and unsaved status');
+  await vm.runInContext('savePlan()',context);assert.equal(node('save-plan').disabled,true,'saved content does not invite duplicate saves');assert.equal(node('document-save-state').textContent,'已保存');assert.equal(finishedPreviews,1,'successful save must end preview filtering and unsaved status');assert.match(node('source-review-status').textContent,/下一步/,'first save must advance source-review guidance');
   vm.runInContext("notice('保存冲突，请重新读取。',true)",context);assert.equal(node('page-feedback').hidden,false);assert.match(node('page-feedback-text').textContent,/保存冲突/);node('dismiss-feedback').handlers.click();assert.equal(node('page-feedback').hidden,true);
+  const beforeScroll=node('view-section').scrolls||0;const rendering=vm.runInContext('showPlan("# generated",true)',context);assert.equal(node('view-section').scrolls||0,beforeScroll,'do not focus an unfinished table');pending.at(-1).resolve({ok:true,json:async()=>({title:'generated',sheets:[]})});await rendering;assert.equal(node('view-section').scrolls,beforeScroll+1,'focus only after the table has rendered');
   editing=true;vm.runInContext('setBusy(false)',context);assert.equal(node('save-plan').disabled,false,'sticky save must work while editing');await node('save-plan').handlers.click();assert.equal(editSaves,1,'sticky save submits editor fields, not stale document');
   console.log('Planning table flow: baseline and suggestion rendering/failure scenarios passed (race, draft export, no unlock, failed export, source fallback).');
 }

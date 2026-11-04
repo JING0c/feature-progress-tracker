@@ -4,7 +4,7 @@ async function run(){
  const $=id=>{if(!nodes.has(id))nodes.set(id,{hidden:true,handlers:{},setAttribute(k,v){this[k]=v;},addEventListener(k,f){this.handlers[k]=f;}});return nodes.get(id);};
  const box={window:{},document:{getElementById:$},setInterval(f){timers.add(f);return f;},clearInterval(f){timers.delete(f);},setTimeout(f){timeouts.add(f);return f;},clearTimeout(f){timeouts.delete(f);}};
  vm.runInNewContext(fs.readFileSync('scripts/planning-progress.js','utf8'),box);
- let state={percent:50,stage:'Codex 分析',detail:'等待输出',status:'running',cancellable:true},release,cancelled; 
+ let state={percent:50,stage:'Codex 分析',detail:'等待输出',status:'running',cancellable:true},release,cancelled;
  const progress=box.window.createPlanningProgress({poll:async()=>state,cancel:async id=>{cancelled=id;}});
  const task=progress.run('生成建议',()=>new Promise(r=>release=r));
  assert.equal($('operation-bar').value,0);await [...timers][0]();assert.equal($('operation-bar').value,50);assert.match($('operation-stage').textContent,/Codex/);

@@ -149,3 +149,7 @@ button:disabled{cursor:not-allowed}
 .reference-card small{font-size:12px}.status,.plan-viewbar p,.sheet-count{font-size:13px}
 button:disabled{opacity:1;background:#f3eef0;color:#887780}
 .operation-progress-panel[data-state=cancelled]{border-color:#d7bbc8;color:#705664}
+
+.document-edit-actions #save-plan:disabled{background:#f3eef0;color:#887780}
+.sheet-intro-brief{display:block;overflow:visible;-webkit-line-clamp:unset}
+.sheet-intro-detail summary{font-size:13px}
