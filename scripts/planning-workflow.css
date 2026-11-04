@@ -76,3 +76,28 @@
 .plan-sidebar .version-save-note{padding:8px 0 0;gap:6px;border:0;background:transparent}
 .plan-sidebar .version-save-note label{font-size:12px}
 .plan-sidebar .version-save-note input{width:100%;min-width:0;flex-basis:100%;font-size:12px;line-height:1.5}
+
+.document-edit-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-left:auto;min-width:0}
+.document-edit-actions button{font-size:13px}
+.document-edit-actions #save-plan{background:#832d51;color:white}
+.document-edit-actions .save-note-details{padding:0;max-width:280px}
+.document-edit-actions .version-save-note{padding:8px 0;border:0}
+.document-edit-actions .version-save-note input{min-width:0;width:100%}
+.source-review-panel>button{float:right;margin:0 0 8px 12px}
+.source-review-panel:after{content:'';display:block;clear:both}
+.suggestions-panel{margin-bottom:24px;padding:22px;border:1px solid #cbd7b0;border-radius:14px;background:#f6f8ee}
+.suggestions-panel[hidden],#suggestions-progress[hidden],#suggestion-diff[hidden]{display:none}
+.suggestions-panel h2{margin:0 0 8px;font-size:20px;color:#294c3a}
+.suggestions-panel p,.suggestions-panel label{font-size:13px;line-height:1.7}
+.suggestions-panel textarea{min-height:64px;margin-top:8px;background:white}
+.suggestions-panel progress{width:100%;accent-color:#447a5f}
+.suggestion-card{padding:16px;margin-top:12px;background:white;border:1px solid #dae2c9;border-radius:10px}
+.suggestion-card label{display:flex;align-items:center;gap:10px;cursor:pointer}
+.suggestion-card input{accent-color:#447a5f;width:18px;height:18px;flex-shrink:0}
+.suggestion-card summary,.planning-discussion>summary{cursor:pointer;color:#633a4c;font-size:14px}
+.suggestion-card h4{margin-bottom:6px}.suggestion-card details p{white-space:pre-wrap;overflow-wrap:anywhere}
+#suggestion-diff-text{white-space:pre-wrap;overflow-wrap:anywhere;max-height:360px;overflow:auto;font-size:12px}
+.planning-discussion{margin:20px 0}.planning-discussion>summary{padding:14px;background:#f9eaf1;border-radius:8px;margin-bottom:16px}
+:is(#new-feature-section,#view-section,#suggestions-section,#review-section){scroll-margin-top:20px}
+
+.review-ledger-actions{display:flex;gap:8px;flex-wrap:wrap;float:right;margin-left:12px}.review-ledger-actions button{font-size:13px}
