@@ -74,7 +74,7 @@ VALID_ID = re.compile(r'^[A-Za-z0-9_-]{1,64}$')
 EMPTY_HASH = hashlib.sha256(b'').hexdigest()
 
 
-@lru_cache(maxsize=8)
+@lru_cache(maxsize=None)
 def planning_module(name):
     if name == 'planning_editor': planning_module('planning_sheet')
     if name == 'planning_suggestions': planning_module('planning_editor')
@@ -86,6 +86,9 @@ def planning_module(name):
     spec.loader.exec_module(module)
     return module
 
+
+def operation_step(percent, stage, detail=''):
+    planning_module('planning_progress').step(percent, stage, detail)
 
 def planning_converters():
     return planning_module('planning_sheet').parse_plan_sheet, planning_module('planning_xlsx').export_plan_xlsx
@@ -101,6 +104,7 @@ class RequestError(Exception):
 def codex_reply(project, prompt):
     codex = shutil.which('codex')
     if not codex: raise RequestError('未找到 Codex 命令行，请检查安装与登录状态。')
+    operation_step(50, 'Codex 正在处理', '等待智能体输出；百分比按已完成阶段计算')
     result = subprocess.run([codex, 'exec', '--sandbox', 'read-only', '--skip-git-repo-check', '--ephemeral', '--json', '-'],
                 input=prompt, text=True, capture_output=True, cwd=project['directory'], timeout=180)
     if result.returncode:
@@ -394,6 +398,7 @@ class ProjectStore:
         self.locks = {}
         self.generated_plans = {}
         self.source_progress = {}
+        self.operation_progress = planning_module('planning_progress').Progress()
         if self.workspace:
             self.workspace.mkdir(parents=True, exist_ok=True)
             self.registry = self.workspace / '项目列表.md'
@@ -708,6 +713,10 @@ def main():
             return payload
 
         def respond(self, data, status=200, kind='application/json; charset=utf-8', headers=None):
+            operation = getattr(self, 'operation_key', None)
+            if operation:
+                if status >= 400: store.operation_progress.finish(operation, data.get('error', '请求失败') if isinstance(data, dict) else '请求失败')
+                else: operation_step(95, '返回结果', '服务端处理完成，正在返回页面')
             if not isinstance(data, bytes):
                 data = json.dumps(data, ensure_ascii=False).encode()
             self.send_response(status)
@@ -718,6 +727,7 @@ def main():
                 self.send_header(name, value)
             self.end_headers()
             self.wfile.write(data)
+            if operation and status < 400: store.operation_progress.finish(operation)
 
         def error(self, exc):
             message = '智能体回复超时，请重试。' if isinstance(exc, subprocess.TimeoutExpired) else str(exc)
@@ -736,6 +746,8 @@ def main():
                 self.respond({'error': '页面已失效或请求来源无效，请刷新后重试。'}, 403)
                 return
             route = urlparse(self.path).path
+            progress_token = None
+            self.operation_key = None
             try:
                 if route == '/api/projects':
                     self.respond({'project': store.register(self.json_body())})
@@ -743,7 +755,12 @@ def main():
                 if route not in ('/api/ledger/save', '/api/ledger/preview', '/api/plan/save', '/api/planning', '/api/plan/table', '/api/plan/export', '/api/research', '/api/research/selection', '/api/plan/features', '/api/research/source-check', '/api/plan/suggestions', '/api/plan/suggestions/preview'):
                     raise RequestError('接口不存在。', 404)
                 project = self.project()
+                identity = self.headers.get('X-Operation-ID')
+                if identity:
+                    progress_token = store.operation_progress.start(project['id'], identity)
+                    self.operation_key = (project['id'], identity)
                 payload = self.json_body(100000 if route == '/api/planning' else 1000000)
+                operation_step(10, '准备项目资料', '检查当前项目与请求参数')
                 if route in ('/api/plan/suggestions','/api/plan/suggestions/preview'):
                     self.respond(self.suggestions(project,payload,preview=route.endswith('/preview')));return
                 if route == '/api/research':
@@ -757,6 +774,7 @@ def main():
                 if route == '/api/research/selection':
                     self.respond(self.save_references(project,payload));return
                 if route == '/api/plan/features':
+                    operation_step(45, '整理功能条目', '核验编辑字段、采用选择与层级')
                     planning_module('planning_sheet')
                     editor=planning_module('planning_editor');content=payload.get('content')
                     if not isinstance(content,str): raise RequestError('规划内容无效。')
@@ -780,6 +798,7 @@ def main():
                         self.respond(model)
                     else:
                         filename = quote(project['name'] + '-项目规划书.xlsx', safe='')
+                        operation_step(85, '生成 Excel 文件', '写入工作表、层级和格式')
                         self.respond(export_xlsx(model, content),
                                      kind='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                                      headers={'Content-Disposition': 'attachment; filename="project-plan.xlsx"; filename*=UTF-8\'\'' + filename})
@@ -807,10 +826,12 @@ def main():
                             new_ids=set(re.findall(r'^(?:##\s+大功能\s+|\s*-\s*\[[ xX]\]\s+)(F\d+(?:-\d+)*)',content,re.M))
                             if (declined & new_ids)-before_ids:
                                 raise RequestError('台账含未采用的新功能，请按当前选择重新生成。')
+                    operation_step(40, '校验内容与版本', '检查数据格式及当前文件版本')
                     prepared = prepare_ledger(content, current['content']) if is_ledger else None
                     if preview:
                         self.respond(prepared)
                         return
+                    operation_step(75, '保存文件与历史', '写入 Markdown、备份及版本记录')
                     source_backup = preserve_generated_source(target, content) if prepared and prepared['adjustments'] else None
                     if prepared:
                         response=atomic_write(target,prepared['content'],revision)
@@ -827,8 +848,14 @@ def main():
                 self.respond(response)
             except (RequestError, ValueError, OSError, UnicodeError, RuntimeError, subprocess.TimeoutExpired) as exc:
                 self.error(exc)
+            except Exception:
+                if self.operation_key: store.operation_progress.finish(self.operation_key, '处理意外中断，请重试。')
+                raise
+            finally:
+                if progress_token is not None: planning_module('planning_progress').CURRENT.reset(progress_token)
 
         def planning_model(self, content):
+            operation_step(65, '整理层级表格', '解析功能编号、父子关系与说明')
             model=planning_module('planning_sheet').parse_plan_sheet(content)
             try: table=planning_module('planning_editor').editable_table(content)
             except ValueError: return model
@@ -867,6 +894,7 @@ def main():
             return data
 
         def save_references(self, project, payload):
+            operation_step(40, '核验参考选择', '检查候选仓库与记录版本')
             revision=payload.get('revision')
             if not isinstance(revision,str):raise RequestError('参考选择缺少版本信息，请刷新。')
             with store.lock_for('planning',project['ledger_path']):
@@ -898,6 +926,7 @@ def main():
                     if record.get('id')!=payload.get('suggestion_id') or record['plan_revision']!=doc['revision']:
                         raise RequestError('建议已过期，请基于当前功能表重新生成。',409)
                     # Revalidate the saved data before applying only server-known selected patches.
+                    operation_step(45, '应用所选建议', '核验版本并合并选中的功能修改')
                     checked=module.validate({'suggestions':record['suggestions']},doc['content'],preserve_ids=True)
                     content=module.apply(doc['content'],checked['suggestions'],payload.get('selected'))
                     return {'content':content,'revision':doc['revision'],'diff':''.join(difflib.unified_diff(doc['content'].splitlines(keepends=True),content.splitlines(keepends=True),fromfile='当前功能表',tofile='建议预览'))}
@@ -920,11 +949,13 @@ def main():
                         '\n已选参考（资料）：'+json.dumps(refs,ensure_ascii=False)+'\n用户希望关注：'+focus)
                 reply=codex_reply(project,prompt).strip()
                 reply=re.sub(r'^```(?:json)?\s*|\s*```$','',reply)
+                operation_step(80, '核验功能建议', '检查建议字段、编号和父子关系')
                 try: record=module.validate(json.loads(reply),doc['content'])
                 except (ValueError,KeyError,TypeError) as exc:raise RequestError('子智能体建议格式或变更无效：'+str(exc)) from exc
                 if read_document(Path(project['plan_path']))['revision']!=doc['revision']:
                     raise RequestError('分析期间功能表已变化，请重新生成建议。',409)
                 record.update(id=secrets.token_hex(12),plan_revision=doc['revision'],generated_at=datetime.now(timezone.utc).isoformat(),agent='独立 Codex 子智能体',focus=focus)
+                operation_step(90, '保存建议记录', '保存到当前项目的功能建议 Markdown')
                 atomic_write(path,module.markdown(record),old['revision'])
                 return record
             finally:lock.release()
@@ -932,6 +963,7 @@ def main():
         def check_sources(self, project, candidate=None):
             """Final review is bound to disk plan and selected reference revision."""
             def progress(**state):
+                operation_step(15 + 25 * state.get('completed',0) / max(state.get('total',1),1), state.get('stage','检查源码'), state.get('message',''))
                 store.source_progress[project['id']] = dict(state, running=True)
             progress(stage='检查版本', message='读取当前规划和已选择仓库', completed=0, total=1)
             try:
@@ -1021,7 +1053,8 @@ def main():
                     if reply.startswith('```'): reply=re.sub(r'^```(?:json)?\s*|\s*```$','',reply)
                     try: query=json.loads(reply)['query']
                     except (ValueError,KeyError,TypeError): raise RequestError('智能体没有给出有效关键词，请在搜索框填写关键词后重试。')
-                module=planning_module('planning_research'); result=module.search_repositories(query)
+                operation_step(55, '搜索 GitHub', '查询匹配的开源仓库')
+                module=planning_module('planning_research'); result=module.search_repositories(query, progress=lambda stage,detail: operation_step(60,stage,detail))
                 if feature_idea:
                     result['feature_idea'] = feature_idea
                 path=self.research_path(project); old=read_document(path,optional=True)
@@ -1032,6 +1065,7 @@ def main():
                         selected={r['name'] for r in previous['repositories'] if r.get('selected')} if previous.get('feature_idea', '') == feature_idea else set()
                         for repo in result['repositories']:repo['selected']=repo['name'] in selected
                     except ValueError:pass
+                operation_step(85, '保存参考项目', '保存检索结果及 README 摘要')
                 atomic_write(path,module.research_markdown(result),old['revision'])
                 return self.research_data(project)
             finally: lock.release()
@@ -1083,7 +1117,7 @@ def main():
                         audit=self.check_sources(project)
                         context_parts.append('最终确认前的静态源码核对（资料，保留未证实项，不视为实施完成）：\n'+audit['report'])
                     if merge_feature:
-                        sources=planning_module('planning_source').collect_sources(Path(project['directory']),[r for r in research.get('repositories',[]) if r.get('selected')],proposal,lambda **state: store.source_progress.update({project['id']:dict(state,running=True)}),focus=research.get('query',''))
+                        sources=planning_module('planning_source').collect_sources(Path(project['directory']),[r for r in research.get('repositories',[]) if r.get('selected')],proposal,lambda **state: (operation_step(30,state.get('stage','读取源码'),state.get('message','')),store.source_progress.update({project['id']:dict(state,running=True)})),focus=research.get('query',''))
                         context_parts.append('新增提案相关源码节选（资料，新增功能必须结合此核对；找不到的标记待确认）：\n'+json.dumps(sources,ensure_ascii=False))
                     store.source_progress[project['id']]={'running':True,'stage':'生成功能表' if merge_feature else '生成功能台账','message':'源码资料已就绪，Codex 正在整理结果'}
                 plan_document = read_document(Path(project['plan_path']), optional=True, recover=True)
@@ -1144,6 +1178,7 @@ def main():
                     prompt += ('\n本轮是追加功能。只为确实新增的功能使用新编号，原功能及已存在的同类条目沿用旧编号。'
                                '新增子项可挂到当前功能表中已存在的父编号下。仅将最后一条用户消息前、以 <!-- feature-proposal --> 结束的助手提案中的明确功能写入表格。不要自行扩大提案范围。')
                 reply = codex_reply(project, prompt)
+                operation_step(80, '核验生成内容', '检查结果与已有功能的兼容性')
                 if merge_feature:
                     editor = planning_module('planning_editor')
                     existing = editor.editable_table(plan_document['content'])['rows']
@@ -1170,6 +1205,7 @@ def main():
                 lock.release()
 
         def do_GET(self):
+            self.operation_key = None
             if not self.local_request():
                 self.respond({'error': '请求来源无效。'}, 403)
                 return
@@ -1182,6 +1218,7 @@ def main():
                     '/assets/planning-sheet.css': ('planning-sheet.css', 'text/css; charset=utf-8'),
                     '/assets/planning-workflow.js': ('planning-workflow.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-workflow.css': ('planning-workflow.css', 'text/css; charset=utf-8'),
+                    '/assets/planning-progress.js': ('planning-progress.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-suggestions.js': ('planning-suggestions.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-history-view.js': ('planning-history-view.js', 'text/javascript; charset=utf-8'),
                 }
@@ -1195,7 +1232,7 @@ def main():
                 if route == '/projects' or (route == '/' and store.workspace and not urlparse(self.path).query):
                     self.html('projects.html')
                     return
-                if route not in ('/', '/planning', '/api/project', '/api/plan', '/api/ledger/info', '/api/ledger', '/api/research', '/api/plan/history', '/api/research/source-progress', '/api/plan/suggestions'):
+                if route not in ('/', '/planning', '/api/project', '/api/plan', '/api/ledger/info', '/api/ledger', '/api/research', '/api/plan/history', '/api/research/source-progress', '/api/plan/suggestions', '/api/operation-progress'):
                     raise RequestError('页面不存在。', 404)
                 project = self.project()
                 if route == '/':
@@ -1210,6 +1247,10 @@ def main():
                         self.html('dashboard.html', project)
                 elif route == '/planning':
                     self.html('planning.html', project)
+                elif route == '/api/operation-progress':
+                    identities=parse_qs(urlparse(self.path).query).get('operation',[])
+                    if len(identities)!=1 or not re.fullmatch(r'[A-Za-z0-9_-]{8,80}',identities[0]):raise RequestError('进度任务编号无效。')
+                    self.respond(store.operation_progress.read(project['id'],identities[0]))
                 elif route == '/api/plan/suggestions':
                     path=self.suggestion_path(project)
                     data=planning_module('planning_suggestions').read(read_document(path)['content']) if path.exists() else {'suggestions':[]}

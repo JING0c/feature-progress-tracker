@@ -1,6 +1,6 @@
 (function(global){
  'use strict';
- global.createPlanningHistoryView=function({request,downloadExcel}){
+ global.createPlanningHistoryView=function({request,downloadExcel,localOperation=(title,work)=>work()}){
   const $=id=>document.getElementById(id);let current=null,sequence=0;
   const view=createPlanningSheetView($('history-sheet'));
   const text=(tag,value)=>{const node=document.createElement(tag);node.textContent=value;return node;};
@@ -29,8 +29,8 @@
     $('history-status').textContent=data.versions.length?'共 '+data.versions.length+' 个归档版本。':'尚无归档版本；以后每次网页成功保存都会归档。';$('plan-history').scrollIntoView({block:'start'});
    }catch(error){if(serial===sequence)$('history-status').textContent=error.message;}
   });
-  $('history-download-md').addEventListener('click',()=>{
-   if(!current)return;const url=URL.createObjectURL(new Blob([current.content],{type:'text/markdown;charset=utf-8'})),link=document.createElement('a');link.href=url;link.download=current.id+'.md';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  $('history-download-md').addEventListener('click',async()=>{
+   if(!current)return;const version=current;try{await localOperation('导出历史 Markdown',()=>{const url=URL.createObjectURL(new Blob([version.content],{type:'text/markdown;charset=utf-8'})),link=document.createElement('a');link.href=url;link.download=version.id+'.md';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);});}catch(error){$('history-status').textContent=error.message;}
   });
   $('history-download-excel').addEventListener('click',async()=>{
    if(!current)return;const version=current;$('history-download-excel').disabled=true;

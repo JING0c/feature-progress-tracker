@@ -103,3 +103,8 @@
 .review-ledger-actions{display:flex;gap:8px;flex-wrap:wrap;float:right;margin-left:12px}.review-ledger-actions button{font-size:13px}
 
 .sheet-preview-notice{font-weight:600;color:#315b46;background:#edf3dd;padding:8px 12px;border-radius:8px}.planning-grid tr.sheet-changed td,.planning-grid tr.sheet-changed th{background:#f5f8ea}.planning-grid tr.sheet-changed th.sheet-index{box-shadow:inset 4px 0 #447a5f;color:#315b46}
+
+/* One consistent progress surface remains visible while working anywhere on the page. */
+.operation-progress-panel{position:fixed;right:24px;bottom:18px;width:min(440px,calc(100vw - 32px));box-sizing:border-box;z-index:1000;background:#fffdfd;border:1px solid #c7d4a7;border-radius:16px;padding:16px 20px;box-shadow:0 8px 30px #43243522;color:#304e3d}.operation-progress-panel[hidden]{display:none}.operation-heading{display:flex;align-items:center;gap:12px}.operation-heading strong:first-child{flex:1}.operation-heading button{padding:0 6px;background:transparent;color:#705664;font-size:22px}.operation-progress-panel progress{display:block;width:100%;height:14px;margin:12px 0;accent-color:#447a5f}.operation-progress-panel p{font-size:14px;margin:6px 0;line-height:1.5;overflow-wrap:anywhere}.operation-foot{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:#695663;margin-top:10px}.operation-progress-panel[data-state="failed"]{border-color:#832d51;color:#832d51}.operation-progress-panel[data-state="failed"] progress{accent-color:#832d51}
+#reference-progress,#feature-research-progress,#source-review-progress,#suggestions-progress{display:none}
+@media(max-width:600px){.operation-progress-panel{right:16px;bottom:12px;padding:12px 16px}}

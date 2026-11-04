@@ -21,7 +21,7 @@ def github_json(path):
     except (URLError, TimeoutError) as error:
         raise ValueError('无法连接 GitHub，请检查网络后重试。') from error
 
-def search_repositories(query):
+def search_repositories(query, progress=None):
     if not isinstance(query, str) or not query.strip() or len(query) > 160 or any(c in query for c in '\n\r\0'):
         raise ValueError('请填写不超过160字的 GitHub 搜索关键词。')
     query = query.strip()
@@ -41,6 +41,7 @@ def search_repositories(query):
                 'stars':item.get('stargazers_count',0), 'updated_at':str(item.get('updated_at') or '')[:100],
                 'readme':'', 'readme_note':'未读取', 'selected':False}
         if len(repositories) < 3:
+            if progress: progress('读取 README', name + ' · '+str(len(repositories)+1)+'/'+str(min(3,len(data.get("items",[])))))
             try:
                 readme = github_json('repos/' + name + '/readme')
                 if readme.get('encoding') == 'base64':
