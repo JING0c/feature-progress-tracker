@@ -61,7 +61,10 @@ function run() {
       {key:'list2',parent:null,cells:['F01 借阅','F01-01 借出','额度校验','检查借阅数量']},
       {key:'list3',parent:null,cells:['F02 预约','F02-01 借出','日期校验','<img src=x>']}
     ],merges:[{row:0,column:0,rowSpan:2},{row:0,column:1,rowSpan:2}]};
+  listing.rows[0].cells[3]='说明：检查居民编号。\n验收标准：'+ '完整验收。'.repeat(30);
   view.show({sheets:[model.sheets[0],listing]});
+  assert.equal(container.children[0].attributes['aria-label'],'规划章节','tabs are available above the table');
+  assert.ok(all(container,'details').some(n=>n.textContent.includes('完整验收。'.repeat(30))),'collapsed introduction retains full accessible text');
   assert.equal(all(container,'th').filter(n=>n.attributes.scope==='col')[1].textContent,'大功能','prefer the reference-style list');
   const cells=all(container,'td');
   assert.equal(cells.filter(n=>n.attributes.rowspan==='2').length,2);
@@ -75,7 +78,10 @@ function run() {
   listing.rows.forEach((r,i)=>r.feature_id=['F01-01-01','F01-01-02','F02'][i]);
   view.show({sheets:[model.sheets[0],listing]},{changedIds:['F01-01-02','F02']});
   assert.equal(button('功能清单').attributes['aria-pressed'],'true','suggestion preview defaults to feature list');
-  assert.equal(bodyRows().length,3,'list retains full hierarchy and original merge coordinates');
+  assert.equal(bodyRows().length,2,'list preview immediately shows changed functions');
+  assert.equal(all(container,'td').filter(n=>n.attributes.rowspan).length,0,'filtered rows repeat full paths without stale merges');
+  button('显示全部功能').handlers.click();
+  assert.equal(bodyRows().length,3,'full list restores all rows');
   assert.match(container.textContent,/本次建议预览.*尚未保存/);
   assert.deepEqual(bodyRows().map(r=>r.className.includes('sheet-changed')),[false,true,true]);
   assert.equal(all(container,'td').filter(n=>n.attributes.rowspan==='2').length,2,'preview preserves parent merges');

@@ -21,10 +21,10 @@
       if (!sheet) { message('还没有规划内容，请先通过对话梳理项目。'); return; }
       active = sheet.id;
       const allRows = sheet.rows || [], columns = sheet.columns || [];
-      const featureSheet=sheet.kind!=='feature-list'&&columns.includes('功能名称');
+      const listing = sheet.kind === 'feature-list';
+      const featureSheet=listing||columns.includes('功能名称');
       const identity=row=>row.feature_id||row.cells[columns.indexOf('编号')];
       const rows=onlyChanged&&featureSheet?allRows.filter(row=>changedIds.has(identity(row))):allRows;
-      const listing = sheet.kind === 'feature-list';
       const byKey = new Map(rows.map(row => [row.key, row]));
       const parents = new Set(rows.map(row => row.parent).filter(key => byKey.has(key)));
       const toolbar = el('div', 'sheet-toolbar');
@@ -75,7 +75,7 @@
       const body = el('tbody'), controls = [], rendered = [];
       const hierarchyColumn = columns.indexOf('功能名称') >= 0 ? columns.indexOf('功能名称') : 0;
       const mergeStarts = new Map(), covered = new Set();
-      if (listing) for (const merge of sheet.merges || []) {
+      if (listing && !onlyChanged) for (const merge of sheet.merges || []) {
         const { row, column, rowSpan } = merge;
         if (!Number.isInteger(row) || !Number.isInteger(column) || !Number.isInteger(rowSpan) ||
             row < 0 || column < 0 || column >= columns.length || rowSpan < 2 || row + rowSpan > rows.length) continue;
@@ -99,7 +99,10 @@
             const span = mergeStarts.get(index + ':' + column);
             if (span) { cell.setAttribute('rowspan', String(span)); cell.className += ' sheet-merged'; }
             if (column < columns.indexOf('功能介绍')) cell.className += ' sheet-level-cell';
-            cell.textContent = value || '—';
+            if(columns[column]==='功能介绍'&&value.length>100){
+              const brief=el('p','sheet-intro-brief',value.split('\n')[0].replace(/^说明[：:]\s*/,''));
+              const detail=el('details','sheet-intro-detail');detail.append(el('summary','','展开完整说明与验收'),el('div','',value));cell.append(brief,detail);
+            }else cell.textContent = value || '—';
           } else if (column === hierarchyColumn) {
             const content = el('div', 'sheet-hierarchy');
             content.style.paddingLeft = Math.min(Math.max(row.depth || 0, 0), 12) * 18 + 'px';
@@ -138,7 +141,7 @@
           button.setAttribute('aria-expanded', String(open));
           button.setAttribute('aria-label', (open ? '收起 ' : '展开 ') + label);
         }
-        info.textContent = listing ? sheet.name + ' · 按列查看包含关系 · ' + rows.length + ' 行' :
+        info.textContent = listing ? sheet.name + ' · 显示 ' + rows.length + ' / ' + allRows.length + ' 行 · 左右滚动查看技术与准备' :
           sheet.name + ' · 显示 ' + visible + ' / ' + allRows.length + ' 行';
       }
       expand.addEventListener('click', () => { parents.forEach(key => collapsed.delete(key)); update(); });
@@ -149,7 +152,7 @@
         button.setAttribute('aria-pressed', String(item.id === active));
         button.addEventListener('click', () => { active = item.id; render(); }); tabs.append(button);
       });
-      container.append(toolbar, scroll, tabs);
+      container.append(tabs, toolbar, scroll);
       update();
     }
     return {

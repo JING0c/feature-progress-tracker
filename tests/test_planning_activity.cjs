@@ -12,10 +12,11 @@ class Node{
  const nodes=new Map();const get=id=>{if(!nodes.has(id))nodes.set(id,new Node());return nodes.get(id)};
  const context={window:{},document:{createElement:()=>new Node(),getElementById:get},Date};
  vm.runInNewContext(fs.readFileSync('scripts/planning-activity.js','utf8'),context);
- let data={records:[{time:'2026-11-03T00:00:00Z',title:'预览（尚未保存）',detail:'<script>unsafe</script> 修改前：A 修改后：B'}]};
+ let data={records:[{id:'event-1',time:'2026-11-03T00:00:00Z',title:'预览（尚未保存）',detail:'<script>unsafe</script> 修改前：A 修改后：B'}]};
  const controller=context.window.createPlanningActivity({load:async()=>data});await controller.refresh();
  assert.match(get('activity-list').textContent,/尚未保存/);assert.match(get('activity-list').textContent,/<script>/);
  assert.match(get('activity-count').textContent,/1 条记录/);
+ const entry=get('activity-list').children[0];entry.open=true;entry.handlers.toggle();await controller.refresh();assert.equal(get('activity-list').children[0].open,true,'refresh retains open record');
  data={records:[]};await controller.refresh('记录未保存：磁盘故障');assert.match(get('activity-state').textContent,/磁盘故障/);
  await controller.refresh();assert.match(get('activity-state').textContent,/还没有操作记录/);
  const waiting=[];const race=context.window.createPlanningActivity({load:()=>new Promise(resolve=>waiting.push(resolve))});

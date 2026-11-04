@@ -86,7 +86,8 @@ async function run(){
   const failure=assert.rejects(failed,/cannot parse/);
   pending.at(-1).resolve({ok:false,json:async()=>({error:'cannot parse'})});await failure;
   assert.equal(vm.runInContext('planText',context),'# suggestion preview');assert.equal(vm.runInContext('dirty',context),false);
-  await vm.runInContext('savePlan()',context);assert.equal(finishedPreviews,1,'successful save must end preview filtering and unsaved status');
+  await vm.runInContext('savePlan()',context);assert.equal(node('save-plan').disabled,true,'saved content does not invite duplicate saves');assert.equal(node('document-save-state').textContent,'已保存');assert.equal(finishedPreviews,1,'successful save must end preview filtering and unsaved status');
+  vm.runInContext("notice('保存冲突，请重新读取。',true)",context);assert.equal(node('page-feedback').hidden,false);assert.match(node('page-feedback-text').textContent,/保存冲突/);node('dismiss-feedback').handlers.click();assert.equal(node('page-feedback').hidden,true);
   console.log('Planning table flow: baseline and suggestion rendering/failure scenarios passed (race, draft export, no unlock, failed export, source fallback).');
 }
 module.exports=run;
