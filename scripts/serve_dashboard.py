@@ -77,7 +77,8 @@ EMPTY_HASH = hashlib.sha256(b'').hexdigest()
 @lru_cache(maxsize=None)
 def planning_module(name):
     if name == 'planning_editor': planning_module('planning_sheet')
-    if name == 'planning_suggestions': planning_module('planning_editor')
+    if name in ('planning_suggestions','planning_activity'): planning_module('planning_editor')
+    if name == 'planning_activity': planning_module('planning_history')
     # Resolve these local helpers independently of the caller's working directory
     # (the dashboard can also be imported by an integration test).
     spec = importlib.util.spec_from_file_location(name, BASE / (name + '.py'))
@@ -713,6 +714,17 @@ def main():
             return payload
 
         def respond(self, data, status=200, kind='application/json; charset=utf-8', headers=None):
+            activity = getattr(self, 'activity_context', None)
+            self.activity_context = None
+            if activity and isinstance(data, dict):
+                project, route, payload = activity
+                try:
+                    module=planning_module('planning_activity')
+                    record=module.event(route,payload,data,status,getattr(self,'activity_before',''))
+                    if record:
+                        with store.lock_for('activity',project['plan_path']):module.append(project,record)
+                except (ValueError,OSError,UnicodeError,KeyError,TypeError) as exc:
+                    data['activity_warning']='操作结果已返回，但记录未保存：'+str(exc)
             operation = getattr(self, 'operation_key', None)
             if operation:
                 if status >= 400: store.operation_progress.finish(operation, data.get('error', '请求失败') if isinstance(data, dict) else '请求失败')
@@ -748,6 +760,8 @@ def main():
             route = urlparse(self.path).path
             progress_token = None
             self.operation_key = None
+            self.activity_context = None
+            self.activity_before = ''
             try:
                 if route == '/api/projects':
                     self.respond({'project': store.register(self.json_body())})
@@ -760,6 +774,7 @@ def main():
                     progress_token = store.operation_progress.start(project['id'], identity)
                     self.operation_key = (project['id'], identity)
                 payload = self.json_body(100000 if route == '/api/planning' else 1000000)
+                self.activity_context = (project,route,payload)
                 operation_step(10, '准备项目资料', '检查当前项目与请求参数')
                 if route in ('/api/plan/suggestions','/api/plan/suggestions/preview'):
                     self.respond(self.suggestions(project,payload,preview=route.endswith('/preview')));return
@@ -814,6 +829,7 @@ def main():
                     if is_ledger:
                         store.require_planning(project)
                     current = read_document(target, optional=not is_ledger, recover=not is_ledger)
+                    self.activity_before = current['content']
                     if revision is not None and current['revision'] != revision:
                         raise RequestError('文件已在别处发生变化，请重新读取后再保存。', 409)
                     if is_ledger:
@@ -1206,6 +1222,8 @@ def main():
 
         def do_GET(self):
             self.operation_key = None
+            self.activity_context = None
+            self.activity_before = ''
             if not self.local_request():
                 self.respond({'error': '请求来源无效。'}, 403)
                 return
@@ -1219,6 +1237,7 @@ def main():
                     '/assets/planning-workflow.js': ('planning-workflow.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-workflow.css': ('planning-workflow.css', 'text/css; charset=utf-8'),
                     '/assets/planning-progress.js': ('planning-progress.js', 'text/javascript; charset=utf-8'),
+                    '/assets/planning-activity.js': ('planning-activity.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-suggestions.js': ('planning-suggestions.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-history-view.js': ('planning-history-view.js', 'text/javascript; charset=utf-8'),
                 }
@@ -1232,7 +1251,7 @@ def main():
                 if route == '/projects' or (route == '/' and store.workspace and not urlparse(self.path).query):
                     self.html('projects.html')
                     return
-                if route not in ('/', '/planning', '/api/project', '/api/plan', '/api/ledger/info', '/api/ledger', '/api/research', '/api/plan/history', '/api/research/source-progress', '/api/plan/suggestions', '/api/operation-progress'):
+                if route not in ('/', '/planning', '/api/project', '/api/plan', '/api/ledger/info', '/api/ledger', '/api/research', '/api/plan/history', '/api/research/source-progress', '/api/plan/suggestions', '/api/operation-progress', '/api/plan/activity'):
                     raise RequestError('页面不存在。', 404)
                 project = self.project()
                 if route == '/':
@@ -1251,6 +1270,10 @@ def main():
                     identities=parse_qs(urlparse(self.path).query).get('operation',[])
                     if len(identities)!=1 or not re.fullmatch(r'[A-Za-z0-9_-]{8,80}',identities[0]):raise RequestError('进度任务编号无效。')
                     self.respond(store.operation_progress.read(project['id'],identities[0]))
+                elif route == '/api/plan/activity':
+                    planning_module('planning_history')
+                    with store.lock_for('workflow',project['plan_path']), store.lock_for('activity',project['plan_path']):
+                        self.respond({'records':planning_module('planning_activity').listing(project)})
                 elif route == '/api/plan/suggestions':
                     path=self.suggestion_path(project)
                     data=planning_module('planning_suggestions').read(read_document(path)['content']) if path.exists() else {'suggestions':[]}

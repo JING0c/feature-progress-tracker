@@ -74,6 +74,16 @@ class SuggestionHttpTests(test_projects.ManagerTest):
         self.assertEqual(self.request('/api/plan/suggestions/preview'+suffix,{'revision':saved['revision'],'suggestion_id':data['id'],'selected':['S01']})[0],409)
         self.assertEqual(Path(q['plan_path']).read_text(),existing.PLAN)
         history=self.request('/api/plan/history'+suffix)[1]['versions'];self.assertEqual(history[0]['note'],'采纳建议后调整')
+        activities=self.request('/api/plan/activity'+suffix)[1]['records']
+        self.assertTrue(any('未采纳' in r['title'] for r in activities))
+        self.assertTrue(any('尚未保存' in r['title'] and '输入异常可重试' in r['detail'] for r in activities))
+        self.assertTrue(any(r['title']=='功能表已保存' and '修改前：' in r['detail'] and '用户调整后可重试' in r['detail'] for r in activities))
+        self.assertTrue(any(r['state']=='failed' for r in activities))
+        self.assertFalse(any('用户调整后可重试' in r['detail'] for r in self.request('/api/plan/activity'+other)[1]['records']))
+        self.assertTrue(Path(p['directory'],'规划操作记录.md').exists())
+        self.stop();self.start()
+        self.assertEqual(self.request('/api/plan/activity'+suffix)[1]['records'],activities)
+
 
     def test_bad_model_reply_and_unselected_invalid_patch_do_not_write_plan(self):
         p,suffix,rev=self.setup_plan('bad-advice')
