@@ -153,3 +153,21 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 .document-edit-actions #save-plan:disabled{background:#f3eef0;color:#887780}
 .sheet-intro-brief{display:block;overflow:visible;-webkit-line-clamp:unset}
 .sheet-intro-detail summary{font-size:13px}
+
+/* Keep discussion, suggestions and their history in one workspace. */
+.suggestions-panel .planning-discussion{margin:16px 0}
+.suggestions-panel .planning-discussion>summary{padding:10px 12px;margin-bottom:10px;font-weight:600}
+.suggestions-panel .layout{display:block;margin:0}
+.suggestions-panel .side,.suggestions-panel .chat-head{display:none}
+.suggestions-panel .chat{border:1px solid #d6ddc1;border-radius:10px;box-shadow:none}
+.suggestions-panel #messages{min-height:0;max-height:180px;padding:16px}
+.suggestions-panel .welcome{margin:0;text-align:left;font-size:14px}
+.suggestions-panel .composer{padding:14px 16px}
+.suggestions-panel .composer textarea{min-height:80px;margin:0}
+.suggestions-panel .actions{gap:10px;flex-wrap:wrap}
+.suggestions-panel .controls{gap:6px;flex-wrap:wrap}
+.suggestions-panel .controls button{font-size:13px;padding:8px 12px}
+.suggestion-focus-options,.suggestion-activity{margin:14px 0}
+.suggestion-focus-options>summary,.suggestion-activity>summary{cursor:pointer;color:#633a4c;font-size:14px}
+.suggestion-focus-options label{display:block;margin-top:10px}
+.suggestion-activity .planning-activity{margin-top:10px;border:1px solid #d6ddc1;border-radius:10px;padding:14px}

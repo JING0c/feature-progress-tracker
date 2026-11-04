@@ -92,3 +92,18 @@ class SuggestionHttpTests(test_projects.ManagerTest):
             self.assertEqual(self.request('/api/plan/suggestions'+suffix,{'revision':rev})[0],400)
             self.assertEqual(Path(p['plan_path']).read_text(),existing.PLAN)
             self.assertFalse(Path(p['directory'],'功能建议.md').exists())
+
+    def test_discussion_informs_suggestions_without_saving_plan(self):
+        p,suffix,rev=self.setup_plan('discussion-advice')
+        self.fake_reply.write_text('{"suggestions":[]}')
+        discussion='用户：希望离线登记。\n助手：可以讨论本地保存，尚未确认。'
+        code,data=self.request('/api/plan/suggestions'+suffix,{'revision':rev,'focus':'异常恢复','discussion':discussion})
+        self.assertEqual(code,200,data)
+        self.assertIn(discussion,self.fake_prompt.read_text())
+        self.assertIn('未经确认的假设应列为待确认',self.fake_prompt.read_text())
+        self.assertEqual(data['discussion'],discussion)
+        self.assertEqual(self.request('/api/plan/suggestions'+suffix)[1]['discussion'],discussion)
+        self.assertEqual(Path(p['plan_path']).read_text(),existing.PLAN)
+        for invalid in ([], 'x'*12001):
+            self.assertEqual(self.request('/api/plan/suggestions'+suffix,{'revision':rev,'discussion':invalid})[0],400)
+        self.assertEqual(Path(p['plan_path']).read_text(),existing.PLAN)

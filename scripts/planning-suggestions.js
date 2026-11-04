@@ -32,7 +32,7 @@
    if(state.dirty){$('suggestions-status').textContent='请先保存当前功能表修改，再生成建议。';return;}
    generation++;savedRevision=null;lastError='';options.setBusy(true);$('suggestions-progress').hidden=false;
    $('suggestions-status').textContent='独立 Codex 子智能体正在分析当前功能…';
-   try{const data=await options.request('/api/plan/suggestions',{revision:state.revision,focus:$('suggestions-focus').value.trim()});render(data);}
+   try{const data=await options.request('/api/plan/suggestions',{revision:state.revision,focus:$('suggestions-focus').value.trim(),discussion:options.getDiscussion?.()||''});render(data);}
    catch(error){lastError='建议未生成：'+error.message;$('suggestions-status').textContent=lastError;}
    finally{$('suggestions-progress').hidden=true;options.setBusy(false);}
   });
