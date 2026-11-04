@@ -1276,6 +1276,7 @@ def main():
                     '/assets/planning-workflow.css': ('planning-workflow.css', 'text/css; charset=utf-8'),
                     '/assets/planning-progress.js': ('planning-progress.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-activity.js': ('planning-activity.js', 'text/javascript; charset=utf-8'),
+                    '/assets/planning-assistant.js': ('planning-assistant.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-suggestions.js': ('planning-suggestions.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-history-view.js': ('planning-history-view.js', 'text/javascript; charset=utf-8'),
                 }

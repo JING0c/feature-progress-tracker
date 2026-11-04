@@ -5,7 +5,7 @@ const vm=require('node:vm');
 
 async function run(){
   const nodes=new Map(),pending=[],calls=[],shown=[],downloads=[];
-  let exportFails=false,suggestionOptions,finishedPreviews=0,editing=false,editSaves=0;
+  let exportFails=false,suggestionOptions,finishedPreviews=0,editing=false,editSaves=0,hasPreview=false,readFails=false;
   const storage=new Map([['project-planning:__PLANNING_KEY__:document-draft-v2',JSON.stringify({content:'# stale browser draft',revision:'old'})]]);
   const node=id=>{
     if(!nodes.has(id))nodes.set(id,{value:'',attributes:{},handlers:{},hidden:false,
@@ -20,13 +20,14 @@ async function run(){
     location:{search:'?project=project-table'},URLSearchParams,
     localStorage:{getItem(k){return storage.get(k)||null;},setItem(k,v){storage.set(k,v);},removeItem(k){storage.delete(k);}},
     setInterval(){},setTimeout(){},renderPlanningMarkdown(){},
-    createPlanningSuggestions(options){suggestionOptions=options;return{setBusy(){}};},
+    createPlanningSuggestions(options){suggestionOptions=options;return{setBusy(){},get hasPreview(){return hasPreview;},discardPreview(){hasPreview=false;}};},
     createPlanningWorkflow(){return{ensureResearch:async()=>{},setBusy(){},get editing(){return editing;},async saveEdits(){editSaves++;editing=false;}};},
     createPlanningSheetView(){return{finishPreview(){finishedPreviews++;},show(data){shown.push(data);},loading(){},error(){shown.push('error');},clear(){}};},
     URL:{createObjectURL(){return 'blob:export';},revokeObjectURL(){}},
     fetch:async(url,options={})=>{
       const route=url.split('?')[0],payload=options.body?JSON.parse(options.body):null;
       calls.push({url,route,payload});
+      if(route==='/api/plan'&&readFails)return{ok:false,json:async()=>({error:'读取失败'})};
       if(route==='/api/plan/table')return new Promise(resolve=>pending.push({payload,resolve}));
       if(route==='/api/plan/save')return{ok:true,json:async()=>({revision:'saved',planning:{ready:true}})};
       if(route==='/api/plan/export')return{ok:!exportFails,json:async()=>({error:'导出失败'}),blob:async()=>({})};
@@ -90,6 +91,8 @@ async function run(){
   vm.runInContext("notice('保存冲突，请重新读取。',true)",context);assert.equal(node('page-feedback').hidden,false);assert.match(node('page-feedback-text').textContent,/保存冲突/);node('dismiss-feedback').handlers.click();assert.equal(node('page-feedback').hidden,true);
   const beforeScroll=node('view-section').scrolls||0;const rendering=vm.runInContext('showPlan("# generated",true)',context);assert.equal(node('view-section').scrolls||0,beforeScroll,'do not focus an unfinished table');pending.at(-1).resolve({ok:true,json:async()=>({title:'generated',sheets:[]})});await rendering;assert.equal(node('view-section').scrolls,beforeScroll+1,'focus only after the table has rendered');
   editing=true;vm.runInContext('setBusy(false)',context);assert.equal(node('save-plan').disabled,false,'sticky save must work while editing');await node('save-plan').handlers.click();assert.equal(editSaves,1,'sticky save submits editor fields, not stale document');
+  editing=false;hasPreview=true;vm.runInContext("dirty=true;planText='# protected preview';",context);readFails=true;await node('discard-suggestion-preview').handlers.click();assert.equal(vm.runInContext('planText',context),'# protected preview');assert.equal(hasPreview,true);assert.equal(vm.runInContext('dirty',context),true);
+  readFails=false;vm.runInContext('planPolling=true',context);await node('discard-suggestion-preview').handlers.click();assert.equal(vm.runInContext('dirty',context),false,'explicit discard must work even when background polling has started');assert.equal(hasPreview,false);
   console.log('Planning table flow: baseline and suggestion rendering/failure scenarios passed (race, draft export, no unlock, failed export, source fallback).');
 }
 module.exports=run;

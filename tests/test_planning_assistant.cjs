@@ -1,0 +1,21 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const nodes=new Map(),storage=new Map();
+function $(id){if(!nodes.has(id))nodes.set(id,{value:'',hidden:false,handlers:{},attrs:{},addEventListener(k,f){this.handlers[k]=f},setAttribute(k,v){this.attrs[k]=v},removeAttribute(k){delete this.attrs[k]},focus(){this.focused=true},scrollIntoView(){}});return nodes.get(id)}
+const context={window:{},document:{getElementById:$},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)}};
+vm.runInNewContext(fs.readFileSync('scripts/planning-assistant.js','utf8'),context);
+let state={ready:true,dirty:false,editing:false,busy:false};storage.set('project-a','恢复的想法');
+const assistant=context.window.createPlanningAssistant({storageKey:'project-a',getState:()=>state});
+assert.equal($('input').value,'恢复的想法');assert.equal(assistant.shouldGenerate(),true);assert.equal($('assistant-submit').textContent,'生成修改建议');assert.equal($('input').required,false);
+$('assistant-mode-chat').handlers.change();assert.equal(assistant.shouldGenerate(),false);assert.equal($('input').required,true);assert.equal($('input').value,'恢复的想法');assert.equal($('assistant-submit').textContent,'发送讨论');
+state.busy=true;assistant.sync();assert.equal($('assistant-submit').disabled,true);assert.equal($('assistant-mode-suggest').disabled,true);
+state.busy=false;state.dirty=true;assistant.sync();assert.equal($('assistant-blocker').hidden,false);assert.equal($('assistant-submit').disabled,true);
+state.dirty=false;state.ready=false;assistant.sync();assert.equal(assistant.shouldGenerate(),false);assert.equal($('assistant-modes').hidden,true);assert.equal($('assistant-submit').textContent,'查找参考并开始规划');
+state.ready=true;assistant.sync();$('assistant-mode-suggest').handlers.change();$('input').value='x'.repeat(3001);assert.equal(assistant.validate(),false);assert.equal($('input').attrs['aria-invalid'],'true');assert.equal($('input').value.length,3001);
+$('input').value='';$('input').handlers.input();assert.equal(assistant.validate(),true);assert.equal($('input').attrs['aria-invalid'],'false');
+$('input').value='新想法';$('input').handlers.input();assert.equal(storage.get('project-a'),'新想法');assert.equal(storage.has('project-b'),false);
+assistant.onSuggestions({phase:'choose',total:3,selected:1});assert.equal($('assistant-step-choose').attrs['aria-current'],'step');
+assistant.onSuggestions({phase:'preview',total:3,selected:1,changed:2});assert.equal($('suggestion-preview-bar').hidden,false);assert.match($('suggestion-preview-label').textContent,/2/);
+state.editing=true;assistant.sync();assert.equal($('discard-suggestion-preview').disabled,true);
+assistant.onSuggestions({phase:'saved',total:3,selected:1});assert.equal($('suggestion-preview-bar').hidden,true);
+context.localStorage.setItem=()=>{throw Error('quota')};$('input').value='必须保留';assistant.persistInput();assert.equal($('input').value,'必须保留');assert.match($('assistant-draft-state').textContent,/无法保存/);
+console.log('Assistant: one primary action, modes, draft isolation, input validation, busy/dirty blockers, preview state passed.');

@@ -5,12 +5,12 @@ const vm = require('node:vm');
 
 // Exercise the actual page event handler with an in-memory HTTP boundary.
 // No browser storage or real project is changed by these contract checks.
-async function scenario({accept = true, changed = false, previewFails = false, initialReady = true, latestReady = initialReady, action = 'save-ledger', planSaveFails = false, historyEmpty = false, researchFails = false, researchPause = false, referenceOnly = false} = {}) {
+async function scenario({accept = true, changed = false, previewFails = false, initialReady = true, latestReady = initialReady, action = 'save-ledger', planSaveFails = false, historyEmpty = false, researchFails = false, researchPause = false, referenceOnly = false, suggestMode = false, retrySuggest = false} = {}) {
   const source = fs.readFileSync(path.join(__dirname, '../scripts/planning.html'), 'utf8');
   const script = source.match(/<script>([\s\S]*?)<\/script>/)[1];
   const original = '# 台账\n进度：已验收 0/20 个最细功能点\n## 大功能 F01：预约\n- [ ] F01-01 冲突校验｜状态：未开始';
   const nodes = new Map(), calls = [], prompts = [];
-  let projectReads = 0, researchChecks = 0, workflowOptions, clearedTimers = 0;
+  let projectReads = 0, researchChecks = 0, workflowOptions, clearedTimers = 0, suggestionsGenerated = 0;
   const node = id => {
     if (!nodes.has(id)) nodes.set(id, {
       textContent: '', className: '', disabled: false, value: '', handlers: {},
@@ -30,6 +30,8 @@ async function scenario({accept = true, changed = false, previewFails = false, i
     localStorage: {getItem: k => storage.get(k) || null, setItem: (k,v) => storage.set(k,v), removeItem: k => storage.delete(k)},
     location: {search: '?project=project-a'}, URLSearchParams,
     setInterval() { return 1; }, clearInterval() { clearedTimers++; }, setTimeout() {}, renderPlanningMarkdown() {},
+    createPlanningAssistant(){return{sync(){},validate(){return true;},shouldGenerate(){return suggestMode;},persistInput(){},showDiscussion(){}};},
+    createPlanningSuggestions(){return{setBusy(){},generate(){suggestionsGenerated++;}};},
     createPlanningWorkflow(options){workflowOptions=options;return{ensureResearch:async()=>{if(researchFails)throw Error('GitHub 检索失败');if(researchPause&&!researchChecks++)throw Error('请保存参考选择');},setBusy(){},editing:false};},
     createPlanningSheetView() { return {show() {}, loading() {}, error() {}, clear() {}}; },
     confirm: text => { prompts.push(text); return accept; },
@@ -65,10 +67,14 @@ async function scenario({accept = true, changed = false, previewFails = false, i
   if(action==='feature-timeout'){await workflowOptions.guide('拆分新增功能',true);}else if(referenceOnly){await workflowOptions.resumePlanning();}else if(action==='submit'){node('input').value='新项目需求';await node('form').handlers.submit({preventDefault(){}});}else await node(action).handlers.click();
   await new Promise(resolve => setImmediate(resolve));
   if(researchPause){workflowOptions.resumePlanning();await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));}
-  return {calls, prompts, original, clearedTimers, progress:node('reference-progress-status').textContent, progressHidden:node('reference-progress').hidden, status:node('status').textContent, initialDisabled, finalDisabled:{save:node('save-ledger').disabled,generate:node('generate-ledger').disabled,plan:node('save-plan').disabled}};
+  if(retrySuggest){node('input').value='只生成建议';await node('form').handlers.submit({preventDefault(){}});}
+  return {calls, prompts, original, clearedTimers, suggestionsGenerated, progress:node('reference-progress-status').textContent, progressHidden:node('reference-progress').hidden, status:node('status').textContent, initialDisabled, finalDisabled:{save:node('save-ledger').disabled,generate:node('generate-ledger').disabled,plan:node('save-plan').disabled}};
 }
 
 async function run() {
+  const routed=await scenario({action:'submit',suggestMode:true});assert.equal(routed.suggestionsGenerated,1);assert.ok(!routed.calls.some(c=>c.route==='/api/planning'),'suggestion mode must not also send chat');
+  const ledgerRoute=await scenario({action:'generate-ledger',suggestMode:true});assert.equal(ledgerRoute.suggestionsGenerated,0,'programmatic ledger action bypasses suggestion mode');assert.ok(ledgerRoute.calls.some(c=>c.route==='/api/planning'));
+  const failedIntent=await scenario({action:'feature-timeout',suggestMode:true,retrySuggest:true});assert.equal(failedIntent.suggestionsGenerated,1,'failed programmatic intent must not hijack the next primary action');
   const saved = await scenario();
   const preview = saved.calls.find(c => c.route === '/api/ledger/preview');
   assert.ok(preview, 'must preview computed totals before asking to save');
