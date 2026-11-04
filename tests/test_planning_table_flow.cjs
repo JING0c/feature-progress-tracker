@@ -36,6 +36,7 @@ async function run(){
   await new Promise(r=>setImmediate(r));
   assert.equal(vm.runInContext('planText',context),'','old cached draft must not replace disk version');
   assert.equal(node('restore-plan-draft').hidden,false);
+  assert.equal(node('plan-sidebar').hidden,false,'recovery must stay accessible when the saved document is empty');
   assert.match(storage.get('project-planning:__PLANNING_KEY__:recoverable-draft'),/stale browser draft/);
   storage.delete('project-planning:__PLANNING_KEY__:document-draft-v2');
   assert.match(storage.get('project-planning:__PLANNING_KEY__:recoverable-draft'),/stale browser draft/,'saving latest plan must not delete recovery copy');

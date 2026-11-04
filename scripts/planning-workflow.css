@@ -27,3 +27,39 @@
 .reference-progress-details progress{margin-top:8px}
 
 .source-review-panel{padding:16px 24px;background:#f4f7eb;border-bottom:1px solid #cfdd9d;color:#294c3a}.source-review-panel progress{width:min(520px,100%);accent-color:#447a5f;margin-right:16px}.source-review-panel pre{white-space:pre-wrap;line-height:1.7;color:#243b2e;max-height:480px;overflow:auto}.source-review-panel summary{cursor:pointer;font-weight:600}
+
+/* Planning tools stay beside the document; the sheet owns its horizontal scroll. */
+.planning-workspace{max-width:1480px;display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:start}
+.planning-workspace:has(.plan-sidebar:not([hidden])){grid-template-columns:248px minmax(0,1fr)}
+.planning-main{min-width:0}
+.plan-sidebar{position:sticky;top:20px;max-height:calc(100dvh - 40px);overflow-y:auto;min-width:0;border:1px solid #eab6cd;border-radius:14px;background:#fff5fa;scrollbar-width:thin}
+.plan-sidebar[hidden]{display:none}
+.plan-sidebar .plan-header{display:block;padding:20px 18px 16px}
+.plan-sidebar .plan-header h2{font-size:18px;margin-bottom:10px}
+.plan-sidebar .plan-header p{font-size:12px;line-height:1.7}
+.plan-sidebar .plan-actions{display:flex;flex-direction:column;flex-wrap:nowrap;gap:18px;margin:0;padding:18px 14px}
+.plan-action-group{display:flex;flex-direction:column;gap:6px;min-width:0}
+.plan-action-group+.plan-action-group{border-top:1px solid #ecd7e1;padding-top:16px}
+.plan-action-group h3{margin:0 0 4px;padding:0 8px;font-size:12px;font-weight:600;color:#705664}
+.plan-sidebar button{display:block;width:100%;min-height:42px;padding:10px 12px;text-align:left;line-height:1.5;font-size:14px;white-space:normal;overflow-wrap:anywhere;background:transparent;color:#633a4c}
+.plan-sidebar button[hidden],.plan-sidebar select[hidden],.draft-tools:has(select[hidden]){display:none}
+.plan-sidebar button:hover:not(:disabled){background:#f8e3ee}
+.plan-sidebar #save-plan{background:#832d51;color:#fff;font-weight:600}
+.plan-sidebar #review-source{background:#eef3df;color:#294c3a}
+.plan-sidebar select{display:block;width:100%;min-width:0;max-width:100%;min-height:42px;padding:9px 26px 9px 10px;border:1px solid #d7bbc8;border-radius:8px;font:inherit;font-size:12px;color:#482b38;background-color:#fff;text-overflow:ellipsis}
+.plan-sidebar :is(button,select):focus-visible{outline:2px solid #832d51;outline-offset:2px}
+.plan-document-title{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 16px;padding:18px 22px;border-bottom:1px solid #efd0de}
+.plan-document-title h2{margin:0;font-size:18px;color:#482b38}
+.plan-document-title span{font-size:12px;color:#705664}
+@media(max-width:1000px){
+ .planning-workspace,.planning-workspace:has(.plan-sidebar:not([hidden])){grid-template-columns:minmax(0,1fr);gap:20px}
+ .plan-sidebar{position:static;max-height:none;overflow:visible}
+ .plan-sidebar .plan-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+ .plan-action-group+.plan-action-group{border-top:0;padding-top:0}
+}
+@media(max-width:480px){
+ .plan-sidebar .plan-actions{grid-template-columns:minmax(0,1fr)}
+ .plan-action-group+.plan-action-group{border-top:1px solid #ecd7e1;padding-top:14px}
+ .version-save-note input,.research-search input{min-width:0;width:100%}
+ .research-results{grid-template-columns:minmax(0,1fr)}
+}
