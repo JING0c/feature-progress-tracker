@@ -8,9 +8,9 @@ async function run(){
   let exportFails=false,suggestionOptions,finishedPreviews=0,editing=false,editSaves=0,hasPreview=false,readFails=false;
   const storage=new Map([['project-planning:__PLANNING_KEY__:document-draft-v2',JSON.stringify({content:'# stale browser draft',revision:'old'})]]);
   const node=id=>{
-    if(!nodes.has(id))nodes.set(id,{value:'',attributes:{},handlers:{},hidden:false,
+    if(!nodes.has(id))nodes.set(id,{value:'',attributes:{},handlers:{},hidden:false,children:[],
       addEventListener(k,fn){this.handlers[k]=fn;},setAttribute(k,v){this.attributes[k]=v;},
-      replaceChildren(){},append(){},focus(){},scrollIntoView(){this.scrolls=(this.scrolls||0)+1;},remove(){},
+      replaceChildren(){this.children=[];},append(...children){this.children.push(...children);},focus(){},scrollIntoView(){this.scrolls=(this.scrolls||0)+1;},remove(){},
       click(){downloads.push({href:this.href,filename:this.download});},querySelector(){return node('send');}
     });
     return nodes.get(id);
@@ -47,6 +47,16 @@ async function run(){
   vm.runInContext("loadRecoverableDrafts({content:'',revision:'r'})",context);
   const recovered=JSON.parse(storage.get('project-planning:__PLANNING_KEY__:recoverable-draft'));
   assert.equal(recovered.length,2);assert.equal(recovered[0].content,'# new unsaved draft');assert.equal(recovered[1].content,'# stale browser draft');
+  assert.equal(node('recovery-tools').hidden,false);assert.equal(node('recovery-summary').textContent,'未保存草稿（2）');
+  const cards=node('recovery-list').children.slice(1);assert.equal(cards.length,2);assert.equal(cards[0].children[0].checked,true);
+  assert.match(cards[1].children[1].children[1].textContent,/暂存时间未记录/);assert.equal(cards[1].children[1].children[2].textContent,'stale browser draft');
+  cards[1].children[0].handlers.change();assert.equal(node('plan-draft-choice').value,'1');
+  const saveCalls=calls.filter(c=>c.route.endsWith('/save')).length;
+  node('restore-plan-draft').handlers.click();assert.equal(vm.runInContext('planText',context),'# stale browser draft');assert.equal(vm.runInContext('planRevision',context),'old');assert.equal(vm.runInContext('dirty',context),true);assert.equal(calls.filter(c=>c.route.endsWith('/save')).length,saveCalls);
+  node('plan-draft-choice').value='0';node('restore-plan-draft').handlers.click();assert.equal(vm.runInContext('planText',context),'# stale browser draft','dirty preview cannot be replaced');
+  vm.runInContext('retainDraft()',context);assert.ok(JSON.parse(storage.get('project-planning:__PLANNING_KEY__:document-draft-v2')).savedAt);
+
+  pending.shift().resolve({ok:true,json:async()=>({title:'recovered',sheets:[]})});await new Promise(r=>setImmediate(r));shown.length=0;
   vm.runInContext('showPlan("# older");showPlan("# current draft");dirty=true;',context);
   assert.equal(pending.length,2);
   pending[1].resolve({ok:true,json:async()=>({title:'current',sheets:[]})});
