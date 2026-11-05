@@ -4,7 +4,7 @@
   const {request,notice,getPlan,onSave,guide,storageKey}=options;
   const $=id=>document.getElementById(id);
   let research={completed:false,repositories:[]},editing=false,base=null,rows=[],columns=[],fields=[],busy=false,referenceFields=[],referenceDirty=false;
-  let featureSearchTarget='';
+  let featureSearchTarget='',reservedIds=new Set();
   function text(tag,value){const node=document.createElement(tag);node.textContent=value;return node;}
   function renderResearch(data){
    if(research.revision!==data.revision)options.onReferencesChanged?.();
@@ -60,7 +60,7 @@
    }
    if(saved&&options.resumePlanning)return options.resumePlanning();
   });
-  function retain(){try{localStorage.setItem(storageKey,JSON.stringify({base,rows,columns}));}catch(error){notice('编辑草稿无法暂存，请及时保存。',true);}}
+  function retain(){try{localStorage.setItem(storageKey,JSON.stringify({base,rows,columns,reservedIds:[...reservedIds]}));}catch(error){notice('编辑草稿无法暂存，请及时保存。',true);}}
   function setSelection(id,selected){
    const byId=new Map(rows.map(r=>[r['编号'],r])),seen=new Set(),pending=[id];
    while(pending.length){const key=pending.pop();if(seen.has(key)||!byId.has(key))continue;seen.add(key);byId.get(key)['采用']=selected?'是':'否';rows.filter(r=>r['上级编号']===key).forEach(r=>pending.push(r['编号']));}
@@ -71,7 +71,7 @@
    const table=$('feature-editor-table');table.replaceChildren();fields=[];
    const order=['采用','功能名称','说明','验收标准','所需技术','前期准备','优先级','编号','上级编号','依赖','备注'];
    columns.sort((a,b)=>(order.includes(a)?order.indexOf(a):99)-(order.includes(b)?order.indexOf(b):99));
-   const head=document.createElement('tr');columns.forEach(c=>head.append(text('th',c)));table.append(head);
+   const head=document.createElement('tr');columns.forEach(c=>head.append(text('th',c)));head.append(text('th','操作'));table.append(head);
    rows.forEach(row=>{const tr=document.createElement('tr');columns.forEach(column=>{
     const td=document.createElement('td');td.setAttribute('data-column',column);let field;
     if(column==='采用'){
@@ -84,21 +84,45 @@
      field.addEventListener('input',()=>{row[column]=field.value;retain();});
     }
     fields.push(field);td.append(field);tr.append(td);
-   });table.append(tr);});
+   });
+   const actions=document.createElement('td');actions.className='feature-row-actions';
+   for(const [label,action] of [['新增子功能',()=>addChild(row)],['删除功能',()=>removeRow(row)]]){
+    const button=text('button',label);button.type='button';button.className='secondary';button.disabled=busy;
+    button.setAttribute('aria-label',label+' '+row['编号']);button.addEventListener('click',action);fields.push(button);actions.append(button);
+   }
+   tr.append(actions);table.append(tr);});
+  }
+  function addChild(parent){
+   if(busy)return;const id=parent['编号'];
+   if(!/^F\d+(?:-\d+)*$/.test(id)||rows.filter(r=>r['编号']===id).length!==1){notice('请先填写唯一、有效的父功能编号。',true);return;}
+   const used=[...reservedIds,...rows.map(r=>r['编号'])];
+   const siblings=used.filter(k=>k?.startsWith(id+'-')&&k.split('-').length===id.split('-').length+1);
+   const n=Math.max(0,...siblings.map(k=>Number(k.split('-').at(-1))||0))+1;
+   const child={'采用':parent['采用']==='否'?'否':'是','编号':id+'-'+String(n).padStart(2,'0'),'上级编号':id};
+   let index=rows.indexOf(parent)+1;while(index<rows.length&&rows[index]['编号']?.startsWith(id+'-'))index++;
+   reservedIds.add(child['编号']);rows.splice(index,0,child);renderEditor();retain();notice('已新增子功能 '+child['编号']+'，填写内容后保存。');
+  }
+  function removeRow(row){
+   if(busy)return;const id=row['编号'];
+   const removed=rows.filter(r=>r===row||(id&&r['编号']?.startsWith(id+'-'))),ids=new Set(removed.map(r=>r['编号']));
+   const dependencies=rows.filter(r=>!removed.includes(r)&&(r['依赖']||'').match(/F\d+(?:-\d+)*/g)?.some(k=>ids.has(k)));
+   if(dependencies.length){notice('请先调整这些功能的依赖：'+dependencies.map(r=>r['编号']).join('、'),true);return;}
+   if(!confirm('从规划中删除 '+id+' 及其子功能，共 '+removed.length+' 项？保存前可取消编辑，已有实施台账不会删除。'))return;
+   rows=rows.filter(r=>!removed.includes(r));renderEditor();retain();notice('已从编辑草稿移除 '+removed.length+' 项，保存后生效。');
   }
   $('edit-features').addEventListener('click',async()=>{
    if(busy)return;const plan=getPlan();
    if(!plan.ready){notice('请先生成并保存规划书，再修改功能表。',true);return;}
    options.setBusy(true);
    try{
-    const data=await request('/api/plan/features',{content:plan.content});base={content:plan.content,revision:plan.revision};rows=data.rows;columns=data.columns;
-    try{const draft=JSON.parse(localStorage.getItem(storageKey)||'null');if(draft&&draft.rows&&draft.base){base=draft.base;rows=draft.rows;columns=draft.columns;notice('已恢复功能表编辑草稿；保存时仍会校验原文件版本。');}}catch(error){}
+    const data=await request('/api/plan/features',{content:plan.content});reservedIds=new Set([...(data.reserved_ids||[]),...data.rows.map(r=>r['编号'])]);base={content:plan.content,revision:plan.revision};rows=data.rows;columns=data.columns;
+    try{const draft=JSON.parse(localStorage.getItem(storageKey)||'null');if(draft&&draft.rows&&draft.base){base=draft.base;rows=draft.rows;columns=draft.columns;for(const k of draft.reservedIds||draft.rows.map(r=>r['编号']))reservedIds.add(k);notice('已恢复功能表编辑草稿；保存时仍会校验原文件版本。');}}catch(error){}
     editing=true;$('feature-editor').hidden=false;renderEditor();$('feature-editor').scrollIntoView({block:'start'});
    }catch(error){notice(error.message,true);}finally{options.setBusy(false);}
   });
   $('add-feature-row').addEventListener('click',()=>{
-   const used=new Set(rows.map(row=>row['编号']));let n=1;while(used.has('F'+String(n).padStart(2,'0')))n++;
-   rows.push({'采用':'是','编号':'F'+String(n).padStart(2,'0'),'上级编号':'无'});renderEditor();retain();
+   if(busy)return;const used=[...reservedIds,...rows.map(row=>row['编号'])];const n=Math.max(0,...used.filter(k=>/^F\d+$/.test(k)).map(k=>Number(k.slice(1))))+1;
+   const id='F'+String(n).padStart(2,'0');reservedIds.add(id);rows.push({'采用':'是','编号':id,'上级编号':'无'});renderEditor();retain();
   });
   $('cancel-feature-edit').addEventListener('click',()=>{
    if(!confirm('放弃尚未保存的功能表修改？'))return;editing=false;$('feature-editor').hidden=true;localStorage.removeItem(storageKey);options.setBusy(false);

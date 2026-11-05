@@ -10,7 +10,7 @@ async function run(){
  const sandbox={window:{},document:{getElementById:$,createElement:()=>new Node()},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},confirm:()=>true};
  vm.runInNewContext(source,sandbox);
  let researchFails=true,saves=0,guided='',guidedFromReferences=false,plan={content:'BASE',revision:'r1',ready:true};
- const table={columns:['采用','编号','上级编号','功能名称','所需技术','前期准备'],rows:[{'采用':'是','编号':'F01','上级编号':'无','功能名称':'模块'},{'采用':'是','编号':'F01-01','上级编号':'F01','功能名称':'细项','所需技术':'建议A'}]};
+ const table={reserved_ids:['F01-02','F05'],columns:['采用','编号','上级编号','功能名称','所需技术','前期准备'],rows:[{'采用':'是','编号':'F01','上级编号':'无','功能名称':'模块'},{'采用':'是','编号':'F01-01','上级编号':'F01','功能名称':'细项','所需技术':'建议A'}]};
  const options={storageKey:'draft',notice:(...n)=>notices.push(n),getPlan:()=>plan,setBusy:v=>workflow.setBusy(v),guide:(t,fromReferences)=>{guided=t;guidedFromReferences=fromReferences;},onSave:async c=>{saves++;plan.content=c;},request:async(route,payload)=>{
   calls.push({route,payload});if(route==='/api/research'&&!payload)return{completed:false,repositories:[]};
   if(route==='/api/research/selection')return{completed:true,selection_confirmed:true,feature_idea:'增加库存',query:'inventory',repositories:[]};
@@ -30,6 +30,11 @@ async function run(){
  field('采用 F01').checked=false;field('采用 F01').handlers.change();
  assert.equal(field('采用 F01-01').checked,false,'editor parent checkbox cascades');
  field('采用 F01-01').checked=true;field('采用 F01-01').handlers.change();assert.equal(field('采用 F01').checked,true,'child restores ancestor');
+ field('新增子功能 F01-01').handlers.click();assert.ok(field('F01-01-01 功能名称'),'nested child added without a model');
+ field('F01-01-01 功能名称').value='更细功能';field('F01-01-01 功能名称').handlers.input();
+ field('删除功能 F01-01-01').handlers.click();assert.ok(!field('F01-01-01 功能名称'),'delete is staged in editor');
+ field('新增子功能 F01-01').handlers.click();assert.ok(field('F01-01-02 功能名称'),'deleted ID is never reused');field('删除功能 F01-01-02').handlers.click();
+ field('新增子功能 F01').handlers.click();assert.ok(field('F01-03 功能名称'),'ledger IDs remain reserved');field('删除功能 F01-03').handlers.click();
  await $('save-feature-edit').handlers.click();
  const written=calls.find(c=>c.payload?.rows);assert.equal(written.payload.rows[1]['所需技术'],'用户指定SQLite');assert.equal(saves,1);assert.equal(storage.has('draft'),false);
  $('new-feature-idea').value='增加库存';$('guide-feature').handlers.click();assert.match(guided,/增加库存/);assert.equal(saves,1,'decomposition does not save a proposal');

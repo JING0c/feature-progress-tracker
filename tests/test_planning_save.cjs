@@ -23,7 +23,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
     return nodes.get(id);
   };
   const storage = new Map([['project-planning:__PLANNING_KEY__', JSON.stringify(historyEmpty ? [] : [
-    {role: 'assistant', content: action==='apply-feature-proposal'?original+'\n<!-- feature-proposal -->':original, ledgerRevision: 'initial-revision', intent: action==='apply-feature-proposal'?'decompose':undefined}
+    {role: 'assistant', content: action==='apply-feature-proposal'?original+'\n<!-- feature-proposal -->':original, ledgerRevision: 'initial-revision', planRevision:'plan-r', intent: action==='apply-feature-proposal'?'decompose':undefined}
   ])]]);
   const context = {
     document: {getElementById: node, querySelector: node, createElement: () => node(Symbol())},
@@ -41,6 +41,8 @@ async function scenario({accept = true, changed = false, previewFails = false, i
       let status = 200, data;
       const planning = ready => ({ready, reason:ready ? '规划书已完成' : '请先生成并保存项目规划书', planning_url:'/planning?project=project-a'});
       if (route === '/api/plan') data = {content: '', revision: 'plan-r', path: '/A/plan.md', planning:planning(initialReady), source:'new'};
+      else if(route==='/api/ledger/generate') data={content:original,summary:{done:0,total:1},ledger_revision:'initial-revision',plan_revision:'plan-r',note:'按规则转换'};
+      else if(route==='/api/plan/merge') data={content:'# 项目规划书\n## 目标\n图片\n## 范围\n参考\n## 功能与验收\n保存图片',plan_revision:'plan-r',added:['F02']};
       else if (route === '/api/plan/table') data = {title:'规划', sheets:[]};
       else if (route === '/api/project') data = {id:'project-a',name:'A',planning:planning(projectReads++ ? latestReady : initialReady),source:'new'};
       else if (route === '/api/projects') data = {projects: [{id:'project-a',name:'A',planning:planning(initialReady),source:'new'}]};
@@ -73,7 +75,7 @@ async function scenario({accept = true, changed = false, previewFails = false, i
 
 async function run() {
   const routed=await scenario({action:'submit',suggestMode:true});assert.equal(routed.suggestionsGenerated,1);assert.ok(!routed.calls.some(c=>c.route==='/api/planning'),'suggestion mode must not also send chat');
-  const ledgerRoute=await scenario({action:'generate-ledger',suggestMode:true});assert.equal(ledgerRoute.suggestionsGenerated,0,'programmatic ledger action bypasses suggestion mode');assert.ok(ledgerRoute.calls.some(c=>c.route==='/api/planning'));
+  const ledgerRoute=await scenario({action:'generate-ledger',suggestMode:true});assert.equal(ledgerRoute.suggestionsGenerated,0,'programmatic ledger action bypasses suggestion mode');assert.ok(ledgerRoute.calls.some(c=>c.route==='/api/ledger/generate'));assert.ok(!ledgerRoute.calls.some(c=>c.route==='/api/planning'));
   const failedIntent=await scenario({action:'feature-timeout',suggestMode:true,retrySuggest:true});assert.equal(failedIntent.suggestionsGenerated,1,'failed programmatic intent must not hijack the next primary action');
   const saved = await scenario();
   const preview = saved.calls.find(c => c.route === '/api/ledger/preview');
@@ -140,7 +142,7 @@ async function run() {
   assert.match(referenceFailure.progress,/文件保存失败/);
   assert.equal(referenceFailure.progressHidden,true);
   const feature = await scenario({action:'apply-feature-proposal'});
-  assert.equal(feature.calls.find(c=>c.route==='/api/planning').payload.merge_feature,true);
+  assert.equal(feature.calls.find(c=>c.route==='/api/plan/merge').payload.revision,'plan-r');assert.ok(!feature.calls.some(c=>c.route==='/api/planning'));
   assert.ok(feature.calls.some(c=>c.route==='/api/plan/save'),'confirmed proposal must be written through versioned save');
   const timeout = await scenario({action:'feature-timeout'});
   const split = timeout.calls.find(c=>c.route==='/api/planning');

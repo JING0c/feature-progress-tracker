@@ -15,7 +15,7 @@ def git(args, cwd=None, timeout=60):
     return result.stdout if args and args[0] == 'show' else result.stdout.strip()
 
 
-def collect_sources(root, repositories, need, progress, focus=""):
+def collect_sources(root, repositories, need, progress, focus="", allow_clone=True):
     cache = root / '.reference-code'
     if cache.is_symlink(): raise ValueError('源码缓存路径不能是符号链接。')
     cache.mkdir(exist_ok=True)
@@ -31,6 +31,7 @@ def collect_sources(root, repositories, need, progress, focus=""):
         url = 'https://github.com/' + name + '.git'
         progress(stage='检查仓库', message=name, completed=index, total=len(repositories))
         reused = path.exists()
+        if not reused and not allow_clone:raise ValueError('源码缓存缺失，请先核对源码。')
         if not reused:
             progress(stage='克隆仓库', message=name + '（网络传输中，耗时取决于仓库大小）', completed=index, total=len(repositories))
             temporary = Path(tempfile.mkdtemp(prefix='.clone-', dir=cache))

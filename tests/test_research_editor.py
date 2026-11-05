@@ -150,25 +150,54 @@ class WorkflowHttpTest(project_tests.ManagerTest):
     def test_confirmed_feature_merge_preserves_existing_rows_and_saves_new_rows(self):
         project, suffix = self.ready()
         previous = editor.editable_table(PLAN)['rows']
-        changed = [dict(row) for row in previous]
-        changed[0]['功能名称'] = '模型改写的旧名称'
-        new = dict(previous[-1], 编号='F02', 上级编号='无', 功能名称='参考图片')
-        duplicate = dict(previous[0], 编号='F03')
-        self.fake_reply.write_text(editor.replace_features(PLAN, changed + [new, duplicate]))
-        proposal_text = '新增参考图片，能保存并打开原图。\n<!-- feature-proposal -->'
-        code, proposal = self.request('/api/planning' + suffix, {'intent': 'plan', 'merge_feature': True,
-                                      'feature_proposal': proposal_text,
-                                      'messages': [{'role': 'assistant', 'content': proposal_text},
-                                                   {'role': 'user', 'content': '确认追加参考图片'}]})
-        self.assertEqual(code, 200, proposal)
-        merged = editor.editable_table(proposal['reply'])['rows']
-        self.assertEqual(merged, previous + [new])
-        self.assertEqual(Path(project['plan_path']).read_text(), PLAN)
+        self.fake_prompt.unlink()
+        (self.fake_bin/'codex').write_text('#!/bin/sh\nexit 77\n')
+        proposal_text = '```json\n'+json.dumps({'features':[{'key':'N1','parent':'无','功能名称':'参考图片','说明':'保存参考图','验收标准':'能保存并打开原图'}]},ensure_ascii=False)+'\n```\n<!-- feature-proposal -->'
         version = self.request('/api/plan' + suffix)[1]['revision']
-        code, saved = self.request('/api/plan/save' + suffix,
-                                   {'revision': version, 'content': proposal['reply']})
+        for route,payload in [('/api/plan/merge',{}),('/api/planning',{'intent':'plan','merge_feature':True})]:
+            code, proposal = self.request(route+suffix, {**payload,'revision':version,'feature_proposal':proposal_text})
+            self.assertEqual(code, 200, proposal)
+            self.assertEqual(proposal['engine'],'code')
+            merged = editor.editable_table(proposal['reply'])['rows']
+            self.assertEqual(merged[:-1], previous)
+            self.assertEqual(merged[-1]['编号'],'F02')
+            self.assertEqual(merged[-1]['功能名称'],'参考图片')
+        self.assertFalse(self.fake_prompt.exists(),'operation must never start Codex')
+        self.assertEqual(Path(project['plan_path']).read_text(), PLAN)
+        self.assertEqual(self.request('/api/plan/merge'+suffix,{'revision':'stale','feature_proposal':proposal_text})[0],409)
+        self.assertEqual(self.request('/api/plan/merge'+suffix,{'revision':version,'feature_proposal':'plain legacy proposal'})[0],400)
+        code, saved = self.request('/api/plan/save'+suffix, {'revision':version,'content':proposal['reply']})
         self.assertEqual(code, 200, saved)
-        self.assertIn('history_version', saved)
+        self.assertIn('history_version',saved)
+
+    def test_ledger_conversion_save_and_stale_plan_without_model(self):
+        project,suffix=self.ready()
+        self.fake_prompt.unlink()
+        (self.fake_bin/'codex').write_text('#!/bin/sh\nexit 77\n')
+        version=self.request('/api/plan'+suffix)[1]['revision']
+        code,result=self.request('/api/ledger/generate'+suffix,{'revision':version})
+        self.assertEqual(code,200,result);self.assertEqual(result['engine'],'code')
+        self.assertEqual(result['summary']['total'],1)
+        self.assertIn('F01-01-01',result['content'])
+        payload={'content':result['content'],'revision':result['ledger_revision'],'plan_revision':version}
+        self.assertEqual(self.request('/api/ledger/preview'+suffix,payload)[0],200)
+        self.assertEqual(self.request('/api/ledger/save'+suffix,payload)[0],200)
+        code,again=self.request('/api/ledger/generate'+suffix,{'revision':version})
+        self.assertEqual(code,200,again);self.assertEqual(again['added'],[])
+        Path(project['plan_path']).write_text(PLAN+'\n外部更新')
+        self.assertEqual(self.request('/api/ledger/preview'+suffix,payload)[0],409)
+        self.assertEqual(self.request('/api/ledger/generate'+suffix,{'revision':version})[0],409)
+        self.assertFalse(self.fake_prompt.exists())
+
+    def test_source_analysis_is_explicit_not_started_by_conversion(self):
+        project,suffix=self.ready()
+        self.fake_prompt.unlink()
+        record={'version':1,'completed':True,'selection_confirmed':True,'query':'image','repositories':[{'name':'org/image','selected':True}]}
+        Path(project['directory'],'GitHub参考项目.md').write_text(research.research_markdown(record))
+        version=self.request('/api/plan'+suffix)[1]['revision']
+        code,result=self.request('/api/ledger/generate'+suffix,{'revision':version})
+        self.assertEqual(code,409,result);self.assertIn('核对源码',result['error'])
+        self.assertFalse(self.fake_prompt.exists())
 
     def test_empty_technical_columns_and_multiline_content_remain_in_projection(self):
         _,suffix=self.ready()

@@ -7,7 +7,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 import difflib
 
-LABELS={'/api/plan/save':'保存功能表','/api/plan/suggestions':'生成智能体建议',
+LABELS={'/api/ledger/generate':'按规划转换台账','/api/plan/merge':'合并已确认的功能','/api/plan/save':'保存功能表','/api/plan/suggestions':'生成智能体建议',
         '/api/plan/suggestions/preview':'生成采纳建议预览','/api/research':'搜索 GitHub 参考',
         '/api/research/selection':'保存参考选择','/api/research/source-check':'源码核对',
         '/api/planning':'规划生成与对话','/api/ledger/save':'保存台账到看板'}
@@ -68,6 +68,8 @@ def event(route,payload,data,status,before=''):
     title=LABELS[route];detail='';state='success'
     if status>=400:
         title+='失败';state='failed';detail=str(data.get('error','请求失败'))
+    elif route in ('/api/ledger/generate','/api/plan/merge'):
+        title+='（尚未保存）';detail='由代码执行，未调用模型。\n新增条目：'+('、'.join(data.get('added',[])) or '无')+'\n'+data.get('note','')
     elif route=='/api/plan/save':
         title='功能表已保存';detail=changes(before,payload.get('content',data.get('content','')))
         version=data.get('history_version',{}).get('id','')

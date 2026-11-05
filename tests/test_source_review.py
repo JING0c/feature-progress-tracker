@@ -67,6 +67,11 @@ class SourceHttpTests(history_tests.ReferencesHistoryHttpTest):
         self.assertEqual(code,200,data)
         self.assertIn('a'*40,data['report']);self.assertTrue(Path(p['directory'],'规划源码核对.md').exists())
         self.assertFalse(Path(q['directory'],'规划源码核对.md').exists())
+        self.fake_prompt.unlink()
+        revision=self.request('/api/plan'+suffix)[1]['revision']
+        code,converted=self.request('/api/ledger/generate'+suffix,{'revision':revision})
+        self.assertEqual(code,200,converted);self.assertEqual(converted['engine'],'code')
+        self.assertFalse(self.fake_prompt.exists(),'valid source report must be reused without Codex')
         self.fake_reply.write_text('invalid JSON')
         code,data=self.request('/api/research/source-check'+suffix,{})
         self.assertEqual(code,200,data)  # exact plan/reference/commit match reuses report
