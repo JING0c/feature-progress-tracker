@@ -6,7 +6,7 @@ if(typeof ResizeObserver==='function')new ResizeObserver(entries=>{document.docu
 const project=new URLSearchParams(location.search).get('project');
 const api=path=>path+(project?(path.includes('?')?'&':'?')+'project='+encodeURIComponent(project):'');
 document.querySelector('.back').href=api('/');
-let messages=[],planText='',requestIntent='chat',busy=false,dirty=false,planRevision=null,planPath='',planPolling=false;
+let messages=[],planText='',requestIntent='chat',busy=false,dirty=false,planRevision=null,planPath='',planPolling=false,planReadVersion=0,activePlanRead=0;
 let planningState={ready:false,reason:'正在检查项目规划书…'},projectSource='existing',generatedDraft=false;
 let planView='sheet',sheetRequest=0,workflow=null,suggestionsView=null,recoverableDraft=null,recoveryDrafts=[],discussionReady=null,assistantView=null;
 const sheetView=createPlanningSheetView(document.getElementById('plan-sheet'),{onAdopt:async(id,selected)=>{
@@ -70,14 +70,14 @@ function operationLabel(path,payload){
  if(path==='/api/planning')return payload?.merge_feature?'合并新增功能':({chat:'补充需求对话',plan:'生成项目规划书',ledger:'生成功能台账',decompose:'拆分新功能'}[payload?.intent]||'规划对话');
  return {'/api/ledger/generate':'按规划转换台账','/api/plan/merge':'合并已确认的功能','/api/research':'搜索 GitHub 参考','/api/research/selection':'保存参考选择','/api/research/source-check':'核对源码并确认规划','/api/plan/suggestions':'生成智能体建议','/api/plan/suggestions/preview':'预览采纳建议','/api/plan/table':'更新功能表视图','/api/plan/features':'整理功能表编辑','/api/plan/save':'保存功能表与历史','/api/ledger/preview':'校验功能台账','/api/ledger/save':'保存台账到看板','/api/plan/history':'读取历史版本'}[path.split('?')[0]];
 }
-async function request(path,payload){
+async function request(path,payload,{applyErrorPlanning=true}={}){
  const perform=async (id,step)=>{
   if(payload===undefined)step?.(50,'读取历史版本','已发起读取，等待返回记录');
   const headers={'Content-Type':'application/json','X-Planning-Token':TOKEN};if(id)headers['X-Operation-ID']=id;
   const r=await fetch(api(path),payload===undefined?{cache:'no-store'}:{method:'POST',headers,body:JSON.stringify(payload)});
   let data;try{data=await r.json()}catch(e){throw Error(r.status===403?'页面连接已失效，请保留输入文字后刷新页面。':'服务返回无效内容。')}
   if(payload!==undefined&&!['/api/plan/table','/api/plan/features','/api/ledger/preview'].includes(path))activityView?.refresh(data.activity_warning||'');
-  if(!r.ok){if(data.planning)applyPlanningState(data.planning);throw Error(data.error||'操作失败')}return data;
+  if(!r.ok){if(data.planning&&applyErrorPlanning)applyPlanningState(data.planning);throw Error(data.error||'操作失败')}return data;
  };
  const label=operationLabel(path,payload),visible=(payload!==undefined&&(path!=='/api/plan/table'||busy))||path.startsWith('/api/plan/history');
  return operationProgress&&label&&visible?operationProgress.run(label,perform,payload!==undefined):perform();
@@ -88,6 +88,7 @@ const activityView=typeof createPlanningActivity==='function'?createPlanningActi
 }}):null;
 
 function setBusy(value){
+ if(value&&!busy)planReadVersion++; // An earlier read cannot overwrite the result of a new operation.
  busy=value;
  for(const id of ['draft','clear','reload-plan','open-plan-history','review-source','restore-plan-draft'])document.getElementById(id).disabled=value;
  for(const id of ['generate-ledger','save-ledger'])document.getElementById(id).disabled=value||!planningState.ready;
@@ -142,19 +143,24 @@ async function requirePlanningReady(){
 function renderChat(){document.getElementById('conversation-history').hidden=!messages.length;document.getElementById('conversation-tools').hidden=!messages.length;list.replaceChildren();if(!messages.length){const w=document.createElement('div');w.className='welcome';w.textContent='先聊聊你的想法，我们可以边聊边整理。';list.append(w);return}for(const m of messages){const box=document.createElement('div'),role=document.createElement('div'),body=document.createElement('div');box.className='message '+m.role;role.className='role';role.textContent=m.role==='user'?'你':'规划助手';body.className='body';if(m.role==='assistant')renderPlanningMarkdown(body,m.content);else body.textContent=m.content;box.append(role,body);list.append(box)}list.scrollTop=list.scrollHeight}
 function retainDraft(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify({content:planText,revision:planRevision,generated:generatedDraft,savedAt:new Date().toISOString()}))}catch(e){notice('规划书尚未写入文件，请复制或下载保留。',true)}}
 async function loadPlan(force=false){
- if(planPolling||busy)return;
- planPolling=true;
+ if(!force&&(planPolling||busy))return null;
+ const version=++planReadVersion;activePlanRead=version;planPolling=true;
  try{
-  const data=await request('/api/plan');if(busy)return data;applyPlanningState(data.planning,data.source);
+  const data=await request('/api/plan',undefined,{applyErrorPlanning:false});
+  if(version!==planReadVersion||(!force&&busy))return null;
+  applyPlanningState(data.planning,data.source);
   if(((!dirty&&!workflow?.editing)||force)&&(data.revision!==planRevision||force)){
    suggestionsView?.discardPreview?.();planRevision=data.revision;planPath=data.path;dirty=false;generatedDraft=false;showPlan(data.content);planSync.textContent=planningState.ready?'已保存 · 与项目文件同步':'待规划 · 从项目需求开始';document.getElementById('plan-location').textContent=planPath;setBusy(busy);
   }
   if((dirty||workflow?.editing)&&data.revision!==planRevision)planSync.textContent='磁盘已有更新版本；当前为未保存编辑，请保留修改后读取文件版本。';
   return data;
- }catch(e){applyPlanningState({ready:false,reason:'规划书读取失败，请先恢复有效规划书。'});planSync.textContent='文件同步失败：'+e.message;notice(e.message,true);throw e}
- finally{planPolling=false}
+ }catch(e){
+  if(version!==planReadVersion)return null;
+  applyPlanningState({ready:false,reason:'规划书读取失败，请先恢复有效规划书。'});planSync.textContent='文件同步失败：'+e.message;notice(e.message,true);throw e;
+ }finally{if(activePlanRead===version){planPolling=false;activePlanRead=0;}}
 }
 async function savePlan(source='用户保存'){
+ planReadVersion++;
  if(planRevision===null)throw Error('尚未读取文件版本，请先读取文件后再生成。');
  const data=await request('/api/plan/save',{content:planText,revision:planRevision,source,note:document.getElementById('version-note').value.trim()});
  planRevision=data.revision;planPath=data.path||planPath;dirty=false;generatedDraft=false;sheetView.finishPreview?.();suggestionsView?.onSaved?.(data.revision);
@@ -241,7 +247,7 @@ form.addEventListener('submit',async e=>{
   const ledgerBase=await request('/api/ledger/info');messages.push({role:'user',content:value});added=true;input.value='';saveChat();renderChat();notice(generatingPlan?'Codex 正在根据参考资料生成功能表…':intent==='decompose'&&referenceFlow?'第 2 步：Codex 正在结合已选资料拆分新增功能…':'智能体正在思考，请稍候…');
   requestIntent='chat';
   if(merging||intent==='ledger')sourceProgressStart();
-  const data=await request('/api/planning',{messages,intent,research_first:!!workflow,...(merging?{merge_feature:true,feature_proposal:proposal?.content}:{})});messages.push({role:'assistant',content:data.reply,ledgerRevision:ledgerBase.revision,planRevision:data.plan_revision,intent});saveChat();renderChat();
+  const data=await request('/api/planning',{messages,intent,research_first:!!workflow,...(merging?{merge_feature:true,feature_proposal:proposal?.content}:{})});messages.push({role:'assistant',content:data.reply,ledgerRevision:ledgerBase.revision,planRevision:data.plan_revision,sourceRevision:data.source_revision,intent});saveChat();renderChat();
   if(generatingPlan){suggestionsView?.discardPreview?.();const viewReady=showPlan(data.reply,true);dirty=true;generatedDraft=true;retainDraft();try{notice('功能表已生成，正在保存规划书…');await savePlan('智能体生成');await viewReady;setPlanView('sheet');document.getElementById('view-section').scrollIntoView({block:'start'});notice(merging?'新增功能已写入功能表，并保存为历史版本。':'功能表已生成并保存，可在下方项目规划书中查看。')}catch(e){planSync.textContent='规划书未保存：'+e.message;notice('规划书已生成，文件保存失败：'+e.message,true)}}
   else {document.getElementById('conversation-history').open=true;if(intent==='decompose')assistantView?.showDiscussion();notice(intent==='decompose'?(latestFeatureProposal()?'拆分建议已生成，请在新增功能区确认后保存到功能表。':'请在功能建议的讨论区继续说明，形成拆分建议后即可保存。'):'讨论已保存。若要修改功能表，请选择“生成修改建议”。');}
  }catch(e){
@@ -302,11 +308,11 @@ document.getElementById('draft').addEventListener('click',()=>{
 });
 document.getElementById('generate-ledger').addEventListener('click',async()=>{
  if(busy)return;
- try{await requirePlanningReady();if(dirty||workflow?.editing)throw Error('请先保存功能表修改，再转换台账。');}catch(e){notice(e.message,true);return;}
  setBusy(true);
  try{
+  await requirePlanningReady();if(dirty||workflow?.editing)throw Error('请先保存功能表修改，再转换台账。');
   const data=await request('/api/ledger/generate',{revision:planRevision});
-  messages.push({role:'assistant',content:data.content,intent:'ledger',ledgerRevision:data.ledger_revision,planRevision:data.plan_revision});saveChat();renderChat();
+  messages.push({role:'assistant',content:data.content,intent:'ledger',ledgerRevision:data.ledger_revision,planRevision:data.plan_revision,sourceRevision:data.source_revision});saveChat();renderChat();
   const panel=document.getElementById('ledger-code-preview');panel.hidden=false;panel.open=true;
   document.getElementById('ledger-preview-summary').textContent='台账预览 · '+data.summary.total+' 个最细功能点（尚未保存）';
   document.getElementById('ledger-preview-note').textContent=data.note;
@@ -318,27 +324,38 @@ document.getElementById('save-plan').addEventListener('click',async()=>{if(busy|
 document.getElementById('open-recovery').addEventListener('click',()=>{if(!busy&&recoveryDrafts.length)document.getElementById('recovery-tools').showModal();});
 document.getElementById('close-recovery').addEventListener('click',()=>document.getElementById('recovery-tools').close());
 document.getElementById('restore-plan-draft').addEventListener('click',()=>{recoverableDraft=recoveryDrafts[Number(document.getElementById('plan-draft-choice').value)||0];if(busy||!recoverableDraft)return;if(dirty||workflow?.editing){notice('请先保存当前修改。',true);return;}suggestionsView?.discardPreview?.();showPlan(recoverableDraft.content);planRevision=recoverableDraft.revision||null;dirty=true;generatedDraft=!!recoverableDraft.generated;planSync.textContent='已打开草稿 '+(Number(document.getElementById('plan-draft-choice').value)+1)+'，尚未保存；确认内容后点击“保存功能表”。';setBusy(false);document.getElementById('recovery-tools').close();document.getElementById('plan-document').scrollIntoView({block:'start'});});
-document.getElementById('reload-plan').addEventListener('click',async()=>{if(dirty&&!confirm('当前有未保存的规划书草稿，读取文件版本会替换页面内容。请先复制或下载保留。继续吗？'))return;try{await localOperation('读取文件版本',()=>loadPlan(true));try{localStorage.removeItem(PLAN_KEY);localStorage.removeItem(DRAFT_KEY)}catch(e){}notice('已读取项目文件中的规划书。')}catch(e){}});
+document.getElementById('reload-plan').addEventListener('click',async()=>{
+ if(busy)return;
+ if(workflow?.editing){notice('请先保存或取消表格编辑，再读取文件版本。',true);return;}
+ if(dirty&&!confirm('当前有未保存的规划书草稿，读取文件版本会替换页面内容。请先复制或下载保留。继续吗？'))return;
+ setBusy(true);
+ try{
+  const data=await localOperation('读取文件版本',()=>loadPlan(true));
+  if(!data)throw Error('文件读取未完成，请重试；当前草稿已保留。');
+  try{localStorage.removeItem(PLAN_KEY);localStorage.removeItem(DRAFT_KEY)}catch(e){}
+  notice('已读取项目文件中的规划书。');
+ }catch(e){notice(e.message,true);}finally{setBusy(false);}
+});
 document.getElementById('save-ledger').addEventListener('click',async()=>{
  if(busy)return;
  if(dirty||workflow?.editing){notice('请先保存功能表修改，再生成并保存台账。',true);return;}
- try{await requirePlanningReady()}catch(e){notice(e.message,true);return}
- const candidate=[...messages].reverse().find(m=>m.role==='assistant'&&/^##\s+大功能\s+/m.test(m.content));
- if(!candidate){notice('请先生成并审阅功能台账。',true);return}
- if(typeof candidate.ledgerRevision!=='string'){notice('这份旧台账草稿没有文件版本记录，请基于最新项目文件重新生成后保存。',true);return}
- let content=candidate.content;
- const fenced=content.match(/```(?:markdown|md)?\s*\n([\s\S]*?)```/i);
- if(fenced&&/^##\s+大功能\s+/m.test(fenced[1]))content=fenced[1];
  setBusy(true);
  try{
+  await requirePlanningReady();
+  const candidate=[...messages].reverse().find(m=>m.role==='assistant'&&/^##\s+大功能\s+/m.test(m.content));
+  if(!candidate){notice('请先生成并审阅功能台账。',true);return}
+  if(typeof candidate.ledgerRevision!=='string'){notice('这份旧台账草稿没有文件版本记录，请基于最新项目文件重新生成后保存。',true);return}
+  let content=candidate.content;
+  const fenced=content.match(/```(?:markdown|md)?\s*\n([\s\S]*?)```/i);
+  if(fenced&&/^##\s+大功能\s+/m.test(fenced[1]))content=fenced[1];
   const meta=await request('/api/ledger/info');
   if(meta.revision!==candidate.ledgerRevision)throw Error('生成后台账文件已更新，请基于最新项目文件重新生成，避免覆盖进度。');
-  const preview=await request('/api/ledger/preview',{content,revision:candidate.ledgerRevision,...(candidate.planRevision?{plan_revision:candidate.planRevision}:{})});
+  const preview=await request('/api/ledger/preview',{content,revision:candidate.ledgerRevision,...(candidate.planRevision?{plan_revision:candidate.planRevision}:{}),...(candidate.sourceRevision?{source_revision:candidate.sourceRevision}:{})});
   const changes=preview.adjustments.length?'\n\n将按实际功能结构校正摘要：\n'+preview.adjustments.join('\n')+'\n校正前的原文会另存保留。':'';
   const confirmation='保存到当前项目：\n'+meta.path+'\n\n实际进度：已验收 '+preview.summary.done+'/'+preview.summary.total+' 个最细功能点。'+changes+'\n\n将替换台账并保留备份。请确认实现与审核历史已保留。';
   if(!confirm(confirmation))return;
   // Preserve the original candidate; the server recalculates and archives it if corrected.
-  const data=await request('/api/ledger/save',{content,revision:candidate.ledgerRevision,...(candidate.planRevision?{plan_revision:candidate.planRevision}:{})});
+  const data=await request('/api/ledger/save',{content,revision:candidate.ledgerRevision,...(candidate.planRevision?{plan_revision:candidate.planRevision}:{}),...(candidate.sourceRevision?{source_revision:candidate.sourceRevision}:{})});
   let result='已保存 '+data.count+' 个功能节点，其中 '+data.summary.total+' 个最细功能点。原文件已备份。';
   if(data.adjustments.length)result+=' 已校正摘要：'+data.adjustments.join('；')+'。';
   if(data.source_backup)result+=' 原始生成内容已保留：'+data.source_backup;
@@ -372,7 +389,7 @@ if(typeof createPlanningHistoryView==='function')createPlanningHistoryView({requ
 document.getElementById('copy').addEventListener('click',async()=>{try{await localOperation('复制对话',()=>navigator.clipboard.writeText(messages.map(m=>(m.role==='user'?'你':'规划助手')+'：\n'+m.content).join('\n\n')));notice('已复制对话')}catch(e){notice('复制失败，请手动选择文字。',true)}});
 
 function showPlan(text,scroll=false,display={}){
- if(text!==planText)invalidateSourceReview();
+ if(text!==planText){planReadVersion++;invalidateSourceReview();}
  planText=text;
  const section=document.getElementById('plan-document'),article=document.getElementById('plan-content');
  section.hidden=(!text||(!planningState.ready&&!dirty&&!generatedDraft&&/^# 项目规划书\s+尚未生成规划书/.test(text)))&&!recoveryDrafts.length;
