@@ -174,9 +174,12 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 #generate-suggestions[hidden]{display:none}
 
 /* Task-first assistant: choose intent, one primary action, explicit review state. */
-.assistant-steps{display:flex;gap:10px;list-style:none;padding:0;margin:18px 0 22px;flex-wrap:wrap}
-.assistant-steps li{padding:8px 12px;border:1px solid #d5ddc7;border-radius:8px;color:#526248;font-size:13px;background:#fff}
-.assistant-steps li[data-current=true]{background:#447a5f;color:#fff;border-color:#447a5f;font-weight:600}
+.assistant-flow{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 0;margin:14px 0 20px;font-size:14px;line-height:1.8;color:#526248}
+.assistant-steps{display:flex;flex-wrap:wrap;gap:4px 0;list-style:none;padding:0;margin:0}
+.assistant-steps li{cursor:default}
+.assistant-steps li+li::before{content:"→";margin:0 10px;color:#705664;font-weight:400}
+.assistant-steps li[data-current=true]{color:#294c3a;font-weight:600}
+.assistant-steps li[data-current=true]::after{content:"（当前）";font-weight:400}
 .suggestions-panel .planning-discussion>summary{display:none}
 .suggestions-panel .planning-discussion{margin:0 0 20px}
 .assistant-modes{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 18px;padding:0;border:0}
@@ -211,7 +214,7 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 #suggestion-results:focus-visible{outline:3px solid #447a5f;outline-offset:5px}
 :where(button,a,input,textarea,summary,select):focus-visible{outline:3px solid #447a5f;outline-offset:3px}
 .plan-sidebar .section-link[aria-current=location]{background:#f2dde7;color:#832d51;font-weight:650;border-left:3px solid #832d51}
-@media(max-width:640px){.assistant-primary{align-items:stretch;flex-direction:column;gap:10px}.assistant-primary button{width:100%}.assistant-modes{gap:8px}.assistant-modes label{flex:1;justify-content:center}.suggestions-panel{padding:16px}.suggestions-panel .composer{padding:16px}.assistant-steps{gap:6px}.assistant-steps li{padding:7px 9px;font-size:12px}}
+@media(max-width:640px){.assistant-primary{align-items:stretch;flex-direction:column;gap:10px}.assistant-primary button{width:100%}.assistant-modes{gap:8px}.assistant-modes label{flex:1;justify-content:center}.suggestions-panel{padding:16px}.suggestions-panel .composer{padding:16px}.assistant-flow{font-size:13px}.assistant-steps li+li::before{margin:0 6px}}
 
 #ledger-code-preview{clear:both;margin-top:14px;padding-top:12px;border-top:1px solid #cbd7b3}
 #ledger-code-preview summary{cursor:pointer;font-weight:600;color:#294c3a}
