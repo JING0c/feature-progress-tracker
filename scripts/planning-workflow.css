@@ -126,7 +126,7 @@ button:disabled{cursor:not-allowed}
 
 /* First visit starts with the need; saved projects keep the full workspace. */
 .first-use .layout{grid-template-columns:minmax(0,1fr)}
-.first-use .side,.first-use .planning-activity,.first-use .chat-head{display:none}
+.first-use .side,.first-use .chat-head{display:none}
 .first-use #messages:has(.welcome){min-height:0;padding:16px 20px}
 .first-use .welcome{margin:0;text-align:left}
 .first-use .planning-discussion{margin-top:0}
@@ -229,3 +229,23 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 #ledger-code-preview summary{cursor:pointer;font-weight:600;color:#294c3a}
 #ledger-preview-content{max-height:360px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#fff;padding:14px;border:1px solid #d8dfca;border-radius:8px;font-size:13px;line-height:1.7}
 .feature-row-actions{min-width:115px}.feature-row-actions button{display:block;margin:6px 0;font-size:13px;padding:8px}
+
+/* One timeline: a saved table is a detail of its save record. */
+.suggestion-activity{border:1px solid #e5cfda;border-radius:12px;background:#fff;margin:22px 0;scroll-margin-top:18px}
+.suggestion-activity>summary{padding:16px 20px;font-size:16px;font-weight:600;color:#482b38;background:#faedf4;border-radius:12px}
+.suggestion-activity[open]>summary{border-radius:12px 12px 0 0;border-bottom:1px solid #e5cfda}
+#activity-count{font-size:13px;font-weight:400;color:#705664}
+.suggestion-activity .planning-activity{border:0;margin:0;border-radius:0 0 12px 12px;padding:20px}
+.activity-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.activity-heading h2{font-size:18px;margin:0}
+.planning-activity #activity-list{max-height:none;overflow:visible}
+.activity-card{padding:14px 0;border-bottom:1px solid #eadbe2;overflow-wrap:anywhere}
+.activity-card:last-child{border-bottom:0}
+.activity-card .activity-entry{border:0;padding:0;margin:0 0 10px}
+.activity-card>p{margin:8px 0;font-size:13px}
+.activity-card>button{font-size:13px;min-height:36px;padding:8px 12px}
+.activity-entry summary>span{margin-left:0}
+.planning-activity .plan-history{border:0;padding:0;margin:0;scroll-margin-top:18px}
+.plan-history h3{display:block;font-size:18px;line-height:1.6;margin:18px 0 8px}
+#activity-timeline:focus,#history-title:focus{outline:none}
+@media(max-width:600px){.suggestion-activity .planning-activity{padding:14px}.activity-heading h2{font-size:16px}.activity-card>button{width:100%}}

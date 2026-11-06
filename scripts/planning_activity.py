@@ -93,14 +93,49 @@ def event(route,payload,data,status,before=''):
     return {'id':uuid.uuid4().hex,'time':datetime.now(timezone.utc).isoformat(),'title':title,'detail':detail,'state':state,
             'history_version':data.get('history_version',{}).get('id','')}
 
-def listing(project):
+def listing(project, warnings=None):
     from planning_history import list_versions,read_version
-    records=read(project);known={r.get('history_version') for r in records}
-    versions=list_versions(project)
+    try:records=read(project)
+    except (OSError,ValueError) as error:
+        if warnings is None:raise
+        warnings.append('操作记录暂时无法读取，仍可查看保留的功能表：'+str(error))
+        records=[]
+    versions=list_versions(project,warnings=warnings)
+    readable=[];contents={}
+    for version in versions:
+        try:
+            contents[version['id']]=read_version(project,version['id'])['content']
+            readable.append(version)
+        except (OSError,ValueError) as error:
+            if warnings is None:raise
+            warnings.append('有一份已保存功能表的内容无法读取，操作记录仍保留：'+str(error))
+    versions=readable
+    snapshots={v['id']:{key:v[key] for key in ('id','saved_at','source','note')} for v in versions}
+    known=set()
+    for record in records:
+        # These are derived read-only fields, never trusted from the stored log.
+        record.pop('snapshot',None);record.pop('snapshot_missing',None)
+        identity=record.get('history_version')
+        saved=record['state']=='success' and record['title'] in ('功能表已保存','规划书已保存')
+        if not saved or not identity:continue
+        snapshot=snapshots.get(identity) if isinstance(identity,str) else None
+        if snapshot:
+            record['snapshot']=snapshot
+            known.add(identity)
+        else:record['snapshot_missing']=True
     for i,version in enumerate(versions):
         if version['id'] in known:continue
-        after=read_version(project,version['id'])['content']
-        before=read_version(project,versions[i+1]['id'])['content'] if i+1<len(versions) else ''
-        records.append({'id':version['id'],'time':version['saved_at'],'title':'已有规划版本 · '+version['source'],
-                        'state':'history','detail':'来源：已有保存历史（不是补记操作）。\n'+version['note']+'\n'+changes(before,after)})
+        after=contents[version['id']]
+        before=contents[versions[i+1]['id']] if i+1<len(versions) else None
+        backup=version['source']=='保存前文件版本'
+        detail='来源：已有保存历史（不是补记操作）。\n保存方式：'+version['source']+'\n'
+        if backup:detail+='保存前留存的功能表；显示时间为归档时间，原修改时间未知。\n'
+        else:detail+='保留了当时的功能表，未记录完整操作过程。\n'
+        if version['note']:detail+='保存备注：'+version['note']+'\n'
+        detail+=('与上一份可读取功能表比较：\n'+changes(before,after) if before is not None else
+                 '这是目前最早可读取的功能表，没有更早可读取内容可比较。')
+        records.append({'id':version['id'],'time':version['saved_at'],
+                        'title':'保存前的功能表备份' if backup else '早期保存的功能表',
+                        'history_version':version['id'],'snapshot':snapshots[version['id']],
+                        'state':'history','detail':detail})
     return sorted(records,key=lambda r:(r['time'],r['id']),reverse=True)

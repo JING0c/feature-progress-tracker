@@ -113,6 +113,46 @@ class ReferencesHistoryHttpTest(project_tests.ManagerTest):
         self.assertEqual(len(versions),3);prior=next(v for v in versions if v['source']=='保存前文件版本')
         self.assertEqual(self.request('/api/plan/history?project='+p['id']+'&version='+prior['id'])[1]['content'],external)
 
+    def test_readable_snapshot_survives_unrelated_corrupt_metadata(self):
+        p=self.project();self.save(p,generate=True)
+        changed=PLAN+'\n第二次保存\n';latest=self.save(p,changed)[1]['history_version']
+        versions=self.versions(p);older=versions[1]
+        Path(p['directory'],'规划历史',older['id']+'.md').write_text('broken metadata')
+        before={f.relative_to(p['directory']):f.read_bytes() for f in Path(p['directory']).rglob('*') if f.is_file()}
+        code,listing=self.request('/api/plan/activity?project='+p['id'])
+        self.assertEqual(code,200,listing)
+        self.assertIn(latest['id'],[r.get('snapshot',{}).get('id') for r in listing['records']])
+        code,data=self.request('/api/plan/history?project='+p['id']+'&version='+latest['id'])
+        self.assertEqual(code,200,{'message':'a listed readable snapshot must remain openable','response':data})
+        self.assertEqual(data['content'],changed)
+        self.assertTrue(data.get('warnings'),'unreadable metadata must be disclosed')
+        self.assertIn('无法',data['diff'],'unknown chronological metadata cannot imply this is the earliest save')
+        self.assertEqual(before,{f.relative_to(p['directory']):f.read_bytes() for f in Path(p['directory']).rglob('*') if f.is_file()})
+        code,_=self.save(p,changed+'\n新写入\n')
+        self.assertGreaterEqual(code,400,'read tolerance must not relax strict save validation')
+        self.assertEqual(Path(p['plan_path']).read_text(),changed)
+
+    def test_readable_snapshot_survives_corrupt_previous_body(self):
+        p=self.project();first=self.save(p,generate=True)[1]['history_version']
+        changed=PLAN+'\n第二次保存\n';latest=self.save(p,changed)[1]['history_version']
+        prior=Path(p['directory'],'规划历史',first['id']+'.md')
+        prior.write_text(prior.read_text()+'\ncorrupted body')
+        before={f.relative_to(p['directory']):f.read_bytes() for f in Path(p['directory']).rglob('*') if f.is_file()}
+        code,data=self.request('/api/plan/history?project='+p['id']+'&version='+latest['id'])
+        self.assertEqual(code,200,data)
+        self.assertEqual(data['content'],changed)
+        self.assertTrue(data.get('warnings'),'a missing comparison must be visible')
+        self.assertIn('无法',data['diff'])
+        self.assertEqual(before,{f.relative_to(p['directory']):f.read_bytes() for f in Path(p['directory']).rglob('*') if f.is_file()})
+
+    def test_selected_corrupt_snapshot_is_still_rejected(self):
+        p=self.project();version=self.save(p,generate=True)[1]['history_version']
+        target=Path(p['directory'],'规划历史',version['id']+'.md')
+        target.write_text(target.read_text()+'\ncorrupted body')
+        code,data=self.request('/api/plan/history?project='+p['id']+'&version='+version['id'])
+        self.assertGreaterEqual(code,400,data)
+        self.assertNotIn('content',data)
+
 class HistoryFailureTest(unittest.TestCase):
     def test_archive_failure_restores_file_keeps_pending_and_can_retry(self):
         with tempfile.TemporaryDirectory() as temp:

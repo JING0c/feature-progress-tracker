@@ -48,13 +48,17 @@ def read_version(project, identity, content=True):
             metadata['content']=body
     return metadata
 
-def list_versions(project):
+def list_versions(project, warnings=None):
     directory=history_directory(project)
     versions=[]
     if directory.exists():
         for path in directory.glob('v-*.md'):
             if not re.fullmatch(r'v-[0-9a-f]{32}',path.stem):continue
-            versions.append(read_version(project,path.stem,content=False))
+            try:
+                versions.append(read_version(project,path.stem,content=False))
+            except (OSError,ValueError) as error:
+                if warnings is None:raise
+                warnings.append('有一份已保存功能表的记录无法读取，其他记录仍可查看：'+str(error))
     return sorted(versions,key=lambda version:(version['saved_at'],version['id']),reverse=True)
 
 def stage(project, body, source, note, references):

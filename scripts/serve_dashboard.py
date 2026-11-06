@@ -1096,17 +1096,26 @@ def main():
             query=parse_qs(urlparse(self.path).query)
             identity=query.get('version',[])
             if len(identity)>1:raise RequestError('只能读取一个历史版本。')
-            versions=module.list_versions(project)
-            if not identity:return {'versions':versions}
+            if not identity:return {'versions':module.list_versions(project)}
             try:version=module.read_version(project,identity[0])
             except FileNotFoundError:raise RequestError('历史版本不存在。',404)
             version['model']=self.planning_model(version['content'])
+            warnings=[]
+            versions=module.list_versions(project,warnings=warnings)
+            version['warnings']=warnings
+            if warnings:
+                version['diff']='部分保存记录无法读取，无法可靠确定上次保存的功能表；这份功能表仍可查看和下载。'
+                return version
             index=next(i for i,item in enumerate(versions) if item['id']==version['id'])
             previous=versions[index+1] if index+1<len(versions) else None
             if previous:
-                prior=module.read_version(project,previous['id'])
+                try:prior=module.read_version(project,previous['id'])
+                except (OSError,ValueError):
+                    warnings.append('上次保存的功能表无法读取，暂时不能比较改动。')
+                    version['diff']='无法与上次保存比较；这份功能表仍可查看和下载。'
+                    return version
                 version['previous']=previous['id']
-                version['diff']=''.join(difflib.unified_diff(prior['content'].splitlines(keepends=True),version['content'].splitlines(keepends=True),fromfile=previous['id'],tofile=version['id']))
+                version['diff']=''.join(difflib.unified_diff(prior['content'].splitlines(keepends=True),version['content'].splitlines(keepends=True),fromfile='上次保存的功能表',tofile='这次保存的功能表'))
             else:version['diff']='这是最早归档版本，没有上一版可比较。'
             return version
 
@@ -1389,7 +1398,9 @@ def main():
                 elif route == '/api/plan/activity':
                     planning_module('planning_history')
                     with store.lock_for('workflow',project['plan_path']), store.lock_for('activity',project['plan_path']):
-                        self.respond({'records':planning_module('planning_activity').listing(project)})
+                        warnings=[]
+                        records=planning_module('planning_activity').listing(project,warnings=warnings)
+                        self.respond({'records':records,'warnings':warnings})
                 elif route == '/api/plan/suggestions':
                     path=self.suggestion_path(project)
                     data=planning_module('planning_suggestions').read(read_document(path)['content']) if path.exists() else {'suggestions':[]}
