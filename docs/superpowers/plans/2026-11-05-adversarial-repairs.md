@@ -13,21 +13,21 @@
 
 ## 第一阶段：数据一致性
 
-- [ ] A01：tests/test_planning_operations.py 增加未开始/已完成需求变更、历史保护和幂等反例并观察失败。修改 scripts/planning_operations.py 字段同步与历史快照；serve_dashboard.py 仅接受可验证的合法历史变更，拒绝伪造完成或篡改证据。需求字段改变后原验收失效。
-- [ ] A02：tests/test_planning_suggestions.py 先覆盖“生成建议后台账占用编号”。apply/validate 接受 reserved_ids；serve 在生成及预览时读取最新台账的组/节点编号。当前已有功能更新仍允许。
-- [ ] A03：新增 tests/test_ledger_commit_gate.py，在真实临时HTTP服务复现更换参考后旧候选保存。generate 返回 source_revision；页面传递；preview/save 重验当前资料并比较绑定。持有 planning→workflow→document 锁，避免参考写入穿过最终校验。
-- [ ] 跑针对性 Python 反例，再提交严重问题修复。
+- [x] A01：tests/test_planning_operations.py 增加未开始/已完成需求变更、历史保护和幂等反例并观察失败。修改 scripts/planning_operations.py 字段同步与历史快照；serve_dashboard.py 仅接受可验证的合法历史变更，拒绝伪造完成或篡改证据。需求字段改变后原验收失效。
+- [x] A02：tests/test_planning_suggestions.py 先覆盖“生成建议后台账占用编号”。apply/validate 接受 reserved_ids；serve 在生成及预览时读取最新台账的组/节点编号。当前已有功能更新仍允许。
+- [x] A03：新增 tests/test_ledger_commit_gate.py，在真实临时HTTP服务复现更换参考后旧候选保存。generate 返回 source_revision；页面传递；preview/save 重验当前资料并比较绑定。持有 planning→workflow→document 锁，避免参考写入穿过最终校验。
+- [x] 跑针对性 Python 反例，再提交严重问题修复。
 
 ## 第二阶段：异步交互
 
-- [ ] A04：旧读取延迟至保存后返回，页面应保留新版本；给读取响应加失效/世代校验。
-- [ ] A05：主动读取等待或替代在途读取，真正成功后才清理草稿；失败保留恢复信息。
-- [ ] A06：生成/保存第一个 await 前锁定；重复点击只发一个操作，取消/错误必须释放。
-- [ ] 将上一轮 VM 反例落为断言测试；跑全部 CJS 后提交。
+- [x] A04：旧读取延迟至保存后返回，页面应保留新版本；给读取响应加失效/世代校验。
+- [x] A05：主动读取等待或替代在途读取，真正成功后才清理草稿；失败保留恢复信息。
+- [x] A06：生成/保存第一个 await 前锁定；重复点击只发一个操作，取消/错误必须释放。
+- [x] 将上一轮 VM 反例落为断言测试；跑全部 CJS 后提交。
 
 ## 交付验证
 
-- [ ] 全量 unittest、全部 CJS 和 diff 检查。
-- [ ] 启动独立交付副本，真实 Codex 两轮新增与建议、代码合并、预览保存、转换确认、看板核对；保存关键截图和前后Markdown。
-- [ ] 非实施者独立重放六个反例及恶意变体，给评分；失败继续修复。
-- [ ] 同步既有规划/台账，只有独立通过才恢复勾选；本地提交，不自行推送。
+- [x] 全量 unittest、全部 CJS 和 diff 检查。
+- [x] 启动独立交付副本，真实 Codex 两轮新增与建议、代码合并、预览保存、转换确认、看板核对；保存关键截图和前后Markdown。
+- [x] 非实施者独立重放六个反例及恶意变体，给评分；失败继续修复。
+- [x] 同步既有规划/台账，只有独立通过才恢复勾选；本地提交，不自行推送。
