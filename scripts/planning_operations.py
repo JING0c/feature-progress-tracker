@@ -1,4 +1,5 @@
 """Deterministic document operations. This module never calls an agent."""
+import copy
 import json
 import re
 from planning_editor import editable_table, replace_features
@@ -81,6 +82,159 @@ def safe_field(value):
     return re.sub(r'\s+', ' ', value or '').replace('|', '／').replace('｜', '／').replace(';', '，').replace('；', '，').strip()
 
 
+PLAN_FIELDS = {'验收', '说明', '优先级', '依赖', '所需技术', '前期准备', '备注'}
+REQUIREMENT_FIELDS = {'验收', '说明', '依赖', '所需技术', '前期准备'}
+HISTORY_FIELD = '规划同步历史'
+REVIEW_RESET = {'审核 Agent': '待审核', '评分': '待审核',
+                '评分理由': '需求已变化，待重新审核', '审核结论': '需求已变化，待重新审核'}
+
+
+def plan_fields(row):
+    values = {'验收': row.get('验收标准', ''), '说明': row.get('说明', ''),
+              '优先级': row.get('优先级') or '待确认', '依赖': row.get('依赖') or '无',
+              '所需技术': row.get('所需技术') or '待确认', '前期准备': row.get('前期准备') or '待确认',
+              '备注': row.get('备注', '')}
+    if not values['验收'].strip():
+        raise ValueError('功能缺少验收标准：' + row['编号'])
+    return {key: safe_field(value) for key, value in values.items()}
+
+
+def history_records(item):
+    try:
+        records = json.loads(item['fields'].get(HISTORY_FIELD, '[]'))
+    except (TypeError, ValueError) as exc:
+        raise ValueError('已有规划同步历史格式无效，请先核对：' + item['id']) from exc
+    if not isinstance(records, list):
+        raise ValueError('已有规划同步历史格式无效，请先核对：' + item['id'])
+    return records
+
+
+def history_snapshot(item):
+    # Retain all parsed old data, including the subtree, without recursively
+    # embedding previously archived histories into every later snapshot.
+    snapshot = copy.deepcopy(item)
+    snapshot['fields'].pop(HISTORY_FIELD, None)
+    snapshot['children'] = [history_snapshot(child) for child in item.get('children', [])]
+    return snapshot
+
+
+def history_text(records):
+    text = json.dumps(records, ensure_ascii=False, separators=(',', ':'))
+    # These separators have meaning to the Markdown ledger field parser. JSON
+    # unicode escapes keep the exact old values recoverable without new fields.
+    for char in (';', '；', '|', '｜'):
+        text = text.replace(char, '\\u%04x' % ord(char))
+    return text
+
+
+def requirements_changed(old, new):
+    return (any(safe_field(old['fields'].get(key)) != safe_field(new['fields'].get(key))
+                for key in REQUIREMENT_FIELDS)
+            or any(requirements_changed(before, after)
+                   for before, after in zip(old.get('children', []), new.get('children', []))))
+
+
+def reopened_fields(fields):
+    result = dict(fields)
+    if result.get('状态') in ('已完成', '待审核'):
+        result['状态'] = '进行中'
+    for key, value in REVIEW_RESET.items():
+        if key in result or key in ('审核 Agent', '评分'):
+            result[key] = value
+    return result
+
+
+def valid_ledger_transition(old, new):
+    """Allow only a requirements sync with exact old history, never new approval.
+
+    Used by the server's final ledger validation, not as a client assertion.
+    Names, topology, notes and implementation evidence cannot be changed here.
+    """
+    if any(old.get(key) != new.get(key) for key in ('id', 'name', 'notes')):
+        return False
+    before_children, after_children = old.get('children', []), new.get('children', [])
+    if len(before_children) != len(after_children):
+        return False
+    if any(before != after and not valid_ledger_transition(before, after)
+           for before, after in zip(before_children, after_children)):
+        return False
+    old_fields = {k: v for k, v in old['fields'].items() if k != HISTORY_FIELD}
+    new_fields = {k: v for k, v in new['fields'].items() if k != HISTORY_FIELD}
+    expected = dict(old_fields)
+    for key in PLAN_FIELDS:
+        if key in new_fields:
+            expected[key] = new_fields[key]
+        elif key in old_fields:
+            return False
+    changed_requirements = requirements_changed(old, new)
+    if changed_requirements:
+        expected = reopened_fields(expected)
+    if expected != new_fields or new['checked'] != (False if changed_requirements else old['checked']):
+        return False
+    try:
+        old_history, new_history = history_records(old), history_records(new)
+    except ValueError:
+        return False
+    own_change = old_fields != new_fields or old['checked'] != new['checked']
+    return new_history == old_history + ([history_snapshot(old)] if own_change else [])
+
+
+def sync_existing_items(groups, adopted):
+    by_id = {row['编号']: row for row in adopted}
+    changed = {}
+    def sync(old):
+        current = copy.deepcopy(old)
+        current['children'] = [sync(child) for child in old.get('children', [])]
+        row = by_id.get(old['id'])
+        if row:
+            if old['name'] != safe_field(row['功能名称']):
+                raise ValueError('编号 '+old['id']+' 与已有台账名称不同，请核对编号或为新功能使用新编号；已有实施记录未修改。')
+            for key, value in plan_fields(row).items():
+                if safe_field(old['fields'].get(key)) != value:
+                    current['fields'][key] = value
+        if requirements_changed(old, current):
+            current['checked'] = False
+            current['fields'] = reopened_fields(current['fields'])
+        if current['fields'] != old['fields'] or current['checked'] != old['checked']:
+            current['fields'][HISTORY_FIELD] = history_text(history_records(old) + [history_snapshot(old)])
+            changed[old['id']] = current
+        return current
+    for group in groups:
+        for item in group['items']:
+            sync(item)
+    return changed
+
+
+def replace_item_records(text, changed):
+    """Replace changed records only; retain surrounding prose and fenced examples."""
+    result, current, group, fence = [], None, False, None
+    item_pattern = re.compile(r'^(\s*)-\s*\[([ xX])\]\s+(\S+-\d+|F\d+(?!\s+总状态\s*[：:]))\s+(.+?)\s*$')
+    for line in text.splitlines(keepends=True):
+        marker = re.match(r'^ {0,3}(`{3,}|~{3,})(.*)$', line.rstrip())
+        if fence:
+            result.append(line)
+            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence) and not marker[2].strip():
+                fence = None
+            continue
+        if marker:
+            fence = marker[1]; result.append(line); continue
+        if line.startswith('## '):
+            group = bool(re.match(r'^##\s+大功能\s+([^：:\s]+)\s*[：:]\s*(.+?)\s*$', line)); current = None
+        match = item_pattern.match(line)
+        if match and group:
+            current = match[3] if match[3] in changed else None
+            if current:
+                item = changed[current]; pad = match[1]
+                result.append(pad + '- [' + ('x' if item['checked'] else ' ') + '] ' + current + ' ' + item['name'] + '｜状态：' + item['fields'].get('状态', '未开始') + '\n')
+                result.extend(pad + '  - ' + key + '：' + value + '\n' for key, value in item['fields'].items() if key != '状态')
+                result.extend(pad + '  - ' + note + '\n' for note in item.get('notes', []))
+                continue
+        if current and re.match(r'^\s{2,}-\s+', line):
+            continue
+        result.append(line)
+    return ''.join(result)
+
+
 def ledger_from_plan(content, existing, parse):
     rows = editable_table(content)['rows']
     replace_features(content, rows)
@@ -93,7 +247,9 @@ def ledger_from_plan(content, existing, parse):
         raise ValueError('已有台账编号重复，请先整理原记录。')
     children = {r['上级编号'] for r in adopted}
     roots = [r for r in adopted if '-' not in r['编号']]
-    output = existing.rstrip() + '\n' if existing.strip() else '# 功能执行情况\n进度：已验收 0/0（0%）\n'
+    updated = sync_existing_items(groups, adopted)
+    synced = replace_item_records(existing, updated)
+    output = synced.rstrip() + '\n' if synced.strip() else '# 功能执行情况\n进度：已验收 0/0（0%）\n'
     added, preserved = [], []
     for root in roots:
         root_id = root['编号']
@@ -109,12 +265,8 @@ def ledger_from_plan(content, existing, parse):
                 continue
             depth = max(identity.count('-') - 1, 0); pad = '  ' * depth
             block += '\n' + pad + '- [ ] ' + identity + ' ' + safe_field(row['功能名称']) + '｜状态：未开始\n'
-            values = {'验收': row.get('验收标准', ''), '说明': row.get('说明', ''),
-                      '优先级': row.get('优先级') or '待确认', '依赖': row.get('依赖') or '无',
-                      '所需技术': row.get('所需技术') or '待确认', '前期准备': row.get('前期准备') or '待确认',
-                      '执行 Agent': '待分配', '实现证据': '无', '审核 Agent': '待审核', '评分': '待审核', '问题': '无'}
-            if not values['验收'].strip():
-                raise ValueError('功能缺少验收标准：' + identity)
+            values = {key: value for key, value in plan_fields(row).items() if value}
+            values.update({'执行 Agent': '待分配', '实现证据': '无', '审核 Agent': '待审核', '评分': '待审核', '问题': '无'})
             for key, value in values.items():
                 block += pad + '  - ' + key + '：' + safe_field(value) + '\n'
             added.append(identity)
@@ -135,8 +287,8 @@ def ledger_from_plan(content, existing, parse):
             output=output[:at].rstrip()+'\n'+block+'\n'+output[at:]
         else:
             output += '\n## 大功能 ' + root_id + '：' + safe_field(root['功能名称']) + '\n' + block
-    return {'content': output, 'added': added, 'preserved': preserved,
-            'note': '按已采用功能转换；已有条目原文与实施审核历史保留，不自动改写。' if preserved else '按已采用功能转换；新条目均为未开始、待审核。'}
+    return {'content': output, 'added': added, 'preserved': preserved, 'updated': list(updated),
+            'note': '按已采用功能同步当前规划；实施证据及旧审核留存历史，需求变化的已完成或待审核项重新打开。' if updated else ('按已采用功能转换；未变化条目与实施审核历史保留。' if preserved else '按已采用功能转换；新条目均为未开始、待审核。')}
 
 
 def walk(items):

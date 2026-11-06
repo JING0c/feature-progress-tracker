@@ -9,6 +9,7 @@ import unittest
 import urllib.error
 import urllib.request
 from pathlib import Path
+from ledger_context_fixture import legacy_no_reference_context
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -147,11 +148,12 @@ class ManagerTest(unittest.TestCase):
         path = Path(p['ledger_path'])
         path.write_text(original, encoding='utf-8')
         revision = self.request('/api/ledger/info?project='+p['id'])[1]['revision']
+        context = legacy_no_reference_context(self.request('/api/plan?project='+p['id'])[1]['revision'])
         endpoint = '/api/ledger/save?project='+p['id']
-        status, _ = self.request(endpoint, {'content':original, 'revision':revision})
+        status, _ = self.request(endpoint, {'content':original, 'revision':revision, **context})
         self.assertEqual(status, 200)
         for invalid in (original.replace('可验证结果。','changed'), ledger('已验收项目'), original + ledger('new', '已完成', True).replace('F01','F02')):
-            self.assertEqual(self.request(endpoint, {'content':invalid, 'revision':revision})[0], 400)
+            self.assertEqual(self.request(endpoint, {'content':invalid, 'revision':revision, **context})[0], 400)
         self.assertEqual(path.read_text(), original)
 
     def test_registry_and_cross_document_collisions_are_rejected(self):

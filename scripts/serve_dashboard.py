@@ -695,11 +695,14 @@ def validate_ledger(content, existing=""):
     by_id = {item['id']: item for item in items}
     if len(by_id) != len(items):
         raise RequestError('台账包含重复功能编号。')
-    for identity, old in accepted.items():
-        if by_id.get(identity) != old:
-            raise RequestError('已验收功能必须保留原记录：' + identity + '。变化请新增关联项，保留审核历史。')
+    protected = {item['id']: item for item in old_items if item['id'] in accepted or '规划同步历史' in item['fields']}
+    for identity, old in protected.items():
+        new = by_id.get(identity)
+        if new != old and (new is None or not planning_module('planning_operations').valid_ledger_transition(old, new)):
+            raise RequestError('已验收功能必须保留实施及审核历史：' + identity + '。请按当前规划重新转换，需求变化后重新审核。')
     for item in items:
-        if (item['checked'] or item['fields'].get('状态') == '已完成') and accepted.get(item['id']) != item:
+        old = accepted.get(item['id'])
+        if (item['checked'] or item['fields'].get('状态') == '已完成') and old != item and (old is None or not planning_module('planning_operations').valid_ledger_transition(old, item)):
             raise RequestError('规划草稿不能新增或改写完成标记：' + item['id'] + '。新功能需要独立审核。')
     required = ('状态', '验收', '优先级', '依赖', '执行 Agent', '实现证据', '审核 Agent', '评分', '问题')
     incomplete = [item['id'] for item in items if any(not item['fields'].get(key, '').strip() for key in required)]
@@ -864,12 +867,19 @@ def main():
                     raise RequestError('文档内容或版本信息无效。')
                 is_ledger = route in ('/api/ledger/save', '/api/ledger/preview')
                 target = Path(project['ledger_path'] if is_ledger else project['plan_path'])
-                with store.lock_for('workflow', project['plan_path']), store.lock_for('document', target):
+                with (store.lock_for('planning', project['ledger_path']) if is_ledger else nullcontext()), store.lock_for('workflow', project['plan_path']), store.lock_for('document', target):
                     project = store.project(project['id'])
                     if is_ledger:
                         store.require_planning(project)
-                        if 'plan_revision' in payload and read_document(Path(project['plan_path']))['revision'] != payload['plan_revision']:
+                        document = read_document(Path(project['plan_path']))
+                        if 'plan_revision' in payload and document['revision'] != payload['plan_revision']:
                             raise RequestError('规划书已变化，请重新转换台账，避免保存旧功能清单。',409)
+                        research = self.research_data(project)
+                        context_snapshot = self.ledger_context_snapshot(project, document, research)
+                        source_revision = self.ledger_source_revision(project, document, research)
+                        self.require_ledger_context(project, context_snapshot)
+                        if payload.get('source_revision') != source_revision:
+                            raise RequestError('参考选择或源码核对已变化，或候选缺少核对版本，请重新转换台账后再保存。',409)
                     current = read_document(target, optional=not is_ledger, recover=not is_ledger)
                     self.activity_before = current['content']
                     if revision is not None and current['revision'] != revision:
@@ -887,11 +897,15 @@ def main():
                     operation_step(40, '校验内容与版本', '检查数据格式及当前文件版本')
                     prepared = prepare_ledger(content, current['content']) if is_ledger else None
                     if preview:
+                        self.require_ledger_context(project, context_snapshot)
                         self.respond(prepared)
                         return
                     operation_step(75, '保存文件与历史', '写入 Markdown、备份及版本记录')
+                    if prepared:
+                        self.require_ledger_context(project, context_snapshot)
                     source_backup = preserve_generated_source(target, content) if prepared and prepared['adjustments'] else None
                     if prepared:
+                        self.require_ledger_context(project, context_snapshot)
                         response=atomic_write(target,prepared['content'],revision)
                     else:
                         source=payload.get('source','规划保存');note=payload.get('note','')
@@ -899,6 +913,7 @@ def main():
                             raise RequestError('版本来源或修改说明无效。')
                         research=self.research_data(project)
                         selected=[r for r in research.get('repositories',[]) if r.get('selected') is True]
+                        self.require_available_plan_ids(project, current['content'], content)
                         response=store.save_plan(project,content,revision,source,note,selected)
                 if prepared is not None:
                     response.update({key: prepared[key] for key in ('count', 'summary', 'adjustments')})
@@ -979,14 +994,16 @@ def main():
                 if payload.get('revision')!=doc['revision']:raise RequestError('功能表已更新，请读取最新版本后重试。',409)
                 module=planning_module('planning_suggestions');path=self.suggestion_path(project)
                 old=read_document(path,optional=True)
+                ledger=read_document(Path(project['ledger_path']),optional=True)['content']
+                reserved=[g['id'] for g in parse(ledger)]+[i['id'] for g in parse(ledger) for i in flatten(g['items'])]
                 if preview:
                     record=module.read(old['content'])
                     if record.get('id')!=payload.get('suggestion_id') or record['plan_revision']!=doc['revision']:
                         raise RequestError('建议已过期，请基于当前功能表重新生成。',409)
                     # Revalidate the saved data before applying only server-known selected patches.
                     operation_step(45, '应用所选建议', '核验版本并合并选中的功能修改')
-                    checked=module.validate({'suggestions':record['suggestions']},doc['content'],preserve_ids=True)
-                    content=module.apply(doc['content'],checked['suggestions'],payload.get('selected'))
+                    checked=module.validate({'suggestions':record['suggestions']},doc['content'],preserve_ids=True,reserved_ids=reserved)
+                    content=module.apply(doc['content'],checked['suggestions'],payload.get('selected'),reserved_ids=reserved)
                     return {'content':content,'revision':doc['revision'],'diff':''.join(difflib.unified_diff(doc['content'].splitlines(keepends=True),content.splitlines(keepends=True),fromfile='当前功能表',tofile='建议预览'))}
                 focus=payload.get('focus','')
                 if not isinstance(focus,str) or len(focus)>3000:raise RequestError('建议关注点过长或格式无效。')
@@ -1006,11 +1023,11 @@ def main():
                         'add必须使用未占用的稳定编号，额外填写上级编号（顶层为无），并有名称、说明、验收。'
                         '每条建议独立可采纳，如新增父子项必须放同一条建议中，保留已有采用=否。没有值得建议的改动返回空数组。'
                         '\n当前规划（资料）：'+doc['content']+'\n当前功能JSON：'+json.dumps(rows,ensure_ascii=False)+
-                        '\n已选参考（资料）：'+json.dumps(refs,ensure_ascii=False)+'\n用户希望关注：'+focus+'\n最近补充讨论（待评估资料，不代表已采纳）：'+discussion)
+                        '\n台账已使用的保留编号（新增禁止复用）：'+json.dumps(reserved)+'\n已选参考（资料）：'+json.dumps(refs,ensure_ascii=False)+'\n用户希望关注：'+focus+'\n最近补充讨论（待评估资料，不代表已采纳）：'+discussion)
                 reply=codex_reply(project,prompt).strip()
                 reply=re.sub(r'^```(?:json)?\s*|\s*```$','',reply)
                 operation_step(80, '核验功能建议', '检查建议字段、编号和父子关系')
-                try: record=module.validate(json.loads(reply),doc['content'])
+                try: record=module.validate(json.loads(reply),doc['content'],reserved_ids=reserved)
                 except (ValueError,KeyError,TypeError) as exc:raise RequestError('子智能体建议格式或变更无效：'+str(exc)) from exc
                 if read_document(Path(project['plan_path']))['revision']!=doc['revision']:
                     raise RequestError('分析期间功能表已变化，请重新生成建议。',409)
@@ -1134,7 +1151,7 @@ def main():
             if research.get('completed') and not research.get('selection_confirmed'):
                 raise RequestError('请先确认 GitHub 参考选择。',409)
             selected=[r for r in research.get('repositories',[]) if r.get('selected')]
-            if not selected:return
+            if not selected:return {}
             try:
                 raw=read_document(Path(project['directory'])/'规划源码核对.md')['content']
                 match=re.search(r'^```json\n(.*?)\n```',raw,re.M|re.S)
@@ -1154,8 +1171,45 @@ def main():
                 sources=source.collect_sources(Path(project['directory']),selected,document['content']+' '+research.get('feature_idea',''),lambda **state:None,focus=research.get('query',''),allow_clone=False)
                 if digest(json.dumps(sources['snippets'],ensure_ascii=False,sort_keys=True).encode())!=binding.get('source_digest'):raise ValueError('源码摘要已变')
                 source.validate_report(report,rows,sources['snippets'])
+                return binding
             except (OSError,ValueError,KeyError,TypeError) as exc:
                 raise RequestError('请先点击“核对源码并确认规划”，完成当前版本的分析后再转换台账；此操作不会自动调用 AI。',409) from exc
+
+        def ledger_context_snapshot(self, project, document=None, research=None):
+            document = document if document is not None else read_document(Path(project['plan_path']))
+            research = research if research is not None else self.research_data(project)
+            report = read_document(Path(project['directory']) / '规划源码核对.md', optional=True)
+            return (document['revision'], research.get('revision'), report['revision'])
+
+        def require_ledger_context(self, project, expected):
+            # External Markdown edits do not acquire our per-project locks.
+            if self.ledger_context_snapshot(project) != expected:
+                raise RequestError('校验期间规划、参考或源码报告已变化，请重新核对并转换台账。', 409)
+
+        def require_available_plan_ids(self, project, before, after):
+            editor = planning_module('planning_editor')
+            try:
+                old_ids = {r['编号'] for r in editor.editable_table(before)['rows']}
+            except ValueError:
+                return  # First structured plan can describe an imported ledger.
+            try:
+                new_ids = {r['编号'] for r in editor.editable_table(after)['rows']}
+            except ValueError:
+                return
+            ledger = read_document(Path(project['ledger_path']), optional=True)['content']
+            groups = parse(ledger)
+            reserved = {g['id'] for g in groups} | {i['id'] for g in groups for i in flatten(g['items'])}
+            reused = (new_ids - old_ids) & reserved
+            if reused:
+                raise RequestError('新增编号已被台账占用：' + '、'.join(sorted(reused)) + '。请重新预览或分配新编号。', 409)
+
+        def ledger_source_revision(self, project, document, research):
+            binding = self.require_source_report(project, document, research)
+            # Bind even an explicitly empty selection: removing references after
+            # conversion must not turn an old candidate into a current one.
+            context = {'plan_revision': document['revision'],
+                       'research_revision': research.get('revision'), 'source': binding}
+            return digest(json.dumps(context, sort_keys=True, ensure_ascii=False).encode())
 
         def execute_operation(self,project,payload,kind):
             with store.lock_for('planning',project['ledger_path']), store.lock_for('workflow',project['plan_path']):
@@ -1170,12 +1224,16 @@ def main():
                 module=planning_module('planning_operations')
                 operation_step(35,'校验功能与版本','按已确认数据执行，不调用模型')
                 if kind=='ledger':
-                    self.require_source_report(project,document,self.research_data(project))
+                    research=self.research_data(project)
+                    context_snapshot=self.ledger_context_snapshot(project, document, research)
+                    source_revision=self.ledger_source_revision(project,document,research)
+                    self.require_ledger_context(project, context_snapshot)
                     parse_document(ledger['content'])
                     result=module.ledger_from_plan(document['content'],ledger['content'],parse)
                     prepared=prepare_ledger(result['content'],ledger['content'])
+                    self.require_ledger_context(project, context_snapshot)
                     operation_step(85,'转换台账完成','保留既有实施与审核记录，新条目待审核')
-                    return {**result,**prepared,'reply':prepared['content'],'ledger_revision':ledger['revision'],'plan_revision':document['revision'],'engine':'code'}
+                    return {**result,**prepared,'reply':prepared['content'],'ledger_revision':ledger['revision'],'plan_revision':document['revision'],'source_revision':source_revision,'engine':'code'}
                 proposal=payload.get('feature_proposal')
                 if not isinstance(proposal,str):raise RequestError('请选择有效的拆分提案。')
                 reserved=[g['id'] for g in parse(ledger['content'])]+[i['id'] for g in parse(ledger['content']) for i in flatten(g['items'])]

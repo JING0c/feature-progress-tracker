@@ -23,6 +23,34 @@ class SuggestionTests(unittest.TestCase):
         for selected in ([],['UNKNOWN'],['S01','S02'],['S01','S01']):
             with self.assertRaises(ValueError): self.module.apply(self.plan,suggestions,selected)
 
+    def test_new_suggestions_cannot_reuse_reserved_group_or_feature_ids(self):
+        for identity,parent in (('F02','无'),('F01-02','F01')):
+            with self.subTest(identity=identity):
+                raw={'suggestions':[{'title':'新增历史同名功能','reason':'验收已变更',
+                    'changes':[{'action':'add','id':identity,'fields':{
+                        '上级编号':parent,'功能名称':'历史功能','说明':'新需求',
+                        '验收标准':'只有新验收通过后才可完成。'}}]}]}
+                record=self.module.validate(raw,self.plan)
+                with self.assertRaisesRegex(ValueError,identity):
+                    self.module.apply(self.plan,record['suggestions'],['S01'],reserved_ids={identity})
+                with self.assertRaisesRegex(ValueError,identity):
+                    self.module.validate(raw,self.plan,reserved_ids={identity})
+
+    def test_reserved_existing_update_and_unused_new_id_remain_allowed(self):
+        raw={'suggestions':[{'title':'修改当前功能并新增','reason':'补充边界',
+            'changes':[
+                {'action':'update','id':self.id,'fields':{'验收标准':'新的边界条件可验收。'}},
+                {'action':'add','id':'F03','fields':{'上级编号':'无',
+                    '功能名称':'全新功能','说明':'新功能说明','验收标准':'可独立验收。'}}]}]}
+        reserved={'F01',self.id,'F02'}
+        record=self.module.validate(raw,self.plan,reserved_ids=reserved)
+        result=self.module.apply(self.plan,record['suggestions'],['S01'],reserved_ids=reserved)
+        rows={row['编号']:row for row in existing.editor.editable_table(result)['rows']}
+        self.assertEqual(rows[self.id]['验收标准'],'新的边界条件可验收。')
+        self.assertEqual(rows[self.id]['采用'],'是')
+        self.assertEqual(rows['F03']['功能名称'],'全新功能')
+        self.assertEqual(rows['F03']['采用'],'是')
+
     def test_saved_record_fences_and_reordered_ids(self):
         raw={'suggestions':[{'title':str(i),'reason':'说明\n```json\n{"plan_revision":"evil"}\n```','changes':[{'action':'update','id':self.id,'fields':{'说明':str(i)}}]} for i in (1,2)]}
         record=self.module.validate(raw,self.plan)
@@ -92,6 +120,34 @@ class SuggestionHttpTests(test_projects.ManagerTest):
             self.assertEqual(self.request('/api/plan/suggestions'+suffix,{'revision':rev})[0],400)
             self.assertEqual(Path(p['plan_path']).read_text(),existing.PLAN)
             self.assertFalse(Path(p['directory'],'功能建议.md').exists())
+
+    def test_preview_rechecks_ledger_reserved_ids_after_suggestion_generation(self):
+        # A newly reserved ledger ID must not be resurrected by an older suggestion,
+        # even when its name is unchanged and only the new acceptance differs.
+        for identity,parent in (('F02','无'),('F01-02','F01')):
+            with self.subTest(identity=identity):
+                p,suffix,rev=self.setup_plan('reserved-'+identity)
+                self.fake_reply.write_text(json.dumps({'suggestions':[{
+                    'title':'补充功能','reason':'需要新验收',
+                    'changes':[{'action':'add','id':identity,'fields':{
+                        '上级编号':parent,'功能名称':'历史功能','说明':'重新规划',
+                        '验收标准':'必须满足新的验收条件。'}}]
+                }]},ensure_ascii=False))
+                code,generated=self.request('/api/plan/suggestions'+suffix,{'revision':rev})
+                self.assertEqual(code,200,generated)
+                ledger='# 功能执行情况\n## 大功能 F02：历史功能\n'
+                if parent!='无':
+                    ledger=('# 功能执行情况\n## 大功能 F01：历史分组\n'
+                            '- [x] F01-02 历史功能｜状态：已完成\n'
+                            '  - 验收：旧验收已经通过。\n'
+                            '  - 审核 Agent：独立审核员；评分：95\n')
+                ledger_path=Path(p['ledger_path']);ledger_path.write_text(ledger)
+                code,preview=self.request('/api/plan/suggestions/preview'+suffix,{
+                    'revision':rev,'suggestion_id':generated['id'],'selected':['S01']})
+                self.assertEqual(code,400,preview)
+                self.assertIn(identity,preview['error'])
+                self.assertEqual(Path(p['plan_path']).read_text(),existing.PLAN)
+                self.assertEqual(ledger_path.read_text(),ledger)
 
     def test_discussion_informs_suggestions_without_saving_plan(self):
         p,suffix,rev=self.setup_plan('discussion-advice')

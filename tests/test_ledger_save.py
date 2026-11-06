@@ -9,6 +9,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 from test_projects import project_plan
+from ledger_context_fixture import legacy_no_reference_context
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('dashboard', ROOT / 'scripts/serve_dashboard.py')
@@ -62,7 +63,8 @@ class SaveTest(unittest.TestCase):
 
     def test_save_and_view_with_backup(self):
         meta = self.get('/api/ledger/info')
-        code, data = self.post({'content':PLAN, 'revision':meta['revision']})
+        context = legacy_no_reference_context(self.get('/api/plan')['revision'])
+        code, data = self.post({'content':PLAN, 'revision':meta['revision'], **context})
         self.assertEqual(code, 200, data)
         self.assertEqual(self.ledger.read_text(encoding='utf-8'), PLAN)
         self.assertEqual(Path(data['backup']).read_text(encoding='utf-8'), self.original)
@@ -72,10 +74,11 @@ class SaveTest(unittest.TestCase):
 
     def test_conflict_and_invalid_do_not_change_ledger(self):
         rev = self.get('/api/ledger/info')['revision']
+        context = legacy_no_reference_context(self.get('/api/plan')['revision'])
         self.ledger.write_text('external change', encoding='utf-8')
-        self.assertEqual(self.post({'content':PLAN, 'revision':rev})[0], 409)
+        self.assertEqual(self.post({'content':PLAN, 'revision':rev, **context})[0], 409)
         current = self.get('/api/ledger/info')['revision']
-        self.assertEqual(self.post({'content':'普通对话', 'revision':current})[0], 400)
+        self.assertEqual(self.post({'content':'普通对话', 'revision':current, **context})[0], 400)
         self.assertEqual(self.ledger.read_text(encoding='utf-8'), 'external change')
 
 if __name__ == '__main__': unittest.main()

@@ -5,6 +5,7 @@ from unittest.mock import patch
 from io import BytesIO
 from zipfile import ZipFile
 from xml.etree import ElementTree as ET
+from ledger_context_fixture import legacy_no_reference_context
 import test_projects as project_tests
 import test_planning_export as export_tests
 
@@ -95,10 +96,15 @@ class WorkflowHttpTest(project_tests.ManagerTest):
         model=self.request('/api/plan/table'+suffix,{'content':data['content']})[1]
         listing=model['sheets'][0];self.assertEqual(listing['columns'][0],'采用');self.assertIn('所需技术',listing['columns']);self.assertIn('前期准备',listing['columns'])
         self.assertTrue(any(r['cells'][0]=='否' for r in listing['rows']))
+        plan_revision=self.request('/api/plan'+suffix)[1]['revision']
+        # This one-branch fixture is entirely declined, so it cannot generate a
+        # candidate. Supply its no-reference binding explicitly to reach the
+        # independent declined-feature validation below.
+        context=legacy_no_reference_context(plan_revision)
         # Mention in a dependency is not an existing historical feature node.
         Path(p['ledger_path']).write_text(project_tests.ledger('旧项')+'\n备注：依赖 F01-01-01\n')
         declined=project_tests.ledger('不采用项').replace('F01-01','F01-01-01')
-        code,reply=self.request('/api/ledger/preview'+suffix,{'content':declined});self.assertEqual(code,400,reply);self.assertIn('未采用',reply['error'])
+        code,reply=self.request('/api/ledger/preview'+suffix,{'content':declined,**context});self.assertEqual(code,400,reply);self.assertIn('未采用',reply['error'])
         all_declined=editor.select_feature(data['content'],'F01',False)
         revision=self.request('/api/plan'+suffix)[1]['revision']
         self.assertEqual(self.request('/api/plan/save'+suffix,{'content':all_declined,'revision':revision})[0],200)
@@ -179,7 +185,7 @@ class WorkflowHttpTest(project_tests.ManagerTest):
         self.assertEqual(code,200,result);self.assertEqual(result['engine'],'code')
         self.assertEqual(result['summary']['total'],1)
         self.assertIn('F01-01-01',result['content'])
-        payload={'content':result['content'],'revision':result['ledger_revision'],'plan_revision':version}
+        payload={'content':result['content'],'revision':result['ledger_revision'],'plan_revision':version,'source_revision':result['source_revision']}
         self.assertEqual(self.request('/api/ledger/preview'+suffix,payload)[0],200)
         self.assertEqual(self.request('/api/ledger/save'+suffix,payload)[0],200)
         code,again=self.request('/api/ledger/generate'+suffix,{'revision':version})

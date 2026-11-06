@@ -4,6 +4,7 @@ from pathlib import Path
 import unittest
 
 import test_projects as project_tests
+from ledger_context_fixture import legacy_no_reference_context
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('rules_dashboard', ROOT / 'scripts/serve_dashboard.py')
@@ -46,8 +47,9 @@ class SummarySaveTest(project_tests.ManagerTest):
         content = (ROOT / 'tests/fixtures/equipment-real-ledger.md').read_text()
         revision = self.request('/api/ledger/info?project=' + p['id'])[1]['revision']
         endpoint = '?project=' + p['id']
+        context = legacy_no_reference_context(self.request('/api/plan' + endpoint)[1]['revision'])
         existing_files = set(path.parent.glob('*.md'))
-        status, preview = self.request('/api/ledger/preview' + endpoint, {'content': content, 'revision': revision})
+        status, preview = self.request('/api/ledger/preview' + endpoint, {'content': content, 'revision': revision, **context})
         self.assertEqual(status, 200, preview)
         expected = content.replace('已验收 0/20 个最细功能点', '已验收 0/19 个最细功能点')
         self.assertEqual(preview['content'], expected)
@@ -56,14 +58,14 @@ class SummarySaveTest(project_tests.ManagerTest):
         self.assertEqual(len(preview['adjustments']), 1)
         self.assertEqual(path.read_text(), original)
         self.assertEqual(set(path.parent.glob('*.md')), existing_files)
-        status, saved = self.request('/api/ledger/save' + endpoint, {'content': content, 'revision': revision})
+        status, saved = self.request('/api/ledger/save' + endpoint, {'content': content, 'revision': revision, **context})
         self.assertEqual(status, 200, saved)
         self.assertEqual(path.read_text(), expected)
         self.assertEqual(Path(saved['source_backup']).read_text(), content)
         self.assertEqual(Path(saved['backup']).read_text(), original)
         self.assertEqual(saved['adjustments'], preview['adjustments'])
         self.assertEqual(saved['count'], 21)
-        status, second = self.request('/api/ledger/save' + endpoint, {'content': expected, 'revision': saved['revision']})
+        status, second = self.request('/api/ledger/save' + endpoint, {'content': expected, 'revision': saved['revision'], **context})
         self.assertEqual(status, 200, second)
         self.assertIsNone(second['source_backup'])
         self.assertEqual(second['adjustments'], [])
@@ -74,10 +76,11 @@ class SummarySaveTest(project_tests.ManagerTest):
         self.assertEqual(self.request('/api/ledger/preview', {'content': raw})[0], 400)
         self.assertEqual(self.request('/api/ledger/preview?project=missing', {'content': raw})[0], 404)
         endpoint = '/api/ledger/preview?project=' + p['id']
-        self.assertEqual(self.request(endpoint, {'content': raw}, {'X-Planning-Token': 'bad'})[0], 403)
-        self.assertEqual(self.request(endpoint, {'content': raw, 'revision': 'old'})[0], 409)
-        self.assertEqual(self.request(endpoint, {'content': '普通回复'})[0], 400)
-        self.assertEqual(self.request(endpoint, {'content': raw})[0], 200)
+        context = legacy_no_reference_context(self.request('/api/plan?project=' + p['id'])[1]['revision'])
+        self.assertEqual(self.request(endpoint, {'content': raw, **context}, {'X-Planning-Token': 'bad'})[0], 403)
+        self.assertEqual(self.request(endpoint, {'content': raw, 'revision': 'old', **context})[0], 409)
+        self.assertEqual(self.request(endpoint, {'content': '普通回复', **context})[0], 400)
+        self.assertEqual(self.request(endpoint, {'content': raw, **context})[0], 200)
 
     def test_summary_counts_leaf_acceptance_and_skips_non_header_text(self):
         p = self.register('scoped-summary')
@@ -88,7 +91,8 @@ class SummarySaveTest(project_tests.ManagerTest):
         content += child + '\n## 历史\n进度：已验收 0/20\n> 进度：已验收 0/20\n'
         content = '# 示例\n```md\n' + project_tests.ledger('example').replace('F01', 'F09') + '进度：已验收 0/20\n```\n\n' + content
         Path(p['ledger_path']).write_text(content)
-        status, preview = self.request('/api/ledger/preview?project=' + p['id'], {'content': content})
+        context = legacy_no_reference_context(self.request('/api/plan?project=' + p['id'])[1]['revision'])
+        status, preview = self.request('/api/ledger/preview?project=' + p['id'], {'content': content, **context})
         self.assertEqual(status, 200, preview)
         self.assertEqual(preview['summary']['total'], 1)
         self.assertEqual(preview['summary']['done'], 1)
@@ -99,7 +103,8 @@ class SummarySaveTest(project_tests.ManagerTest):
     def test_only_named_completion_percentage_is_rewritten(self):
         p = self.register('safe-header')
         content = project_tests.ledger('task').replace('## 大功能', '进度：已验收 0 / 20 个最细功能点（50%）；估算误差（10%）；待审核 3\n> 进度：已验收 0/40\n\n## 大功能', 1)
-        status, preview = self.request('/api/ledger/preview?project=' + p['id'], {'content': content})
+        context = legacy_no_reference_context(self.request('/api/plan?project=' + p['id'])[1]['revision'])
+        status, preview = self.request('/api/ledger/preview?project=' + p['id'], {'content': content, **context})
         self.assertEqual(status, 200, preview)
         self.assertIn('进度：已验收 0 / 1 个最细功能点（0%）；估算误差（10%）；待审核 3', preview['content'])
         self.assertIn('> 进度：已验收 0/40', preview['content'])
@@ -107,7 +112,8 @@ class SummarySaveTest(project_tests.ManagerTest):
     def test_inline_history_and_prose_are_not_normalized(self):
         p = self.register('history-header')
         content = project_tests.ledger('task').replace('## 大功能', '进度：已验收 0/20；历史快照：已验收 1/8（12.5%）；受阻 6\n进度：已验收 0/20，历史为已验收 1/8\n\n## 大功能', 1)
-        status, preview = self.request('/api/ledger/preview?project=' + p['id'], {'content': content})
+        context = legacy_no_reference_context(self.request('/api/plan?project=' + p['id'])[1]['revision'])
+        status, preview = self.request('/api/ledger/preview?project=' + p['id'], {'content': content, **context})
         self.assertEqual(status, 200, preview)
         self.assertIn('进度：已验收 0/1；历史快照：已验收 1/8（12.5%）；受阻 6', preview['content'])
         self.assertIn('进度：已验收 0/20，历史为已验收 1/8', preview['content'])
