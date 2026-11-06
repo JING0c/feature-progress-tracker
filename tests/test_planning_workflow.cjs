@@ -19,6 +19,7 @@ async function run(){
   if(payload.rows)return{content:'UPDATED'};
   return JSON.parse(JSON.stringify(table));
  }};
+ const stale=JSON.stringify({base:{content:'STALE',revision:'old'},rows:[{'编号':'F99','功能名称':'自动恢复的旧内容'}],columns:table.columns});storage.set('draft',stale);
  let workflow=sandbox.window.createPlanningWorkflow(options);
  await assert.rejects(()=>workflow.ensureResearch('需求'),/rate limit/);
  researchFails=false;await workflow.ensureResearch('需求');
@@ -26,7 +27,8 @@ async function run(){
  await $('edit-features').handlers.click();assert.equal(workflow.editing,true);
  const fields=()=>{const visit=n=>[n,...n.children.flatMap(visit)];return visit($('feature-editor-table'));};
  const field=name=>fields().find(n=>n.attributes['aria-label']===name);
- field('F01-01 所需技术').value='用户指定SQLite';field('F01-01 所需技术').handlers.input();assert.ok(storage.has('draft'));
+ assert.ok(field('F01 功能名称'),'editor opens the current plan even when an old cache exists');assert.ok(!field('F99 功能名称'),'old editor cache must not be restored');
+ field('F01-01 所需技术').value='用户指定SQLite';field('F01-01 所需技术').handlers.input();assert.equal(storage.get('draft'),stale,'editing must not persist browser drafts');
  field('采用 F01').checked=false;field('采用 F01').handlers.change();
  assert.equal(field('采用 F01-01').checked,false,'editor parent checkbox cascades');
  field('采用 F01-01').checked=true;field('采用 F01-01').handlers.change();assert.equal(field('采用 F01').checked,true,'child restores ancestor');
@@ -36,7 +38,7 @@ async function run(){
  field('新增子功能 F01-01').handlers.click();assert.ok(field('F01-01-02 功能名称'),'deleted ID is never reused');field('删除功能 F01-01-02').handlers.click();
  field('新增子功能 F01').handlers.click();assert.ok(field('F01-03 功能名称'),'ledger IDs remain reserved');field('删除功能 F01-03').handlers.click();
  await $('save-feature-edit').handlers.click();
- const written=calls.find(c=>c.payload?.rows);assert.equal(written.payload.rows[1]['所需技术'],'用户指定SQLite');assert.equal(saves,1);assert.equal(storage.has('draft'),false);
+ const written=calls.find(c=>c.payload?.rows);assert.equal(written.payload.rows[1]['所需技术'],'用户指定SQLite');assert.equal(saves,1);assert.equal(storage.get('draft'),stale,'saving leaves unused legacy cache untouched');
  $('new-feature-idea').value='增加库存';$('guide-feature').handlers.click();assert.match(guided,/增加库存/);assert.equal(saves,1,'decomposition does not save a proposal');
  guided='';await $('research-feature').handlers.click();
  assert.equal(calls.at(-1).payload.feature_idea,'增加库存');
@@ -51,7 +53,14 @@ async function run(){
  assert.match(guided,/增加库存/);assert.equal(guidedFromReferences,true);
  assert.equal(saves,1,'reference-assisted proposal is also read-only');
 
- await $('edit-features').handlers.click();plan.revision='r2';await $('save-feature-edit').handlers.click();assert.match(notices.at(-1)[0],/已经变化/);assert.equal(saves,1,'stale editor cannot overwrite');
+ plan.content='SECOND BASE';const originalSave=options.onSave;
+ let failSave=true;workflow=sandbox.window.createPlanningWorkflow({...options,onSave:async c=>{if(failSave)throw Error('磁盘写入失败');return originalSave(c);}});
+ await $('edit-features').handlers.click();field('F01-01 所需技术').value='失败后重试';field('F01-01 所需技术').handlers.input();
+ await $('save-feature-edit').handlers.click();assert.equal(workflow.editing,true);assert.equal(field('F01-01 所需技术').value,'失败后重试');
+ failSave=false;await $('save-feature-edit').handlers.click();assert.equal(workflow.editing,false,'failed save can retry against unchanged page baseline');assert.equal(saves,2);
+ await $('edit-features').handlers.click();field('F01-01 所需技术').value='放弃此修改';field('F01-01 所需技术').handlers.input();
+ failSave=true;await $('save-feature-edit').handlers.click();$('cancel-feature-edit').handlers.click();assert.equal(workflow.editing,false);assert.equal(saves,2);
+ await $('edit-features').handlers.click();assert.equal(field('F01-01 所需技术').value,'建议A','canceled edits do not return from old caches');plan.revision='r2';await $('save-feature-edit').handlers.click();assert.match(notices.at(-1)[0],/已经变化/);assert.equal(saves,2,'stale editor cannot overwrite');
  console.log('Planning workflow: research failure/retry/cache, edited fields, adoption cascade, guided proposals and conflict retention passed.');
 }
 module.exports=run;if(require.main===module)run().catch(e=>{console.error(e);process.exitCode=1;});

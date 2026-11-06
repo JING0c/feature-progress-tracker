@@ -42,7 +42,7 @@
 .plan-action-group+.plan-action-group{border-top:1px solid #ecd7e1;padding-top:16px}
 .plan-action-group h3{margin:0 0 4px;padding:0 8px;font-size:12px;font-weight:600;color:#705664}
 .plan-sidebar button{display:block;width:100%;min-height:42px;padding:10px 12px;text-align:left;line-height:1.5;font-size:14px;white-space:normal;overflow-wrap:anywhere;background:transparent;color:#633a4c}
-.plan-sidebar button[hidden],.plan-sidebar select[hidden],.draft-tools[hidden]{display:none}
+.plan-sidebar button[hidden],.plan-sidebar select[hidden]{display:none}
 .plan-sidebar button:hover:not(:disabled){background:#f8e3ee}
 .plan-sidebar #save-plan{background:#832d51;color:#fff;font-weight:600}
 .plan-sidebar #review-source{background:#eef3df;color:#294c3a}
@@ -212,18 +212,6 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 :where(button,a,input,textarea,summary,select):focus-visible{outline:3px solid #447a5f;outline-offset:3px}
 .plan-sidebar .section-link[aria-current=location]{background:#f2dde7;color:#832d51;font-weight:650;border-left:3px solid #832d51}
 @media(max-width:640px){.assistant-primary{align-items:stretch;flex-direction:column;gap:10px}.assistant-primary button{width:100%}.assistant-modes{gap:8px}.assistant-modes label{flex:1;justify-content:center}.suggestions-panel{padding:16px}.suggestions-panel .composer{padding:16px}.assistant-steps{gap:6px}.assistant-steps li{padding:7px 9px;font-size:12px}}
-
-/* Recovery belongs to document saving, outside the navigation. */
-.recovery-entry{padding:5px 9px;background:transparent;color:#71354f;font-size:12px;border:1px solid #e5cbd8;border-radius:6px;white-space:nowrap}.recovery-entry:hover{background:#fceef5}.recovery-entry[hidden]{display:none}
-.draft-dialog{box-sizing:border-box;width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 48px);padding:24px;border:1px solid #dfbfd0;border-radius:14px;background:#fff9fc;color:#382632;box-shadow:0 16px 60px #38263226;overflow:auto}.draft-dialog::backdrop{background:#38263255}
-.recovery-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}.recovery-heading h2{font-size:20px;margin:0}.draft-dialog p,.draft-dialog legend{font-size:13px;line-height:1.7;color:#705664}
-#recovery-list{border:0;padding:0;margin:16px 0;min-width:0}
-.recovery-card{display:flex;align-items:flex-start;gap:10px;margin:10px 0;padding:14px;border:1px solid #e7cbd9;border-radius:9px;background:#fff;cursor:pointer}
-.recovery-card:has(input:checked){border-color:#832d51;background:#fceef5}
-.recovery-card input{flex:none;accent-color:#832d51;margin:3px 0;width:18px;height:18px}
-.recovery-card>span{min-width:0}.recovery-card strong{display:block;font-size:14px;color:#482b38}.recovery-card small{display:block;font-size:12px;line-height:1.6;color:#705664;margin:4px 0}
-.recovery-excerpt{display:block;font-size:13px;line-height:1.7;color:#482b38;overflow-wrap:anywhere}
-.recovery-footer{border-top:1px solid #ecd7e1;padding-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.recovery-footer p{flex:1;min-width:170px}.recovery-footer button{min-height:42px}
 
 #ledger-code-preview{clear:both;margin-top:14px;padding-top:12px;border-top:1px solid #cbd7b3}
 #ledger-code-preview summary{cursor:pointer;font-weight:600;color:#294c3a}

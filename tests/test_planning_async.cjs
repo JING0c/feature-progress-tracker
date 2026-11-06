@@ -67,7 +67,7 @@ async function stalePollFailureCannotRelockSavedPlan(){
 async function forcedReloadSupersedesPendingPoll(){
  const h=await harness(),old=deferred();h.readQueue.push(()=>old.promise,()=>documentReply('# latest disk','latest'));
  const poll=h.run('loadPlan()');await tick();
- h.run("planText='# unsaved important';dirty=true;retainDraft();");
+ h.run("planText='# unsaved important';dirty=true;");
  const before=h.calls.filter(c=>c.route==='/api/plan').length;
  await h.node('reload-plan').handlers.click();
  const after=h.calls.filter(c=>c.route==='/api/plan').length;
@@ -80,10 +80,10 @@ async function forcedReloadSupersedesPendingPoll(){
 async function failedForcedReloadKeepsDraftAndReportsFailure(){
  const h=await harness(),old=deferred();h.readQueue.push(()=>old.promise,()=>reply({error:'读取失败'},false));
  const poll=h.run('loadPlan()');await tick();
- h.run("planText='# unsaved important';dirty=true;retainDraft();");
+ h.run("planText='# unsaved important';dirty=true;");
  await h.node('reload-plan').handlers.click();old.resolve(documentReply());await poll;
  assert.equal(h.run('planText'),'# unsaved important');assert.equal(h.run('dirty'),true);
- assert.ok(h.storage.has('project-planning:__PLANNING_KEY__:document-draft-v2'),'failed explicit read must retain recovery data');
+ assert.equal(h.storage.has('project-planning:__PLANNING_KEY__:document-draft-v2'),false,'failed read keeps edits in the page, not a browser draft');
  assert.doesNotMatch(h.node('status').textContent,/已读取/);assert.match(h.node('status').textContent,/读取失败/);
 }
 async function duplicateLedgerClicksSubmitOnce(){

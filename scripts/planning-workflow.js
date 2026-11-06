@@ -1,7 +1,7 @@
 (function(global){
  'use strict';
  global.createPlanningWorkflow=function(options){
-  const {request,notice,getPlan,onSave,guide,storageKey}=options;
+  const {request,notice,getPlan,onSave,guide}=options;
   const $=id=>document.getElementById(id);
   let research={completed:false,repositories:[]},editing=false,base=null,rows=[],columns=[],fields=[],busy=false,referenceFields=[],referenceDirty=false;
   let featureSearchTarget='',reservedIds=new Set();
@@ -60,7 +60,6 @@
    }
    if(saved&&options.resumePlanning)return options.resumePlanning();
   });
-  function retain(){try{localStorage.setItem(storageKey,JSON.stringify({base,rows,columns,reservedIds:[...reservedIds]}));}catch(error){notice('编辑草稿无法暂存，请及时保存。',true);}}
   function setSelection(id,selected){
    const byId=new Map(rows.map(r=>[r['编号'],r])),seen=new Set(),pending=[id];
    while(pending.length){const key=pending.pop();if(seen.has(key)||!byId.has(key))continue;seen.add(key);byId.get(key)['采用']=selected?'是':'否';rows.filter(r=>r['上级编号']===key).forEach(r=>pending.push(r['编号']));}
@@ -77,11 +76,11 @@
     if(column==='采用'){
      field=document.createElement('input');field.type='checkbox';field.checked=row[column]!=='否';
      field.setAttribute('aria-label','采用 '+(row['编号']||'新增功能'));
-     field.addEventListener('change',()=>{setSelection(row['编号'],field.checked);renderEditor();retain();});
+     field.addEventListener('change',()=>{setSelection(row['编号'],field.checked);renderEditor();});
     }else{
      field=document.createElement('textarea');field.rows=['编号','上级编号','优先级','功能名称'].includes(column)?2:3;field.value=row[column]||'';
      field.setAttribute('aria-label',(row['编号']||'新增功能')+' '+column);
-     field.addEventListener('input',()=>{row[column]=field.value;retain();});
+     field.addEventListener('input',()=>{row[column]=field.value;});
     }
     fields.push(field);td.append(field);tr.append(td);
    });
@@ -100,7 +99,7 @@
    const n=Math.max(0,...siblings.map(k=>Number(k.split('-').at(-1))||0))+1;
    const child={'采用':parent['采用']==='否'?'否':'是','编号':id+'-'+String(n).padStart(2,'0'),'上级编号':id};
    let index=rows.indexOf(parent)+1;while(index<rows.length&&rows[index]['编号']?.startsWith(id+'-'))index++;
-   reservedIds.add(child['编号']);rows.splice(index,0,child);renderEditor();retain();notice('已新增子功能 '+child['编号']+'，填写内容后保存。');
+   reservedIds.add(child['编号']);rows.splice(index,0,child);renderEditor();notice('已新增子功能 '+child['编号']+'，填写内容后保存。');
   }
   function removeRow(row){
    if(busy)return;const id=row['编号'];
@@ -108,7 +107,7 @@
    const dependencies=rows.filter(r=>!removed.includes(r)&&(r['依赖']||'').match(/F\d+(?:-\d+)*/g)?.some(k=>ids.has(k)));
    if(dependencies.length){notice('请先调整这些功能的依赖：'+dependencies.map(r=>r['编号']).join('、'),true);return;}
    if(!confirm('从规划中删除 '+id+' 及其子功能，共 '+removed.length+' 项？保存前可取消编辑，已有实施台账不会删除。'))return;
-   rows=rows.filter(r=>!removed.includes(r));renderEditor();retain();notice('已从编辑草稿移除 '+removed.length+' 项，保存后生效。');
+   rows=rows.filter(r=>!removed.includes(r));renderEditor();notice('已从功能表移除 '+removed.length+' 项，保存后生效。');
   }
   $('edit-features').addEventListener('click',async()=>{
    if(busy)return;const plan=getPlan();
@@ -116,25 +115,24 @@
    options.setBusy(true);
    try{
     const data=await request('/api/plan/features',{content:plan.content});reservedIds=new Set([...(data.reserved_ids||[]),...data.rows.map(r=>r['编号'])]);base={content:plan.content,revision:plan.revision};rows=data.rows;columns=data.columns;
-    try{const draft=JSON.parse(localStorage.getItem(storageKey)||'null');if(draft&&draft.rows&&draft.base){base=draft.base;rows=draft.rows;columns=draft.columns;for(const k of draft.reservedIds||draft.rows.map(r=>r['编号']))reservedIds.add(k);notice('已恢复功能表编辑草稿；保存时仍会校验原文件版本。');}}catch(error){}
     editing=true;$('feature-editor').hidden=false;renderEditor();$('feature-editor').scrollIntoView({block:'start'});
    }catch(error){notice(error.message,true);}finally{options.setBusy(false);}
   });
   $('add-feature-row').addEventListener('click',()=>{
    if(busy)return;const used=[...reservedIds,...rows.map(row=>row['编号'])];const n=Math.max(0,...used.filter(k=>/^F\d+$/.test(k)).map(k=>Number(k.slice(1))))+1;
-   const id='F'+String(n).padStart(2,'0');reservedIds.add(id);rows.push({'采用':'是','编号':id,'上级编号':'无'});renderEditor();retain();
+   const id='F'+String(n).padStart(2,'0');reservedIds.add(id);rows.push({'采用':'是','编号':id,'上级编号':'无'});renderEditor();
   });
   $('cancel-feature-edit').addEventListener('click',()=>{
-   if(!confirm('放弃尚未保存的功能表修改？'))return;editing=false;$('feature-editor').hidden=true;localStorage.removeItem(storageKey);options.setBusy(false);
+   if(!confirm('放弃尚未保存的功能表修改？'))return;editing=false;$('feature-editor').hidden=true;options.setBusy(false);
   });
   async function saveEdits(){
    if(busy)return;const plan=getPlan();
-   if(plan.revision!==base.revision||plan.content!==base.content){notice('规划已经变化，编辑草稿已保留。请复制修改内容，核对最新规划后重新编辑。',true);return;}
+   if(plan.revision!==base.revision||plan.content!==base.content){notice('规划已经变化，当前修改仍保留在页面中。请复制修改内容，核对最新规划后重新编辑。',true);return;}
    options.setBusy(true);
    try{
     const data=await request('/api/plan/features',{content:base.content,rows});
-    try{await onSave(data.content);}catch(error){base.content=data.content;retain();throw error;}
-    editing=false;$('feature-editor').hidden=true;localStorage.removeItem(storageKey);notice('功能表已保存，后续对话与 Excel 将使用你的修改。');
+    await onSave(data.content);
+    editing=false;$('feature-editor').hidden=true;notice('功能表已保存，后续对话与 Excel 将使用你的修改。');
    }catch(error){notice(error.message,true);}finally{options.setBusy(false);}
   }
   $('save-feature-edit').addEventListener('click',saveEdits);
