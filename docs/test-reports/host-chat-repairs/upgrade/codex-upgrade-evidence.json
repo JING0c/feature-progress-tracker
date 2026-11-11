@@ -1,0 +1,448 @@
+{
+  "checked_at_utc": "2026-11-11T06:09:58.744361+00:00",
+  "baseline_commit": "f62f163d79abe92762c68b14291b28359d37a8c2",
+  "source_head": "12fc75c358db470fe777df26653a376bc932074a",
+  "source_note": "New package is built from the current working tree; artifact hashes identify it.",
+  "expected_version": "0.2.0",
+  "commands": [
+    {
+      "label": "codex-version",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "--version"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/inspection-home",
+      "exit": 0,
+      "stdout": "codex-cli 0.166.0-alpha.6\n",
+      "stderr": ""
+    },
+    {
+      "label": "local-upgrade-command-scope",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "marketplace",
+        "upgrade",
+        "--help"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/inspection-home",
+      "exit": 0,
+      "stdout": "Refresh configured Git marketplace snapshots.\n\nOmit MARKETPLACE_NAME to upgrade all configured Git marketplaces.\n\nUsage: codex plugin marketplace upgrade [OPTIONS] [MARKETPLACE_NAME]\n\nArguments:\n  [MARKETPLACE_NAME]\n          Optional configured marketplace name to upgrade. Omit to upgrade all Git marketplaces\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"disk-full-read-access\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --json\n          Output upgrade result as JSON\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n\n  -h, --help\n          Print help (see a summary with '-h')\n\nExamples:\n  codex plugin marketplace upgrade\n  codex plugin marketplace upgrade debug\n",
+      "stderr": ""
+    },
+    {
+      "label": "old-build",
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-B",
+        "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-source/scripts/build_plugins.py",
+        "--output-dir",
+        "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-build",
+        "--dist-dir",
+        "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-dist"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/inspection-home",
+      "exit": 0,
+      "stdout": "{\n  \"marketplace\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-build\",\n  \"marketplace_archive\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-dist/feature-progress-tracker-marketplace.zip\",\n  \"marketplace_sha256\": \"a16f30a651181b36a62c2ca5d0733bfcd33063e3edc9371cd96394db17790dfc\",\n  \"plugins\": {\n    \"codex\": {\n      \"version\": \"0.1.0\",\n      \"directory\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-build/plugins/codex\",\n      \"archive\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-dist/feature-progress-tracker-codex.zip\",\n      \"sha256\": \"d4826d60c11c4004cad43146527ce016a12e1adc91633af2f2676495c6b15788\"\n    },\n    \"claude\": {\n      \"version\": \"0.1.0\",\n      \"directory\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-build/plugins/claude\",\n      \"archive\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-dist/feature-progress-tracker-claude.zip\",\n      \"sha256\": \"792acc04eff54b32121aca63741af58bb992b22e3286122011906346dd7fc4d4\"\n    }\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "new-build",
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-B",
+        "/Users/olcgb/code/protuct_plan/scripts/build_plugins.py",
+        "--output-dir",
+        "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-build",
+        "--dist-dir",
+        "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-dist"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/inspection-home",
+      "exit": 0,
+      "stdout": "{\n  \"marketplace\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-build\",\n  \"marketplace_archive\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-dist/feature-progress-tracker-marketplace.zip\",\n  \"marketplace_sha256\": \"a498d868566af20546543ad47b39e08ca0f6a96caf598baa138629b488e4adf0\",\n  \"plugins\": {\n    \"codex\": {\n      \"version\": \"0.2.0\",\n      \"directory\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-build/plugins/codex\",\n      \"archive\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-dist/feature-progress-tracker-codex.zip\",\n      \"sha256\": \"1a7c5dd7a71f64a8374574ecca26642cad15cbc4775b5fd8672ede7c5c9b1ac6\"\n    },\n    \"claude\": {\n      \"version\": \"0.2.0\",\n      \"directory\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-build/plugins/claude\",\n      \"archive\": \"/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-dist/feature-progress-tracker-claude.zip\",\n      \"sha256\": \"28f21f93e2d4ab34044799e4ea9ee55c6d90ddc9ac5cd9650c5538afe139ea78\"\n    }\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-path-register-old",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "marketplace",
+        "add",
+        "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-market",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"installedRoot\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-market\",\n  \"alreadyAdded\": false\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-path-install-old",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "add",
+        "feature-progress-tracker@jing0c-project-tools",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n  \"name\": \"feature-progress-tracker\",\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"version\": \"0.1.0\",\n  \"installedPath\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.1.0\",\n  \"authPolicy\": \"ON_INSTALL\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-path-list-old",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "list",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"installed\": [\n    {\n      \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n      \"name\": \"feature-progress-tracker\",\n      \"marketplaceName\": \"jing0c-project-tools\",\n      \"version\": \"0.1.0\",\n      \"installed\": true,\n      \"enabled\": true,\n      \"source\": {\n        \"source\": \"local\",\n        \"path\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-market/plugins/codex\"\n      },\n      \"marketplaceSource\": {\n        \"sourceType\": \"local\",\n        \"source\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-market\"\n      },\n      \"installPolicy\": \"AVAILABLE\",\n      \"authPolicy\": \"ON_INSTALL\"\n    }\n  ],\n  \"available\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-path-locate-old",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "marketplace",
+        "list",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"marketplaces\": [\n    {\n      \"name\": \"jing0c-project-tools\",\n      \"root\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-market\",\n      \"marketplaceSource\": {\n        \"sourceType\": \"local\",\n        \"source\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-market\"\n      }\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-path-conflict-stops-chain",
+      "argv": [
+        "sh",
+        "-c",
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex plugin marketplace add /var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-market --json && /Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex plugin add feature-progress-tracker@jing0c-project-tools --json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Error: marketplace 'jing0c-project-tools' is already added from a different source; remove it before adding this source\n"
+    },
+    {
+      "label": "changed-path-still-old-after-conflict",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "list",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"installed\": [\n    {\n      \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n      \"name\": \"feature-progress-tracker\",\n      \"marketplaceName\": \"jing0c-project-tools\",\n      \"version\": \"0.1.0\",\n      \"installed\": true,\n      \"enabled\": true,\n      \"source\": {\n        \"source\": \"local\",\n        \"path\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-market/plugins/codex\"\n      },\n      \"marketplaceSource\": {\n        \"sourceType\": \"local\",\n        \"source\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/old-market\"\n      },\n      \"installPolicy\": \"AVAILABLE\",\n      \"authPolicy\": \"ON_INSTALL\"\n    }\n  ],\n  \"available\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-path-remove-old-registration",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "marketplace",
+        "remove",
+        "jing0c-project-tools",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"installedRoot\": null\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-path-register-new",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "marketplace",
+        "add",
+        "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-market",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"installedRoot\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-market\",\n  \"alreadyAdded\": false\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-path-install-new",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "add",
+        "feature-progress-tracker@jing0c-project-tools",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n  \"name\": \"feature-progress-tracker\",\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"version\": \"0.2.0\",\n  \"installedPath\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.2.0\",\n  \"authPolicy\": \"ON_INSTALL\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-path-list-new",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "list",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"installed\": [\n    {\n      \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n      \"name\": \"feature-progress-tracker\",\n      \"marketplaceName\": \"jing0c-project-tools\",\n      \"version\": \"0.2.0\",\n      \"installed\": true,\n      \"enabled\": true,\n      \"source\": {\n        \"source\": \"local\",\n        \"path\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-market/plugins/codex\"\n      },\n      \"marketplaceSource\": {\n        \"sourceType\": \"local\",\n        \"source\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/new-market\"\n      },\n      \"installPolicy\": \"AVAILABLE\",\n      \"authPolicy\": \"ON_INSTALL\"\n    }\n  ],\n  \"available\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "same-path-register-old",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "marketplace",
+        "add",
+        "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-market",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"installedRoot\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-market\",\n  \"alreadyAdded\": false\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "same-path-install-old",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "add",
+        "feature-progress-tracker@jing0c-project-tools",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n  \"name\": \"feature-progress-tracker\",\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"version\": \"0.1.0\",\n  \"installedPath\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-path-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.1.0\",\n  \"authPolicy\": \"ON_INSTALL\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "same-path-list-old",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "list",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"installed\": [\n    {\n      \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n      \"name\": \"feature-progress-tracker\",\n      \"marketplaceName\": \"jing0c-project-tools\",\n      \"version\": \"0.1.0\",\n      \"installed\": true,\n      \"enabled\": true,\n      \"source\": {\n        \"source\": \"local\",\n        \"path\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-market/plugins/codex\"\n      },\n      \"marketplaceSource\": {\n        \"sourceType\": \"local\",\n        \"source\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-market\"\n      },\n      \"installPolicy\": \"AVAILABLE\",\n      \"authPolicy\": \"ON_INSTALL\"\n    }\n  ],\n  \"available\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "same-path-locate-old",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "marketplace",
+        "list",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"marketplaces\": [\n    {\n      \"name\": \"jing0c-project-tools\",\n      \"root\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-market\",\n      \"marketplaceSource\": {\n        \"sourceType\": \"local\",\n        \"source\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-market\"\n      }\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "same-path-install-new",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "add",
+        "feature-progress-tracker@jing0c-project-tools",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n  \"name\": \"feature-progress-tracker\",\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"version\": \"0.2.0\",\n  \"installedPath\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-path-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.2.0\",\n  \"authPolicy\": \"ON_INSTALL\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "same-path-list-new",
+      "argv": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+        "plugin",
+        "list",
+        "--json"
+      ],
+      "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-path-home",
+      "exit": 0,
+      "stdout": "{\n  \"installed\": [\n    {\n      \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n      \"name\": \"feature-progress-tracker\",\n      \"marketplaceName\": \"jing0c-project-tools\",\n      \"version\": \"0.2.0\",\n      \"installed\": true,\n      \"enabled\": true,\n      \"source\": {\n        \"source\": \"local\",\n        \"path\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-market/plugins/codex\"\n      },\n      \"marketplaceSource\": {\n        \"sourceType\": \"local\",\n        \"source\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-market\"\n      },\n      \"installPolicy\": \"AVAILABLE\",\n      \"authPolicy\": \"ON_INSTALL\"\n    }\n  ],\n  \"available\": []\n}\n",
+      "stderr": ""
+    }
+  ],
+  "installed_cache_checks": [
+    {
+      "route": "changed-path",
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-B",
+        "/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/changed-path-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.2.0/runtime/scripts/plugin_mcp.py",
+        "--agent",
+        "codex"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "requests": [
+        {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2025-06-18",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "upgrade-check",
+              "version": "1"
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "notifications/initialized"
+        },
+        {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "tools/list",
+          "params": {}
+        }
+      ],
+      "initialize_response": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "protocolVersion": "2025-06-18",
+          "capabilities": {
+            "tools": {}
+          },
+          "serverInfo": {
+            "name": "feature-progress-tracker",
+            "version": "0.2.0"
+          },
+          "instructions": "只访问用户明确指定的管理目录。所有分析在当前宿主会话完成，操作通过工具执行，不启动另一个模型。先读当前版本再预览修改，按用户授权保存；网页只读。不能把建议或源码核对当独立实现验收。"
+        }
+      },
+      "tool_count": 18,
+      "tool_names": [
+        "open_dashboard",
+        "list_projects",
+        "read_project",
+        "create_project",
+        "save_plan",
+        "edit_features",
+        "search_references",
+        "record_suggestions",
+        "preview_suggestions",
+        "select_references",
+        "prepare_source_review",
+        "submit_source_review",
+        "generate_ledger",
+        "save_ledger",
+        "update_feature_progress",
+        "history",
+        "export_project",
+        "stop_dashboard"
+      ],
+      "stdout_sha256": "c5c0f02aa5ef7605ef4fedeb8b53e315999cc32dcb209d33de03da1d6e19b799",
+      "stdout_note": "tools/list schemas omitted; names and count retained.",
+      "verified_inventory_file_count": 35,
+      "package_inventory_sha256": "dc99bb5caf83a6608a6bcb4cf36a968c49bd8885bd19b38c316500f8dab44e11",
+      "installed_mcp_sha256": "9e1fdd71e4ceb319dfc2ca0ae8f13cdc41c3208a8aa9f9301f48c9a6dbcdad2c"
+    },
+    {
+      "route": "same-path",
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-B",
+        "/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i/same-path-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.2.0/runtime/scripts/plugin_mcp.py",
+        "--agent",
+        "codex"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "requests": [
+        {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2025-06-18",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "upgrade-check",
+              "version": "1"
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "notifications/initialized"
+        },
+        {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "tools/list",
+          "params": {}
+        }
+      ],
+      "initialize_response": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "protocolVersion": "2025-06-18",
+          "capabilities": {
+            "tools": {}
+          },
+          "serverInfo": {
+            "name": "feature-progress-tracker",
+            "version": "0.2.0"
+          },
+          "instructions": "只访问用户明确指定的管理目录。所有分析在当前宿主会话完成，操作通过工具执行，不启动另一个模型。先读当前版本再预览修改，按用户授权保存；网页只读。不能把建议或源码核对当独立实现验收。"
+        }
+      },
+      "tool_count": 18,
+      "tool_names": [
+        "open_dashboard",
+        "list_projects",
+        "read_project",
+        "create_project",
+        "save_plan",
+        "edit_features",
+        "search_references",
+        "record_suggestions",
+        "preview_suggestions",
+        "select_references",
+        "prepare_source_review",
+        "submit_source_review",
+        "generate_ledger",
+        "save_ledger",
+        "update_feature_progress",
+        "history",
+        "export_project",
+        "stop_dashboard"
+      ],
+      "stdout_sha256": "c5c0f02aa5ef7605ef4fedeb8b53e315999cc32dcb209d33de03da1d6e19b799",
+      "stdout_note": "tools/list schemas omitted; names and count retained.",
+      "verified_inventory_file_count": 35,
+      "package_inventory_sha256": "dc99bb5caf83a6608a6bcb4cf36a968c49bd8885bd19b38c316500f8dab44e11",
+      "installed_mcp_sha256": "9e1fdd71e4ceb319dfc2ca0ae8f13cdc41c3208a8aa9f9301f48c9a6dbcdad2c"
+    }
+  ],
+  "temporary_root": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-gcz8m90i",
+  "result": "pass",
+  "temporary_directories_removed_on_exit": true
+}

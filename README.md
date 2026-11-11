@@ -29,6 +29,8 @@ python3 scripts/build_plugins.py
 
 生成完整市场 `dist/feature-progress-tracker-marketplace.zip`（推荐）及两个单插件ZIP，包含自有运行文件，不依赖源码位置。解压完整市场后按[安装说明](docs/plugins.md)注册。
 
+已安装旧版的用户请按[Codex 升级步骤](docs/plugins.md#在-codex-升级到-020)选择原目录或换目录路线，并核对实际安装版本为 `0.2.0`；Claude 的更新方式与未实测范围也在同页说明。
+
 [GitHub发行页](https://github.com/JING0c/feature-progress-tracker/releases)目前已发布的 `v0.1.0-preview.1` 是旧网页编排版；本轮0.2.0本地包尚未发布到GitHub，不要把旧下载包当作本轮新版。
 
 ## 数据与流程

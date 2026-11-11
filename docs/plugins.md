@@ -34,20 +34,48 @@ ZIP包含运行代码、技能和文件说明，不包含用户项目、密钥�
 
 ## 在 Codex 安装
 
-解压完整市场包，将下面路径替换成直接包含`.agents`、`.claude-plugin`和`plugins`的目录。源码构建时可使用`$PWD/build/plugin-marketplace`：
+首次安装时解压完整市场包，将下面路径替换成直接包含`.agents`、`.claude-plugin`和`plugins`的目录。源码构建时可使用`$PWD/build/plugin-marketplace`。已安装旧版请使用下一节的升级步骤。
 
 ```sh
-codex plugin marketplace add "/绝对路径/feature-progress-tracker-marketplace"
-codex plugin add feature-progress-tracker@jing0c-project-tools
+codex plugin marketplace add "/绝对路径/feature-progress-tracker-marketplace" &&
+codex plugin add feature-progress-tracker@jing0c-project-tools &&
+codex plugin list --json
 ```
 
+`&&` 表示前一步成功才执行下一步。任何一步报错都先停止处理；最后核对 `installed` 中该插件的 `version` 为 `0.2.0`。
+
 若宿主版本只支持注册市场，重启桌面后在插件目录选择该市场安装。以本机`codex plugin --help`为准。独立Codex ZIP适用于加入已有本地市场，不能把单插件根目录误当市场。
+
+## 在 Codex 升级到 0.2.0
+
+以下两条路线针对本地完整市场包，已在 Codex CLI `0.166.0-alpha.6` 用隔离配置从 `0.1.0` 实测。先运行 `codex plugin marketplace list --json` 查看 `jing0c-project-tools` 当前注册的目录，再选择一条路线。项目管理目录应继续放在插件目录之外。
+
+**保留原目录：**将旧市场目录移到备份位置，把新版完整市场重新解压到原来的绝对路径，确认其中直接包含 `.agents`、`.claude-plugin` 和 `plugins`。完整替换目录可避免仅覆盖文件留下旧内容；随后执行：
+
+```sh
+codex plugin add feature-progress-tracker@jing0c-project-tools &&
+codex plugin list --json
+```
+
+**换到新目录：**先把新版完整市场解压到新位置，再移除旧市场注册并注册新位置：
+
+```sh
+codex plugin marketplace remove jing0c-project-tools &&
+codex plugin marketplace add "/新的绝对路径/feature-progress-tracker-marketplace" &&
+codex plugin add feature-progress-tracker@jing0c-project-tools &&
+codex plugin list --json
+```
+
+同名市场已指向另一目录时，直接 `marketplace add` 会报错；此时继续安装可能仍安装旧目录里的 `0.1.0`。保留上面的 `&&`，报错后停止，不要跳过错误继续安装。当前 Codex 的 `marketplace upgrade` 只刷新 Git 市场，不负责替换本地 ZIP 内容。
+
+两条路线最后都要检查 `plugin list --json` 的 `installed`：`pluginId` 为 `feature-progress-tracker@jing0c-project-tools`、`version` 为 `0.2.0`、`enabled` 为 `true`，且 `marketplaceSource.source` 指向本次选择的市场目录。只看到安装命令成功，或只看到 ZIP 内版本正确，都不能证明已升级。核对通过后开启新会话；如旧查看服务仍在运行，按[切换宿主与停止服务](#切换宿主与停止服务)重启查看服务。
 
 ## 在 Claude Code 安装
 
 ```sh
-claude plugin marketplace add "/绝对路径/feature-progress-tracker-marketplace"
-claude plugin install feature-progress-tracker@jing0c-project-tools
+claude plugin marketplace add "/绝对路径/feature-progress-tracker-marketplace" &&
+claude plugin install feature-progress-tracker@jing0c-project-tools &&
+claude plugin list
 ```
 
 也可以将单Claude ZIP解压后临时加载：
@@ -56,7 +84,17 @@ claude plugin install feature-progress-tracker@jing0c-project-tools
 claude --plugin-dir "/绝对路径/feature-progress-tracker-claude"
 ```
 
-这里面向Claude Code，不是Claude Desktop扩展。目前已验证两套解压安装包的实际 MCP 协议与本地工具流程；尚未在真实 Claude Code 安装后的对话内完成全流程。
+这里面向Claude Code，不是Claude Desktop扩展。目前已验证两套解压安装包的实际 MCP 协议与本地工具流程；本机未安装 Claude CLI，Claude 的安装、升级及安装后对话全流程均未实测。
+
+Claude 已安装用户可先用 `claude plugin marketplace list` 查看原目录，用 `claude plugin list` 记录原安装范围（Scope），完整替换原目录的市场包后更新插件。下例对应本页默认的用户范围；若原来是 `project` 或 `local`，在原项目目录中把 `--scope user` 改为实际范围：
+
+```sh
+claude plugin marketplace update jing0c-project-tools &&
+claude plugin update feature-progress-tracker@jing0c-project-tools --scope user &&
+claude plugin list
+```
+
+核对该插件的 Version 为 `0.2.0`、Scope 与原安装一致、Status 为启用后，再开启新会话。Claude 使用 `plugin update` 更新已安装插件，不能套用 Codex 的 `plugin add`。如果必须换市场路径，先记录该市场全部已安装插件及范围，再按官方说明移除市场、添加新路径并逐一重装：Claude 的 `marketplace remove` 会卸载该市场所有插件并移除它们的启用设置。命令与行为依据 [Claude 官方安装管理文档](https://code.claude.com/docs/en/discover-plugins#manage-marketplaces)及[命令参考](https://code.claude.com/docs/en/plugins/cli-reference#plugin-update)，以本机 `claude plugin --help` 支持的选项为准。
 
 ## 在对话中使用
 
@@ -94,7 +132,7 @@ python3 "/已安装插件/runtime/scripts/plugin_manager.py" stop --workspace "/
 
 ## 排查
 
-- 工具仍只有打开/列表/读取：安装的是旧0.1.0，需更新0.2.0包并开启新会话。
+- 工具仍只有打开/列表/读取：可能仍加载旧0.1.0；按本页升级步骤核对实际安装版本，再开启新会话。
 - 工具未出现：确认安装成品而非源码模板，检查宿主MCP日志；不要改全局权限绕过错误。
 - 版本冲突：重新读取项目，比较差异再操作，不重试旧内容强写。
 - 源码核对失效：重新准备与分析，不能手改核对文件冒充有效结果。
