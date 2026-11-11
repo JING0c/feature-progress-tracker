@@ -4,6 +4,8 @@
 
 这里的 Claude 插件面向 **Claude Code**；不是 Claude Desktop 扩展。两个插件都运行在本机，不是上传到云端后自动可用的服务。
 
+不清楚源码、安装包和用户资料放在哪里时，先看[项目文件说明](项目文件说明.md)。管理目录保存项目登记；规划书与台账保存在各项目登记的目录，导入项目保留原位置。
+
 ## 准备
 
 - Python 3.9 或更新版本，可通过 `python3 --version` 检查。
@@ -111,7 +113,7 @@ python3 "/已安装插件/runtime/scripts/plugin_manager.py" stop --workspace "/
 - Claude Code 提示阻止嵌套会话：先停止当前管理器，再从独立终端运行 `python3 "/已安装插件/runtime/scripts/plugin_manager.py" start --workspace "/绝对路径/项目管理" --agent claude`。网页会明确报告分析失败，不会假装已经生成建议。
 - 端口被占用：使用 `open_dashboard` 返回的地址，不关闭其他服务，也不要假定一定是 8765。
 - 修改运行代码后：重新执行构建，按宿主流程刷新或重装插件；缓存中的旧版本不会因改了源文件自动更新。发布新版本时同步两个宿主的 manifest 版本。
-- 卸载：使用宿主插件管理界面；项目 Markdown 保存在管理目录中，与插件缓存分开。卸载不代表删除项目。
+- 卸载：使用宿主插件管理界面；项目 Markdown 保存在各项目登记的目录，与插件缓存分开。卸载不代表删除项目。
 
 包级校验使用 `python3 -m unittest discover -s tests -p 'test_plugin_packaging.py' -v`。真实宿主安装、MCP 调用和对应 CLI 的实际 AI 回复是另外的检查；包级测试通过不能代替这些验证。
 

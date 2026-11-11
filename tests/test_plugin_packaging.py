@@ -38,7 +38,8 @@ class PluginPackagingTests(unittest.TestCase):
         (self.source / "scripts" / "planning.js").write_text("// runtime asset\n", encoding="utf-8")
         (self.source / "SKILL.md").write_text("# 工作流程规范\n", encoding="utf-8")
         (self.source / "docs").mkdir()
-        (self.source / "docs/plugins.md").write_text("# 插件安装说明\n", encoding="utf-8")
+        for name in ("plugins.md", "项目文件说明.md"):
+            (self.source / "docs" / name).write_text("# " + name + "\n", encoding="utf-8")
 
     def build(self):
         return builder.build_plugins(self.source)

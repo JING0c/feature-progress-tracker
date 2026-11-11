@@ -71,7 +71,8 @@ def copy_runtime(source_root, target):
             continue
         checked_copy(path, target / "scripts" / path.relative_to(source))
     checked_copy(source_root / "SKILL.md", target / "SKILL.md")
-    checked_copy(source_root / "docs" / "plugins.md", target / "docs" / "plugins.md")
+    for name in ("plugins.md", "项目文件说明.md"):
+        checked_copy(source_root / "docs" / name, target / "docs" / name)
 
 
 def validate_package(package, host):
@@ -113,7 +114,7 @@ def validate_package(package, host):
     for name in REQUIRED_RUNTIME:
         if not (package / "runtime" / "scripts" / name).is_file():
             raise ValueError("插件不是自包含包：缺少 " + name)
-    for relative in ("runtime/SKILL.md", "runtime/docs/plugins.md", "skills/project-manager/references/workflow.md"):
+    for relative in ("runtime/SKILL.md", "runtime/docs/plugins.md", "runtime/docs/项目文件说明.md", "skills/project-manager/references/workflow.md"):
         if not (package / relative).is_file():
             raise ValueError("缺少技能参考：" + relative)
     return manifest["version"]
