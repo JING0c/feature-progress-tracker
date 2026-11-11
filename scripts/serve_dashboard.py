@@ -28,7 +28,6 @@ FIELD = re.compile(r'(?:^|[｜|])\s*([^：:｜|]+)\s*[：:]\s*([^｜|]*)')
 
 def parse(text):
     groups, group, item = [], None, None
-    items_by_id = {}
     fence = None
     for line in text.splitlines():
         marker = re.match(r'^ {0,3}(`{3,}|~{3,})(.*)$', line)
@@ -43,7 +42,6 @@ def parse(text):
         if m:
             group = {'id': m[1], 'name': m[2], 'items': []}
             groups.append(group)
-            items_by_id = {}
             item = None
             continue
         if line.startswith('## '):
@@ -54,9 +52,7 @@ def parse(text):
             pieces = re.split(r'[｜|]', m[3])
             item = {'id': m[2], 'name': pieces[0].strip(), 'checked': m[1].lower() == 'x', 'fields': {}, 'notes': [], 'children': []}
             item['fields'].update({k.strip().strip('*_`').strip(): v.strip() for k, v in FIELD.findall('｜'.join(pieces[1:]))})
-            parent = items_by_id.get(item['id'].rsplit('-', 1)[0])
-            (parent['children'] if parent else group['items']).append(item)
-            items_by_id[item['id']] = item
+            group['items'].append(item)
             continue
         if item is not None and re.match(r'^\s{2,}-\s+', line):
             content = re.sub(r'^\s*-\s*', '', line)
@@ -68,6 +64,16 @@ def parse(text):
                 item['fields'].update({k.strip().strip('*_`').strip(): v.strip() for k, v in fields})
             else:
                 item['notes'].append(content)
+    # Saved history may precede a newly added parent. Collect complete records
+    # first, then link only within each section without changing sibling order.
+    for group in groups:
+        records = group['items']
+        items_by_id = {record['id']: record for record in records}
+        group['items'] = []
+        for record in records:
+            parent_id, separator, _ = record['id'].rpartition('-')
+            parent = items_by_id.get(parent_id) if separator else None
+            (parent['children'] if parent else group['items']).append(record)
     return groups
 
 BASE = Path(__file__).resolve().parent

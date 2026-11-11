@@ -11,7 +11,7 @@ import re
 
 from serve_dashboard import parse, flatten, normalize_progress_summary, item_flags
 from planning_operations import (history_text, replace_item_records, reopened_fields,
-                                 TRACKING_FIELD, INACTIVE_TRACKING)
+                                 TRACKING_FIELD, INACTIVE_TRACKING, HISTORY_FIELDS)
 
 
 STATUSES = {'未开始', '进行中', '待审核', '受阻', '已取消', '已完成'}
@@ -59,10 +59,11 @@ def _history(item):
 
 
 def _archive(old, new, actor, reason):
-    # Store only this record.  Children have their own history and are not
-    # recursively copied, which prevents exponential growth on parent updates.
-    before = {key: copy.deepcopy(old[key]) for key in ('id', 'name', 'checked', 'fields', 'notes')}
-    before['fields'].pop(HISTORY, None)
+    # Store only this record's business state. Both histories stay on the live
+    # record; copying either one here recursively nests the planning archive.
+    before = {key: copy.deepcopy(old[key]) for key in ('id', 'name', 'checked', 'notes')}
+    before['fields'] = {key: copy.deepcopy(value) for key, value in old['fields'].items()
+                        if key not in HISTORY_FIELDS}
     entry = {'actor': actor, 'reason': reason, 'before': before}
     new['fields'][HISTORY] = history_text(_history(old) + [entry])
 

@@ -524,13 +524,45 @@ class ProjectService:
         result = {'path':str(target), 'format':format_, 'bytes':len(data), 'revision':doc['revision'], 'sha256':digest(data)}
         return self._record(project, '规划书已导出', str(target), result)
 
+    def _assert_current_requirements(self, plan, ledger, feature_id):
+        """Completion uses the adopted target subtree, not stale ledger fields.
+
+        Notes, priority and unrelated branches may remain unsynchronised without
+        invalidating this acceptance. Historical withdrawn items are retained but
+        do not belong to the current adopted subtree.
+        """
+        if not isinstance(feature_id, str) or not re.fullmatch(r'F\d+(?:-\d+)*', feature_id):
+            raise ValueError('功能编号格式无效。')
+        def in_scope(identity):
+            return identity == feature_id or identity.startswith(feature_id + '-')
+        expected = {row['编号']: row for row in self._rows(plan['content'])
+                    if row.get('采用') != '否' and in_scope(row['编号'])}
+        actual = {item['id']: item for group in parse(ledger['content']) for item in flatten(group['items'])
+                  if in_scope(item['id']) and item['fields'].get(operations.TRACKING_FIELD) not in operations.INACTIVE_TRACKING}
+        message = '当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。'
+        if feature_id not in expected or set(expected) != set(actual):
+            raise RequestError(message, 409)
+        for identity, row in expected.items():
+            item = actual[identity]
+            fields = operations.plan_fields(row)
+            if (item['name'] != operations.safe_field(row['功能名称']) or
+                    any(operations.safe_field(item['fields'].get(key)) != fields[key]
+                        for key in operations.REQUIREMENT_FIELDS)):
+                raise RequestError(message, 409)
+
     def _update_feature_progress(self, project, payload):
         from project_progress import update_progress
         self.store.require_planning(project)
         old = self._document(project['ledger_path'])
         self._revision(old, payload.get('revision'))
+        plan = None
+        if isinstance(payload.get('changes'), dict) and payload['changes'].get('状态') == '已完成':
+            plan = self._document(project['plan_path'])
+            self._assert_current_requirements(plan, old, payload.get('feature_id'))
         result = update_progress(old['content'], payload.get('feature_id'), payload.get('changes'), self.actor, payload.get('review'))
         operation_step(80, '保存功能进度', '记录实施和独立审核证据')
+        if plan is not None:
+            self._revision(self._document(project['plan_path']), plan['revision'])
         saved = atomic_write(Path(project['ledger_path']), result['content'], old['revision'])
         result.update(saved, saved=True)
         return self._record(project, '功能进度已更新', activity.changes(old['content'], result['content']), result)

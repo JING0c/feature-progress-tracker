@@ -85,6 +85,7 @@ def safe_field(value):
 PLAN_FIELDS = {'验收', '说明', '优先级', '依赖', '所需技术', '前期准备', '备注'}
 REQUIREMENT_FIELDS = {'验收', '说明', '依赖', '所需技术', '前期准备'}
 HISTORY_FIELD = '规划同步历史'
+HISTORY_FIELDS = {HISTORY_FIELD, '进度更新历史'}
 TRACKING_FIELD = '规划跟踪'
 INACTIVE_TRACKING = {'未采用', '已从规划移除'}
 REVIEW_RESET = {'审核 Agent': '待审核', '评分': '待审核',
@@ -112,10 +113,13 @@ def history_records(item):
 
 
 def history_snapshot(item):
-    # Retain all parsed old data, including the subtree, without recursively
-    # embedding previously archived histories into every later snapshot.
-    snapshot = copy.deepcopy(item)
-    snapshot['fields'].pop(HISTORY_FIELD, None)
+    # Both archives remain on the live record, including legacy nested entries.
+    # A new snapshot retains the business state and subtree, never another
+    # archive; otherwise alternating planning/progress edits grow exponentially.
+    snapshot = {key: copy.deepcopy(value) for key, value in item.items()
+                if key not in ('fields', 'children')}
+    snapshot['fields'] = {key: copy.deepcopy(value) for key, value in item['fields'].items()
+                          if key not in HISTORY_FIELDS}
     snapshot['children'] = [history_snapshot(child) for child in item.get('children', [])]
     return snapshot
 

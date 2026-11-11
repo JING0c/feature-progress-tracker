@@ -64,7 +64,8 @@ class AdoptionLedgerTests(unittest.TestCase):
             for key in ('执行 Agent', '实现证据', '审核 Agent', '评分', '审核结论', '进度更新历史'):
                 self.assertEqual(after[identity]['fields'][key], before[identity]['fields'][key])
             history = json.loads(after[identity]['fields']['规划同步历史'])
-            self.assertEqual(history[-1]['fields'], before[identity]['fields'])
+            self.assertEqual(history[-1]['fields'], {key: value for key, value in before[identity]['fields'].items()
+                                                    if key not in {'规划同步历史', '进度更新历史'}})
             self.assertTrue(history[-1]['checked'])
         self.assertEqual(after['F02'], before['F02'])
         self.assertEqual(sync(editor.select_feature(PLAN, 'F01', False), changed['content'])['content'], changed['content'])
