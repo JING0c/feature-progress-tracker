@@ -1,4 +1,4 @@
-"""Validated, opt-in feature suggestions from an isolated Codex process."""
+"""Validated, opt-in feature suggestions supplied by the current host or a sub-agent."""
 import copy
 import json
 import re
@@ -53,7 +53,7 @@ def validate(raw,content,preserve_ids=False,reserved_ids=()):
 
 
 def markdown(record):
-    lines=['来源：独立 Codex 子进程；建议不代表已采纳、已实现或已验收。','基于规划版本：'+record['plan_revision'],'']
+    lines=['来源：'+record.get('source','历史建议记录（来源未记录）')+'；建议不代表已采纳、已实现或已验收。','基于规划版本：'+record['plan_revision'],'']
     for s in record['suggestions']:lines+=['## '+s['id']+' '+s['title'],s['reason'],'']
     return '# 功能建议\n\n```json\n'+json.dumps(record,ensure_ascii=False,indent=2)+'\n```\n\n'+'\n'.join(lines)+'\n'
 

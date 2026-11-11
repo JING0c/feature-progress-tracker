@@ -4,6 +4,8 @@
   // The same read-only model is used by the webpage and the Excel exporter.
   global.createPlanningSheetView = function (container, options = {}) {
     let model = { sheets: [] }, active = '', collapsed = new Set(), adoptionEnabled=true, adoptionControls=[],changedIds=new Set(),onlyChanged=false,showTechnical=false;
+    let renderGeneration=0, previousScroll=null, previousSheet='';
+    const expandedDetails=new Set();
     const el = (tag, className, text) => {
       const node = document.createElement(tag);
       if (className) node.className = className;
@@ -15,10 +17,12 @@
     };
 
     function render() {
+      const generation=++renderGeneration;
+      const oldScroll=previousScroll, oldSheet=previousSheet;
       container.replaceChildren();adoptionControls=[];
       const sheets = Array.isArray(model.sheets) ? model.sheets : [];
       const sheet = sheets.find(item => item.id === active) || sheets.find(item => item.kind === 'feature-list') || sheets.find(item => item.columns.includes('功能名称')) || sheets[0];
-      if (!sheet) { message('还没有规划内容，请先通过对话梳理项目。'); return; }
+      if (!sheet) { message('还没有规划内容，请在 Codex 或 Claude Code 对话中梳理并保存项目规划。'); return; }
       active = sheet.id;
       const allRows = sheet.rows || [], columns = sheet.columns || [];
       const listing = sheet.kind === 'feature-list';
@@ -96,15 +100,22 @@
           cell.hidden=technical(columns[column]);
           const value = String((row.cells || [])[column] ?? '');
           if (listing && columns[column] === '采用') {
-            const box=el('input','adoption-checkbox');box.type='checkbox';box.checked=value!=='否';box.setAttribute('aria-label','采用 '+(row.feature_id||row.key));
-            adoptionControls.push(box);box.disabled=!options.onAdopt||!adoptionEnabled;box.addEventListener('change',()=>options.onAdopt(row.feature_id,box.checked));cell.className+=' adoption-cell';cell.append(box);
+            cell.className+=' adoption-cell';
+            if (options.onAdopt) {
+              const box=el('input','adoption-checkbox');box.type='checkbox';box.checked=value!=='否';box.setAttribute('aria-label','采用 '+(row.feature_id||row.key));
+              adoptionControls.push(box);box.disabled=!adoptionEnabled;box.addEventListener('change',()=>options.onAdopt(row.feature_id,box.checked));cell.append(box);
+            } else {
+              const label=el('span','adoption-text',value==='否'?'不采用':'采用');label.setAttribute('data-selected',String(value!=='否'));cell.append(label);
+            }
           } else if (listing) {
             const span = mergeStarts.get(index + ':' + column);
             if (span) { cell.setAttribute('rowspan', String(span)); cell.className += ' sheet-merged'; }
             if (column < columns.indexOf('功能介绍')) cell.className += ' sheet-level-cell';
             if(columns[column]==='功能介绍'){
               const brief=el('p','sheet-intro-brief',value.split('\n')[0].replace(/^说明[：:]\s*/,''));
-              const detail=el('details','sheet-intro-detail');detail.append(el('summary','','验收、技术与准备'),el('div','',value));for(const field of ['所需技术','前期准备']){const index=columns.indexOf(field);if(index>=0)detail.append(el('p','',field+'：'+(row.cells[index]||'待确认')));}cell.append(brief,detail);
+              const detail=el('details','sheet-intro-detail'),detailKey=sheet.id+':'+(row.feature_id||row.key);detail.open=expandedDetails.has(detailKey);
+              detail.addEventListener('toggle',()=>{if(generation===renderGeneration){detail.open?expandedDetails.add(detailKey):expandedDetails.delete(detailKey);}});
+              detail.append(el('summary','','验收、技术与准备'),el('div','',value));for(const field of ['所需技术','前期准备']){const index=columns.indexOf(field);if(index>=0)detail.append(el('p','',field+'：'+(row.cells[index]||'待确认')));}cell.append(brief,detail);
             }else{const label=el('span','sheet-cell-label',value||'—');if(typeof global.renderPlanningInline==='function')global.renderPlanningInline(label,value||'—');cell.append(label);}
           } else if (column === hierarchyColumn) {
             const content = el('div', 'sheet-hierarchy');
@@ -156,6 +167,8 @@
         button.addEventListener('click', () => { active = item.id; render(); }); tabs.append(button);
       });
       container.append(tabs, toolbar, scroll);
+      if(oldScroll && oldSheet===sheet.id){scroll.scrollLeft=oldScroll.scrollLeft||0;scroll.scrollTop=oldScroll.scrollTop||0;}
+      previousScroll=scroll;previousSheet=sheet.id;
       update();
     }
     return {
@@ -168,7 +181,7 @@
       },
       loading() { message('正在整理规划表格…'); },
       error() { message('表格暂时无法加载，可切换到文档视图查看完整内容。'); },
-      clear() { model = { sheets: [] }; active = ''; changedIds.clear();onlyChanged=false;collapsed.clear(); container.replaceChildren(); }
+      clear() { model = { sheets: [] }; active = ''; changedIds.clear();onlyChanged=false;collapsed.clear();expandedDetails.clear();previousScroll=null;previousSheet='';renderGeneration++;container.replaceChildren(); }
     };
   };
 })(window);

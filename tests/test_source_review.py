@@ -45,39 +45,4 @@ class SourceReviewTests(unittest.TestCase):
             with self.assertRaises(ValueError):source.collect_sources(Path(tmp),[{'name':'../repo'}],'',lambda **kw:None)
 
 import test_references_history as history_tests
-class SourceHttpTests(history_tests.ReferencesHistoryHttpTest):
-    # Reuse only the fixture helpers; existing inherited integration checks remain useful.
-    def test_final_review_cache_invalidation_and_project_isolation(self):
-        p=self.project('source-a');q=self.project('source-b');suffix='?project='+p['id']
-        self.assertEqual(self.save(p,generate=True)[0],200)
-        self.refs(p);self.select(p,['org/two'])
-        fake=self.fake_bin/'git'
-        fake.write_text('#!/usr/bin/python3\nimport sys,pathlib\na=sys.argv\n'
-                        'if "clone" in a:pathlib.Path(a[-1]).mkdir()\n'
-                        'elif "config" in a:print("https://github.com/org/two.git")\n'
-                        'elif "rev-parse" in a:print("a"*40)\n'
-                        'elif "ls-tree" in a:print("src/app.py\\0",end="")\n'
-                        'elif "cat-file" in a:print(30)\n'
-                        'elif "show" in a:print("def book():\\n    return True")\n')
-        fake.chmod(0o755)
-        rows=existing.editor.editable_table(existing.PLAN)['rows']
-        report={'features':[{'id':r['编号'],'status':'部分依据','finding':'只有示例入口，业务规则尚未验证','evidence':[{'repository':'org/two','path':'src/app.py','line':1}]} for r in rows]}
-        self.fake_reply.write_text(json.dumps(report))
-        code,data=self.request('/api/research/source-check'+suffix,{})
-        self.assertEqual(code,200,data)
-        self.assertIn('a'*40,data['report']);self.assertTrue(Path(p['directory'],'规划源码核对.md').exists())
-        self.assertFalse(Path(q['directory'],'规划源码核对.md').exists())
-        self.fake_prompt.unlink()
-        revision=self.request('/api/plan'+suffix)[1]['revision']
-        code,converted=self.request('/api/ledger/generate'+suffix,{'revision':revision})
-        self.assertEqual(code,200,converted);self.assertEqual(converted['engine'],'code')
-        self.assertFalse(self.fake_prompt.exists(),'valid source report must be reused without Codex')
-        self.fake_reply.write_text('invalid JSON')
-        code,data=self.request('/api/research/source-check'+suffix,{})
-        self.assertEqual(code,200,data)  # exact plan/reference/commit match reuses report
-        plan=Path(p['plan_path']);plan.write_text(plan.read_text()+'\n新增边界说明。\n')
-        code,data=self.request('/api/research/source-check'+suffix,{})
-        self.assertEqual(code,400,data)  # changed plan must invoke real review, not reuse
-        progress=self.request('/api/research/source-progress'+suffix)[1]
-        self.assertFalse(progress['running']);self.assertEqual(progress['stage'],'核对失败')
-        self.assertEqual(self.request('/api/research/source-progress?project='+q['id'])[1]['stage'],'尚未核对')
+# 旧网页编排集成类已归档到 legacy_web/test_source_review.py。

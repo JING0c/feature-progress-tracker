@@ -85,6 +85,8 @@ def safe_field(value):
 PLAN_FIELDS = {'验收', '说明', '优先级', '依赖', '所需技术', '前期准备', '备注'}
 REQUIREMENT_FIELDS = {'验收', '说明', '依赖', '所需技术', '前期准备'}
 HISTORY_FIELD = '规划同步历史'
+TRACKING_FIELD = '规划跟踪'
+INACTIVE_TRACKING = {'未采用', '已从规划移除'}
 REVIEW_RESET = {'审核 Agent': '待审核', '评分': '待审核',
                 '评分理由': '需求已变化，待重新审核', '审核结论': '需求已变化，待重新审核'}
 
@@ -128,7 +130,9 @@ def history_text(records):
 
 
 def requirements_changed(old, new):
-    return (any(safe_field(old['fields'].get(key)) != safe_field(new['fields'].get(key))
+    return ((old['fields'].get(TRACKING_FIELD) in INACTIVE_TRACKING) !=
+            (new['fields'].get(TRACKING_FIELD) in INACTIVE_TRACKING)
+            or any(safe_field(old['fields'].get(key)) != safe_field(new['fields'].get(key))
                 for key in REQUIREMENT_FIELDS)
             or any(requirements_changed(before, after)
                    for before, after in zip(old.get('children', []), new.get('children', []))))
@@ -144,8 +148,35 @@ def reopened_fields(fields):
     return result
 
 
+def sync_tracking_status(old, current):
+    """Archive scope withdrawals; re-adoption cannot resurrect old acceptance."""
+    fields = current['fields']
+    if fields.get(TRACKING_FIELD) in INACTIVE_TRACKING:
+        current['checked'] = False
+        fields['状态'] = '已取消'
+        return
+    if old['fields'].get(TRACKING_FIELD) in INACTIVE_TRACKING:
+        # Find the latest state before this scope withdrawal, including a manual
+        # cancellation. Repeated unadopt/remove edits must not lose that state.
+        previous = next((record for record in reversed(history_records(old))
+                         if isinstance(record, dict) and isinstance(record.get('fields'), dict)
+                         and record['fields'].get(TRACKING_FIELD) not in INACTIVE_TRACKING), None)
+        if previous is None:
+            raise ValueError('取消跟踪前的历史记录缺失，请先核对：' + old['id'])
+        fields['状态'] = previous['fields'].get('状态', '未开始')
+        current['checked'] = False
+        if fields['状态'] in ('已完成', '待审核') or previous.get('checked'):
+            current['fields'] = reopened_fields(fields)
+            current['fields']['评分理由'] = '功能重新采用，待重新审核'
+            current['fields']['审核结论'] = '功能重新采用，待重新审核'
+        return
+    if requirements_changed(old, current):
+        current['checked'] = False
+        current['fields'] = reopened_fields(fields)
+
+
 def valid_ledger_transition(old, new):
-    """Allow only a requirements sync with exact old history, never new approval.
+    """Allow requirements/scope sync with exact old history, never new approval.
 
     Used by the server's final ledger validation, not as a client assertion.
     Names, topology, notes and implementation evidence cannot be changed here.
@@ -166,12 +197,17 @@ def valid_ledger_transition(old, new):
             expected[key] = new_fields[key]
         elif key in old_fields:
             return False
-    changed_requirements = requirements_changed(old, new)
-    if changed_requirements:
-        expected = reopened_fields(expected)
-    if expected != new_fields or new['checked'] != (False if changed_requirements else old['checked']):
-        return False
+    if new_fields.get(TRACKING_FIELD) != old_fields.get(TRACKING_FIELD):
+        tracking = new_fields.get(TRACKING_FIELD)
+        if tracking not in INACTIVE_TRACKING and not (
+                tracking == '已采用' and old_fields.get(TRACKING_FIELD) in INACTIVE_TRACKING):
+            return False
+        expected[TRACKING_FIELD] = tracking
     try:
+        transition = {'fields': expected, 'checked': old['checked'], 'children': after_children}
+        sync_tracking_status(old, transition)
+        if transition['fields'] != new_fields or transition['checked'] != new['checked']:
+            return False
         old_history, new_history = history_records(old), history_records(new)
     except ValueError:
         return False
@@ -179,22 +215,24 @@ def valid_ledger_transition(old, new):
     return new_history == old_history + ([history_snapshot(old)] if own_change else [])
 
 
-def sync_existing_items(groups, adopted):
-    by_id = {row['编号']: row for row in adopted}
+def sync_existing_items(groups, rows):
+    by_id = {row['编号']: row for row in rows}
     changed = {}
     def sync(old):
         current = copy.deepcopy(old)
         current['children'] = [sync(child) for child in old.get('children', [])]
         row = by_id.get(old['id'])
-        if row:
+        if row and row.get('采用') != '否':
             if old['name'] != safe_field(row['功能名称']):
                 raise ValueError('编号 '+old['id']+' 与已有台账名称不同，请核对编号或为新功能使用新编号；已有实施记录未修改。')
             for key, value in plan_fields(row).items():
                 if safe_field(old['fields'].get(key)) != value:
                     current['fields'][key] = value
-        if requirements_changed(old, current):
-            current['checked'] = False
-            current['fields'] = reopened_fields(current['fields'])
+            if old['fields'].get(TRACKING_FIELD) in INACTIVE_TRACKING:
+                current['fields'][TRACKING_FIELD] = '已采用'
+        else:
+            current['fields'][TRACKING_FIELD] = '未采用' if row else '已从规划移除'
+        sync_tracking_status(old, current)
         if current['fields'] != old['fields'] or current['checked'] != old['checked']:
             current['fields'][HISTORY_FIELD] = history_text(history_records(old) + [history_snapshot(old)])
             changed[old['id']] = current
@@ -239,15 +277,15 @@ def ledger_from_plan(content, existing, parse):
     rows = editable_table(content)['rows']
     replace_features(content, rows)
     adopted = [r for r in rows if r.get('采用') != '否']
-    if not adopted:
-        raise ValueError('请先勾选要采用的功能，再生成台账。')
     groups = parse(existing)
     old = {i['id']: i for g in groups for i in walk(g['items'])}
+    if not adopted and not old:
+        raise ValueError('请先勾选要采用的功能，再生成台账。')
     if len(old) != sum(1 for g in groups for i in walk(g['items'])):
         raise ValueError('已有台账编号重复，请先整理原记录。')
     children = {r['上级编号'] for r in adopted}
     roots = [r for r in adopted if '-' not in r['编号']]
-    updated = sync_existing_items(groups, adopted)
+    updated = sync_existing_items(groups, rows)
     synced = replace_item_records(existing, updated)
     output = synced.rstrip() + '\n' if synced.strip() else '# 功能执行情况\n进度：已验收 0/0（0%）\n'
     added, preserved = [], []
@@ -288,7 +326,7 @@ def ledger_from_plan(content, existing, parse):
         else:
             output += '\n## 大功能 ' + root_id + '：' + safe_field(root['功能名称']) + '\n' + block
     return {'content': output, 'added': added, 'preserved': preserved, 'updated': list(updated),
-            'note': '按已采用功能同步当前规划；实施证据及旧审核留存历史，需求变化的已完成或待审核项重新打开。' if updated else ('按已采用功能转换；未变化条目与实施审核历史保留。' if preserved else '按已采用功能转换；新条目均为未开始、待审核。')}
+            'note': '按当前采用范围同步规划；未采用或移除的旧功能取消跟踪，实施及审核历史保留；重新采用的已验收项需重新审核。' if updated else ('按已采用功能转换；未变化条目与实施审核历史保留。' if preserved else '按已采用功能转换；新条目均为未开始、待审核。')}
 
 
 def walk(items):

@@ -17,6 +17,8 @@ HOSTS = ("codex", "claude")
 PLUGIN_NAME = "feature-progress-tracker"
 BUILD_MARKER = ".feature-progress-tracker-build.json"
 RUNTIME_EXTENSIONS = {".py", ".js", ".css", ".html"}
+RETIRED_RUNTIME = {"planning_agent.py", "planning-assistant.js", "planning-suggestions.js",
+                   "planning-workflow.js", "planning-workflow.css", "planning-progress.js"}
 TEMPLATE_EXTENSIONS = {".json", ".md", ".yaml", ".yml", ".svg", ".png", ".jpg", ".webp", ".css"}
 REQUIRED_RUNTIME = (
     "plugin_mcp.py", "plugin_manager.py", "serve_dashboard.py",
@@ -67,7 +69,7 @@ def copy_runtime(source_root, target):
             raise ValueError("运行文件不能包含符号链接：" + str(path))
         if not path.is_file() or path.suffix not in RUNTIME_EXTENSIONS:
             continue
-        if path.name == "build_plugins.py":
+        if path.name == "build_plugins.py" or path.name in RETIRED_RUNTIME:
             continue
         checked_copy(path, target / "scripts" / path.relative_to(source))
     checked_copy(source_root / "SKILL.md", target / "SKILL.md")

@@ -1,379 +1,171 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>项目规划</title><style>
-*{box-sizing:border-box}body{margin:0;background:#fff9fc;color:#382632;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}header{min-height:62px;flex-wrap:wrap;background:white;border-bottom:1px solid #efc6d9;display:flex;align-items:center;gap:24px;padding:0 max(24px,calc((100vw - 1120px)/2))}header strong{font-size:15px;white-space:nowrap}a{color:#832d51;text-decoration:none;font-size:14px}a:hover{text-decoration:underline}.back{margin-left:auto}main{max-width:1120px;margin:0 auto;padding:42px 24px 60px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 255px;gap:28px;align-items:start}.heading{margin-bottom:26px}h1{font-size:30px;margin:0 0 10px;letter-spacing:-.02em}.heading p{margin:0;color:#704e60;font-size:14px;line-height:1.7}.chat{border:1px solid #eab6cd;background:#fff;border-radius:14px;overflow:hidden}.chat-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#fce9f2;border-bottom:1px solid #efd0de;font-size:14px;font-weight:700}.chat-head span{font-size:12px;color:#7b5a69;font-weight:400}#messages{min-height:340px;max-height:58vh;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:16px}.message{max-width:90%;border-radius:12px;padding:13px 16px;font-size:14px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}.message.user{align-self:flex-end;background:#f8cae4;color:#3d2533}.message.assistant{align-self:flex-start;background:#f2f5e8;color:#243b2d}.message .role{font-size:12px;font-weight:700;margin-bottom:4px;opacity:.8}.message .body{white-space:pre-wrap}.welcome{margin:auto;text-align:center;color:#725a66;line-height:1.8;font-size:14px}.welcome strong{font-size:18px;color:#482b38}.composer{border-top:1px solid #f0dae4;padding:16px 20px}textarea{display:block;width:100%;min-height:95px;resize:vertical;border:1px solid #d7bbc8;border-radius:9px;padding:12px;font:inherit;font-size:14px;line-height:1.6;color:#382632}textarea:focus{outline:2px solid #ea6993;outline-offset:2px}.actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}button{cursor:pointer;font:inherit;border:0;border-radius:8px;padding:10px 15px}.send{background:#832d51;color:white;font-weight:700}.secondary{background:#f9eaf1;color:#71354f}.controls{display:flex;gap:8px;flex-wrap:wrap}.status{color:#745867;font-size:12px}.status.error{color:#a32645}.side{border:1px solid #e5cfda;border-radius:12px;padding:20px;background:#fff}.side h2{font-size:15px;margin:0 0 15px}.side p,.side li{font-size:13px;line-height:1.75;color:#6e5360}.side ol{padding-left:20px;margin:0}.side li+li{margin-top:9px}.side hr{border:0;border-top:1px solid #f1e4ea;margin:18px 0}.side strong{color:#3b2932}.plan-document{margin:0 0 26px;border:1px solid #eab6cd;border-radius:14px;background:#fff;overflow:hidden}.plan-document[hidden]{display:none}.plan-header{padding:18px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fce9f2;border-bottom:1px solid #efd0de}.plan-header h2{margin:0;font-size:18px}.plan-header p{margin:0;color:#745867;font-size:12px;overflow-wrap:anywhere}.plan-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}.plan-content{padding:24px;line-height:1.8;overflow-wrap:anywhere}.plan-content h1,.plan-content h2,.plan-content h3{margin:1.2em 0 .4em;color:#482b38}.plan-content h1{font-size:23px}.plan-content h2{font-size:18px}.plan-content h3{font-size:16px}.plan-content p{margin:.45em 0;white-space:pre-wrap}.plan-content ul{padding-left:1.4em}.plan-content li{margin:.3em 0}.plan-content pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f8f3f5;padding:12px;border-radius:8px}button:disabled{opacity:.55;cursor:wait}@media(max-width:760px){main{padding:28px 16px}.layout{grid-template-columns:1fr}.side{order:-1}.message{max-width:100%}header{padding:0 16px}h1{font-size:26px}}
-</style><link rel="stylesheet" href="/assets/planning-markdown.css"><link rel="stylesheet" href="/assets/planning-sheet.css"><link rel="stylesheet" href="/assets/planning-workflow.css"><style>.planning-gate{padding:0 0 16px;margin-bottom:22px;border-bottom:1px solid #eadde4;color:#634454}
-.planning-gate p{font-size:14px;line-height:1.7;margin:5px 0 0}
-.planning-state strong{color:#482b38;font-weight:600}
-.planning-gate .planning-flow{font-size:13px;color:#705664}
-.planning-gate p:empty{display:none}
-</style></head><body><header><strong>项目管理器</strong><a href="/projects">项目总览</a><a class="back" href="/" hidden>返回功能看板</a></header><aside id="page-feedback" class="page-feedback" role="alert" hidden><span id="page-feedback-text"></span><button id="dismiss-feedback" type="button" aria-label="关闭提示">×</button></aside><main class="planning-workspace"><aside id="plan-sidebar" class="plan-sidebar" aria-label="规划操作" hidden><div class="plan-header"><div><h2>项目规划书</h2><p><span id="plan-sync">正在读取项目规划书…</span></p><details class="plan-file-details"><summary>文件位置</summary><p id="plan-location"></p></details></div></div><nav class="plan-actions" aria-label="规划书操作"><div class="plan-action-group "><h3>编辑与确认</h3><button class="section-link" type="button" id="nav-feature">新增功能</button><button class="section-link" type="button" id="nav-view">功能表与视图</button><button class="section-link" type="button" id="nav-suggestions">功能建议</button><button class="section-link" type="button" id="nav-review">核对确认</button></div><div class="plan-action-group "><h3>记录与文件</h3><button class="secondary" type="button" id="open-plan-history">操作记录</button><button class="secondary" type="button" id="reload-plan">读取文件版本</button></div><div class="plan-action-group "><h3>复制与导出</h3><button class="secondary" type="button" id="copy-plan">复制规划书</button><button class="secondary" type="button" id="export-excel">下载 Excel</button><button class="secondary" type="button" id="download-plan">下载 Markdown</button></div></nav></aside><div class="planning-main"><div class="heading"><h1 id="project-title">项目规划</h1><p>从一个想法开始，和智能体逐步讨论需求、拆分功能，并整理验收标准。</p></div><section id="planning-gate" class="planning-gate" aria-live="polite"><p class="planning-state">当前状态：<strong id="planning-step">正在读取规划</strong></p><p id="planning-reason">正在检查项目规划书…</p><p id="planning-context"></p><p class="planning-flow">项目流程：保存规划书后，生成功能台账，再查看功能看板。</p></section><div id="first-plan-slot"></div><div id="project-reference-slot"><section id="github-research" class="research-panel" hidden aria-label="GitHub参考项目"><h2>GitHub 参考</h2><p>可多选，仅作功能参考。确认后继续拆分。</p><details class="research-keywords"><summary>调整搜索关键词</summary><div class="research-search"><input id="research-query" aria-label="GitHub搜索关键词" placeholder="自动从需求提取，也可手动输入"><button id="search-references" class="secondary" type="button">重新搜索</button></div></details><p id="research-scope" aria-live="polite"></p><p id="research-state" aria-live="polite">等待项目需求</p><div id="research-results" class="research-results"></div><div class="reference-selection-actions"><span id="reference-choice-state" aria-live="polite">请先搜索候选项目。</span><button id="save-reference-selection" type="button" class="send">保存参考选择并继续</button><div class="reference-progress-details"><div class="reference-progress-caption"><span id="reference-progress-status" role="status"></span><span id="reference-progress-elapsed" hidden></span></div><progress id="reference-progress" aria-labelledby="reference-progress-status" hidden></progress></div></div></section></div><section id="plan-document" class="plan-document" aria-label="项目规划书" hidden><div class="plan-document-title"><h2>项目规划书</h2><span id="document-save-state" role="status">正在读取…</span><div class="document-edit-actions"><button class="secondary" type="button" id="edit-features">编辑功能表</button><button class="secondary" type="button" id="save-plan" disabled>保存功能表</button><details class="save-note-details"><summary>保存备注（选填）</summary><div class="version-save-note"><label for="version-note">备注内容</label><input id="version-note" maxlength="1000" placeholder="例如：补充查询功能"></div></details></div></div><section id="review-section" class="source-review-panel" aria-label="最终源码核对"><div class="review-ledger-actions"><button class="secondary" id="generate-ledger" disabled type="button">按规划生成台账</button><button class="secondary" id="save-ledger" disabled type="button">保存到看板</button></div><button class="secondary" type="button" id="review-source">核对源码并确认规划</button><p id="source-review-status" role="status">初步功能表参考 README；最终确认及生成台账前核对源码。</p><details id="ledger-code-preview" hidden><summary id="ledger-preview-summary">台账预览（尚未保存）</summary><p id="ledger-preview-note"></p><pre id="ledger-preview-content"></pre></details><progress id="source-review-progress" hidden></progress><span id="source-review-elapsed"></span><details id="source-review-result" hidden><summary>查看源码核对结果与仓库版本</summary><pre id="source-review-report"></pre></details></section><aside id="suggestion-preview-bar" class="suggestion-preview-bar" hidden><strong id="suggestion-preview-label"></strong><p id="suggestion-preview-hint"></p><div><button type="button" class="secondary" id="back-to-suggestions">返回建议</button><button type="button" class="secondary" id="discard-suggestion-preview">放弃本次预览</button></div></aside><div id="view-section" class="plan-viewbar"><div class="plan-view-options" aria-label="规划书展示方式"><button type="button" id="view-sheet" aria-pressed="true">表格视图</button><button type="button" id="view-document" aria-pressed="false">文档视图</button></div><p>功能清单按列展示包含关系；在功能明细中可逐级展开。</p></div><section id="feature-editor" class="feature-editor" aria-label="编辑功能表" hidden><p>采用默认全选；取消采用后保留规划记录，后续不新增相应实施条目。可修改名称、层级、验收、技术与准备。上级编号须与编号前缀一致，例如 F01-01 属于 F01；调整时请同步依赖编号。采用勾选不代表开发完成。</p><div class="feature-editor-scroll"><table id="feature-editor-table"></table></div><div class="editor-actions"><button id="add-feature-row" type="button" class="secondary">新增空白行</button><button id="save-feature-edit" type="button" class="send">保存功能表</button><button id="cancel-feature-edit" type="button" class="secondary">取消编辑</button></div></section><div id="plan-sheet" class="plan-sheet"></div><article id="plan-content" class="plan-content" hidden></article><section id="new-feature-section" class="new-feature-panel"><h3>新增功能</h3><p>描述需求 → 拆分或搜索参考 → 确认后加入功能表。</p><textarea id="new-feature-idea" aria-label="新增功能想法" placeholder="例如：希望加入维修材料库存管理……"></textarea><button id="guide-feature" class="secondary" type="button">直接拆分</button> <button id="research-feature" class="secondary" type="button">搜索 GitHub 参考</button><p id="feature-research-status" role="status"></p><progress id="feature-research-progress" aria-labelledby="feature-research-status" hidden></progress><div id="feature-reference-slot"></div><button id="save-current-feature-edits" class="secondary" type="button" hidden>保存当前功能表修改</button><pre id="feature-proposal" hidden></pre><button id="apply-feature-proposal" class="send" type="button" hidden>确认拆分并保存到功能表</button></section></section><section id="suggestions-section" class="suggestions-panel" aria-label="功能建议" hidden><h2>完善功能表</h2><p>建议只在你采纳并保存后写入功能表。</p><div class="assistant-flow"><span>调整流程：</span><ol class="assistant-steps" aria-label="功能调整步骤"><li id="assistant-step-input">提出想法</li><li id="assistant-step-choose">选择建议</li><li id="assistant-step-review">预览并保存</li></ol></div><div id="discussion-slot"></div><section id="suggestion-results" tabindex="-1" aria-label="修改建议"><h3>修改建议</h3><p id="suggestion-selection-status" role="status"></p><div class="editor-actions"><button id="preview-suggestions" type="button" class="secondary" disabled>预览采纳后的功能表</button></div><progress id="suggestions-progress" hidden></progress><div id="suggestions-list"></div><details id="suggestion-diff" hidden><summary>本次采纳的修改明细</summary><pre id="suggestion-diff-text"></pre></details></section></section><details id="suggestion-activity" class="suggestion-activity"><summary>操作记录<span id="activity-count"></span></summary><section class="planning-activity" aria-label="操作记录"><div id="activity-timeline" tabindex="-1"><div class="activity-heading"><h2>做过的操作与保存的功能表</h2><button id="refresh-activity" class="secondary" type="button">刷新记录</button></div><p>每次成功保存功能表，都会在这条记录中保留一份当时的完整内容。展开记录查看改动，点击“查看当时功能表”回看或下载。</p><p id="activity-state" role="status">正在读取记录…</p><div id="activity-list"></div></div><section id="plan-history" class="plan-history" aria-label="当时保存的功能表" hidden><button id="history-back" class="secondary" type="button">← 返回操作记录</button><h3 id="history-title" tabindex="-1">当时的功能表</h3><p id="history-status" role="status"></p><section id="history-detail" hidden><p id="history-meta"></p><div id="history-references"></div><div class="editor-actions"><button id="history-download-md" class="secondary" type="button">下载这份 Markdown</button><button id="history-download-excel" class="secondary" type="button">下载这份 Excel</button></div><div id="history-sheet" class="plan-sheet"></div><details><summary>相较上次保存改了什么</summary><pre id="history-diff"></pre></details><details><summary>当时的完整规划书</summary><article id="history-document" class="plan-content"></article></details></section></section></section></details><div id="initial-discussion-slot"><details id="planning-discussion" class="planning-discussion" open><summary id="discussion-title">项目需求与规划</summary><div class="layout"><section class="chat" aria-label="需求补充与讨论"><div class="chat-head">需求补充与讨论 <span>由本机 __PLANNING_AGENT__ 提供回复</span></div><details id="conversation-history" class="conversation-history"><summary>最近讨论</summary><div id="messages" aria-live="polite"></div></details><form id="form" class="composer"><fieldset id="assistant-modes" class="assistant-modes" hidden><legend>这次想做什么？</legend><label><input type="radio" name="assistant-mode" id="assistant-mode-suggest" value="suggest" checked>生成修改建议</label><label><input type="radio" name="assistant-mode" id="assistant-mode-chat" value="chat">先讨论想法</label></fieldset><label id="input-label" for="input">你想做什么项目？</label><p id="assistant-input-hint" class="input-hint"></p><textarea id="input" placeholder="例如：我想做一个管理个人待办事项的小工具……" aria-describedby="assistant-input-hint assistant-input-error" required></textarea><p id="assistant-input-error" class="input-error" role="alert" hidden></p><div id="assistant-blocker" class="assistant-blocker" hidden><span id="assistant-blocker-text"></span><button type="button" id="assistant-view-changes" class="secondary">查看未保存修改</button></div><div class="assistant-primary"><span id="assistant-draft-state"></span><button id="assistant-submit" class="send" type="submit">查找参考并开始规划</button></div><p id="status" class="status" role="status">对话保存在当前浏览器中</p><p id="suggestions-status" role="status"></p><details id="conversation-tools" class="conversation-tools"><summary>对话工具</summary><div class="controls"><button class="secondary" id="copy" type="button">复制对话</button><button class="secondary" id="clear" type="button">清空对话</button><button class="secondary" id="draft" type="button">根据讨论重新生成规划书</button><p>重新生成会更新整份规划书并保存历史版本；局部修改请使用建议预览。</p></div></details><button id="generate-suggestions" type="button" hidden>生成建议</button></form></section><aside class="side"><h2>一起梳理项目</h2><ol><li>说明目标、使用者和主要场景。</li><li>通过对话澄清范围、约束和未确定事项。</li><li>拆分可验收功能，梳理依赖、风险和优先级。</li><li>完成对话后生成并审阅项目规划书。</li><li>生成并审阅功能台账，然后保存到看板。</li></ol><hr><p><strong>先完成项目规划。</strong>生成的规划书会保存为项目目录内的 Markdown。功能台账需审阅并确认后保存；AI 修改文件后，页面会自动同步。</p></aside></div></details></div></div></main><aside id="operation-progress-panel" class="operation-progress-panel" aria-label="操作进度" hidden><div class="operation-heading"><strong id="operation-title">正在处理</strong><strong id="operation-percent">0%</strong><button id="operation-dismiss" type="button" aria-label="收起进度" hidden>×</button></div><progress id="operation-bar" max="100" value="0" aria-label="当前操作的阶段进度"></progress><p id="operation-stage" role="status"></p><p id="operation-detail"></p><div class="operation-foot"><span>按已完成阶段计算</span><span id="operation-elapsed"></span></div><button id="operation-cancel" class="secondary" type="button" hidden>取消本次生成</button></aside><script src="/assets/planning-markdown.js"></script><script src="/assets/planning-sheet-view.js"></script><script src="/assets/planning-workflow.js"></script><script src="/assets/planning-history-view.js"></script><script src="/assets/planning-progress.js"></script><script src="/assets/planning-suggestions.js"></script><script src="/assets/planning-assistant.js"></script><script src="/assets/planning-activity.js"></script><script>
-const TOKEN='__PLANNING_TOKEN__',KEY='project-planning:__PLANNING_KEY__';
-if(typeof ResizeObserver==='function')new ResizeObserver(entries=>{document.documentElement.style.setProperty('--plan-toolbar-height',entries[0].target.getBoundingClientRect().height+'px');}).observe(document.querySelector('.plan-document-title'));
-const project=new URLSearchParams(location.search).get('project');
-const api=path=>path+(project?(path.includes('?')?'&':'?')+'project='+encodeURIComponent(project):'');
-document.querySelector('.back').href=api('/');
-let messages=[],planText='',requestIntent='chat',busy=false,dirty=false,planRevision=null,planPath='',planPolling=false,planReadVersion=0,activePlanRead=0;
-let planningState={ready:false,reason:'正在检查项目规划书…'},projectSource='existing',generatedDraft=false;
-let planView='sheet',sheetRequest=0,workflow=null,suggestionsView=null,discussionReady=null,assistantView=null;
-// Edits stay in this page until saved; leaving must not silently discard them.
-if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('beforeunload',event=>{
- if(dirty||workflow?.editing){event.preventDefault();event.returnValue='';}
-});
-const sheetView=createPlanningSheetView(document.getElementById('plan-sheet'),{onAdopt:async(id,selected)=>{
- if(busy||!planningState.ready){notice('请先保存规划书，再选择采用功能。',true);return;}
- setBusy(true);try{const data=await workflow.choose(id,selected);showPlan(data.content);dirty=true;notice('采用选择已修改，请点击保存规划书。');}catch(e){showPlan(planText);notice(e.message,true)}finally{setBusy(false)}
-}});
-function setPlanView(view){
- planView=view;document.getElementById('plan-sheet').hidden=view!=='sheet';document.getElementById('plan-content').hidden=view!=='document';
- document.getElementById('view-sheet').setAttribute('aria-pressed',String(view==='sheet'));document.getElementById('view-document').setAttribute('aria-pressed',String(view==='document'));
-}
-document.getElementById('view-sheet').addEventListener('click',()=>setPlanView('sheet'));
-document.getElementById('view-document').addEventListener('click',()=>setPlanView('document'));
-try{const saved=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(saved))messages=saved.filter(m=>m&&['user','assistant'].includes(m.role)&&typeof m.content==='string')}catch(e){}
-const list=document.getElementById('messages'),form=document.getElementById('form'),input=document.getElementById('input'),status=document.getElementById('status'),send=document.getElementById('assistant-submit'),planSync=document.getElementById('plan-sync');
-let referenceFlow=false,featureAction=false,mergeFeature=false,pendingReferenceIntent=null;
-function invalidateSourceReview(){document.getElementById('source-review-result').hidden=true;if(sourceTimer===null)document.getElementById('source-review-status').textContent=planningState.ready?'下一步：核对参考源码，确认规划依据后再生成台账。':'先生成并保存规划，再核对参考源码。';}
-let referenceTimer=null,sourceTimer=null,sourcePollPending=false,sourceStarted=0;
-function sourceProgressStart(){
- sourceStarted=Date.now();document.getElementById('source-review-progress').hidden=false;document.getElementById('source-review-result').hidden=true;document.getElementById('source-review-status').textContent='正在检查规划版本与仓库缓存…';
- sourceTimer=setInterval(async()=>{
-  document.getElementById('source-review-elapsed').textContent='已等待 '+Math.floor((Date.now()-sourceStarted)/1000)+' 秒';
-  if(sourcePollPending)return;sourcePollPending=true;
-  try{const data=await request('/api/research/source-progress');if(sourceTimer!==null)document.getElementById('source-review-status').textContent=data.stage+' · '+data.message+(data.total?' · 仓库 '+data.completed+'/'+data.total:'');}catch(e){if(sourceTimer!==null)document.getElementById('source-review-status').textContent='进度暂不可用：'+e.message;}finally{sourcePollPending=false;}
- },1000);
-}
-function sourceProgressEnd(text){if(sourceTimer!==null)clearInterval(sourceTimer);sourceTimer=null;document.getElementById('source-review-progress').hidden=true;document.getElementById('source-review-status').textContent=text;}
-document.getElementById('review-source').addEventListener('click',async()=>{
- if(busy)return;if(dirty||workflow?.editing){notice('请先保存功能表修改，再核对最终版本。',true);return;}
- setBusy(true);sourceProgressStart();
- try{const data=await request('/api/research/source-check',{});document.getElementById('source-review-report').textContent=data.report.split('## 版本绑定数据')[0];document.getElementById('source-review-result').hidden=false;sourceProgressEnd('源码核对已完成并保存；请查看逐项依据及待确认事项。');}
- catch(e){sourceProgressEnd('核对未完成：'+e.message);notice(e.message,true);}
- finally{setBusy(false);}
-});
-function referenceProgress(text,working){
- const elapsed=document.getElementById('reference-progress-elapsed');
- document.getElementById('reference-progress-status').textContent=text;
- document.getElementById('reference-progress').hidden=!working;
- elapsed.hidden=!working;
- if(working&&referenceTimer===null){
-  const started=Date.now();
-  const tick=()=>{elapsed.textContent='已等待 '+Math.floor((Date.now()-started)/1000)+' 秒';};
-  tick();
-  referenceTimer=setInterval(tick,1000);
- }else if(!working&&referenceTimer!==null){
-  clearInterval(referenceTimer);
-  referenceTimer=null;
- }
-}
-document.getElementById('dismiss-feedback').addEventListener('click',()=>{document.getElementById('page-feedback').hidden=true;});
-function notice(text,error=false){
- document.getElementById('page-feedback').hidden=!error;document.getElementById('page-feedback-text').textContent=error?text:'';
- status.className='status'+(error?' error':'');status.textContent=text;
- if(referenceFlow)referenceProgress(text,busy&&!error);
- if(featureAction)document.getElementById('feature-research-status').textContent=text;
-}
-function saveChat(){try{localStorage.setItem(KEY,JSON.stringify(messages))}catch(e){notice('对话无法保存在浏览器，请及时复制。',true)}}
-const operationProgress=typeof createPlanningProgress==='function'?createPlanningProgress({poll:async id=>{
- const endpoint=api('/api/operation-progress');const r=await fetch(endpoint+(endpoint.includes('?')?'&':'?')+'operation='+encodeURIComponent(id),{cache:'no-store'});if(!r.ok)throw Error('进度暂不可用');return r.json();
-},cancel:async id=>{const r=await fetch(api('/api/operation-cancel'),{method:'POST',headers:{'Content-Type':'application/json','X-Planning-Token':TOKEN},body:JSON.stringify({operation:id})});const data=await r.json();if(!r.ok)throw Error(data.error||'暂时无法取消');return data;}}):null;
-function operationLabel(path,payload){
- if(path==='/api/planning')return payload?.merge_feature?'合并新增功能':({chat:'补充需求对话',plan:'生成项目规划书',ledger:'生成功能台账',decompose:'拆分新功能'}[payload?.intent]||'规划对话');
- return {'/api/ledger/generate':'按规划转换台账','/api/plan/merge':'合并已确认的功能','/api/research':'搜索 GitHub 参考','/api/research/selection':'保存参考选择','/api/research/source-check':'核对源码并确认规划','/api/plan/suggestions':'生成智能体建议','/api/plan/suggestions/preview':'预览采纳建议','/api/plan/table':'更新功能表视图','/api/plan/features':'整理功能表编辑','/api/plan/save':'保存功能表与历史','/api/ledger/preview':'校验功能台账','/api/ledger/save':'保存台账到看板','/api/plan/history':'读取当时功能表'}[path.split('?')[0]];
-}
-async function request(path,payload,{applyErrorPlanning=true}={}){
- const perform=async (id,step)=>{
-  if(payload===undefined)step?.(50,'读取当时功能表','已发起读取，等待返回记录');
-  const headers={'Content-Type':'application/json','X-Planning-Token':TOKEN};if(id)headers['X-Operation-ID']=id;
-  const r=await fetch(api(path),payload===undefined?{cache:'no-store'}:{method:'POST',headers,body:JSON.stringify(payload)});
-  let data;try{data=await r.json()}catch(e){throw Error(r.status===403?'页面连接已失效，请保留输入文字后刷新页面。':'服务返回无效内容。')}
-  if(payload!==undefined&&!['/api/plan/table','/api/plan/features','/api/ledger/preview'].includes(path))activityView?.refresh(data.activity_warning||'');
-  if(!r.ok){if(data.planning&&applyErrorPlanning)applyPlanningState(data.planning);throw Error(data.error||'操作失败')}return data;
- };
- const label=operationLabel(path,payload),visible=(payload!==undefined&&(path!=='/api/plan/table'||busy))||path.startsWith('/api/plan/history');
- return operationProgress&&label&&visible?operationProgress.run(label,perform,payload!==undefined):perform();
-}
-
-let historyView=null;
-const activityView=typeof createPlanningActivity==='function'?createPlanningActivity({openSnapshot:identity=>historyView?.show(identity),closeSnapshot:()=>historyView?.hide(),load:async()=>{
- const r=await fetch(api('/api/plan/activity'),{cache:'no-store'});const data=await r.json();if(!r.ok)throw Error(data.error||'记录读取失败');return data;
-}}):null;
-
-function setBusy(value){
- if(value&&!busy)planReadVersion++; // An earlier read cannot overwrite the result of a new operation.
- busy=value;
- for(const id of ['draft','clear','reload-plan','open-plan-history','review-source'])document.getElementById(id).disabled=value;
- for(const id of ['generate-ledger','save-ledger'])document.getElementById(id).disabled=value||!planningState.ready;
- document.getElementById('save-plan').disabled=value||(!dirty&&!workflow?.editing)||(!planningState.ready&&!generatedDraft);
- const unsaved=dirty||!!workflow?.editing;
- document.getElementById('plan-document').setAttribute('data-editing',String(!!workflow?.editing));
- document.getElementById('review-source').disabled=value||!planningState.ready||unsaved;
- const reviewStatus=document.getElementById('source-review-status');
- if(!value&&unsaved)reviewStatus.textContent='请先保存当前修改，再核对参考源码。';
- else if(!value&&reviewStatus.textContent==='请先保存当前修改，再核对参考源码。')reviewStatus.textContent='下一步：核对参考源码，确认规划依据后再生成台账。';
- document.getElementById('document-save-state').textContent=unsaved?'有未保存的修改 · 离开前请保存':planningState.ready?'已保存':'尚未保存';
- document.getElementById('document-save-state').setAttribute('data-unsaved',String(unsaved));
- document.getElementById('planning-step').textContent=unsaved?'功能表有未保存的修改':planningState.ready?'规划书已保存':'尚未保存项目规划书';
- if(planningState.ready)document.getElementById('planning-reason').textContent=unsaved?'请先保存修改，再核对源码或生成功能台账。':'查看或编辑功能表；最终确认后，再生成功能台账。';
- document.getElementById('export-excel').disabled=value||!planText.trim()||!!workflow?.editing;
- sheetView.setAdoptionEnabled?.(!value&&planningState.ready&&!workflow?.editing);
- if(workflow)workflow.setBusy(value);
- suggestionsView?.setBusy(value);
- syncFeatureActions();
- send.disabled=value;input.disabled=value;assistantView?.sync();
-}
-function applyPlanningState(state,source){
- const wasReady=planningState.ready;
- planningState=state&&typeof state.ready==='boolean'?state:{ready:false,reason:'尚未确认项目规划书，请重新读取文件。'};
- if(source)projectSource=source;
- const ready=planningState.ready;if(ready!==wasReady)invalidateSourceReview();
- document.getElementById('suggestions-section').hidden=!ready;
- if(discussionReady!==ready){document.getElementById('planning-discussion').open=true;document.getElementById(ready?'discussion-slot':'first-plan-slot').append(document.getElementById('planning-discussion'));discussionReady=ready;list.scrollTop=list.scrollHeight;}
- document.querySelector('.planning-main').className='planning-main'+(ready?'':' first-use');
- send.textContent=ready?'发送讨论':'查找参考并开始规划';
- send.className=ready?'secondary':'send';
- document.getElementById('generate-suggestions').hidden=true;
- input.placeholder=ready?'补充想法或建议重点，例如：希望支持离线使用，请检查遗漏的异常处理……':'例如：我想做一个管理个人待办事项的小工具……';
- for(const id of ['draft','copy','clear'])document.getElementById(id).hidden=!ready&&!messages.length;
- document.getElementById('discussion-title').textContent=ready?'想法与建议':'项目需求与规划';
- document.getElementById('planning-gate').className='planning-gate'+(ready?' ready':'');
- document.getElementById('planning-step').textContent=ready?'规划书已保存':'尚未保存项目规划书';
- document.getElementById('planning-reason').textContent=ready?'规划已就绪，可以生成或更新功能台账，再进入看板。':planningState.reason||'请先生成并保存项目规划书，再继续功能管理。';
- document.getElementById('planning-context').textContent=!ready&&projectSource==='import'?'已有规划、台账和项目说明会作为参考；请先生成本项目规划书。':'';
- document.querySelector('.back').hidden=!ready;
- document.getElementById('plan-sidebar').hidden=(!ready&&!dirty);
- setBusy(busy);
-}
-async function requirePlanningReady(){
- try{const data=await request('/api/project');applyPlanningState(data.planning,data.source)}
- catch(error){applyPlanningState({ready:false,reason:'无法确认规划状态，请检查服务后重试。'});throw error}
- if(!planningState.ready)throw Error(planningState.reason||'请先生成并保存项目规划书。');
-}
-function renderChat(){document.getElementById('conversation-history').hidden=!messages.length;document.getElementById('conversation-tools').hidden=!messages.length;list.replaceChildren();if(!messages.length){const w=document.createElement('div');w.className='welcome';w.textContent='先聊聊你的想法，我们可以边聊边整理。';list.append(w);return}for(const m of messages){const box=document.createElement('div'),role=document.createElement('div'),body=document.createElement('div');box.className='message '+m.role;role.className='role';role.textContent=m.role==='user'?'你':'规划助手';body.className='body';if(m.role==='assistant')renderPlanningMarkdown(body,m.content);else body.textContent=m.content;box.append(role,body);list.append(box)}list.scrollTop=list.scrollHeight}
-async function loadPlan(force=false){
- if(!force&&(planPolling||busy))return null;
- const version=++planReadVersion;activePlanRead=version;planPolling=true;
- try{
-  const data=await request('/api/plan',undefined,{applyErrorPlanning:false});
-  if(version!==planReadVersion||(!force&&busy))return null;
-  applyPlanningState(data.planning,data.source);
-  if(((!dirty&&!workflow?.editing)||force)&&(data.revision!==planRevision||force)){
-   suggestionsView?.discardPreview?.();planRevision=data.revision;planPath=data.path;dirty=false;generatedDraft=false;showPlan(data.content);planSync.textContent=planningState.ready?'已保存 · 与项目文件同步':'待规划 · 从项目需求开始';document.getElementById('plan-location').textContent=planPath;setBusy(busy);
-  }
-  if((dirty||workflow?.editing)&&data.revision!==planRevision)planSync.textContent='磁盘已有更新版本；当前为未保存编辑，请保留修改后读取文件版本。';
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>项目规划 · 项目管理器</title>
+<link rel="stylesheet" href="/assets/planning-markdown.css">
+<link rel="stylesheet" href="/assets/planning-sheet.css">
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#382632;background:#fff9fc;--muted:#705664;--magenta:#832d51;--green:#447a5f}*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0}a{color:var(--magenta);text-decoration:none}a:hover{text-decoration:underline}button{font:inherit;cursor:pointer;border:1px solid #dfbdce;border-radius:7px;background:#fff;color:#71354f;padding:8px 12px}button:hover{background:#faedf3}button:disabled{opacity:.55;cursor:default}a,button,summary{touch-action:manipulation}:focus-visible{outline:3px solid #ea6993;outline-offset:3px}header{padding:18px max(24px,calc((100vw - 1120px)/2));display:flex;align-items:center;gap:24px;flex-wrap:wrap;border-bottom:1px solid #efc6d9;background:#fff;font-size:14px}header strong{font-size:15px;white-space:nowrap}header nav{display:flex;gap:20px;flex-wrap:wrap;margin-right:auto}header a[aria-current=page]{font-weight:700;color:#382632}#sync-status{font-size:13px;color:var(--green)}#sync-status[data-error=true]{color:var(--magenta)}main{max-width:1280px;margin:auto;padding:34px 24px 70px}h1{font-size:30px;letter-spacing:-.02em;margin:0 0 10px}h2{font-size:20px;margin:0}.intro{color:var(--muted);font-size:14px;line-height:1.75;margin:0 0 20px}.context{padding:14px 0 20px;border-bottom:1px solid #eadde4;margin-bottom:22px;color:#634454;line-height:1.7;font-size:14px}.context p{margin:0}.context p+p{margin-top:5px}.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.toolbar h2{margin-right:auto}.secondary,.view-button{border:1px solid #dfbdce;background:#fff;color:#71354f;padding:9px 13px;min-height:40px;border-radius:7px;font-size:14px;display:inline-flex;align-items:center;justify-content:center}.secondary:hover,.view-button:hover{background:#faedf3;text-decoration:none}.secondary:disabled{opacity:.55;cursor:wait}.views{display:flex;gap:6px}.view-button[aria-pressed=true]{border-color:#447a5f;color:#294c3a;background:#edf3df;font-weight:650}.panel{background:white;border:1px solid #e6c6d6;border-radius:12px;overflow:hidden;min-width:0}.document{padding:24px;line-height:1.8;overflow-wrap:anywhere}.empty,.load-message{padding:28px;line-height:1.8;color:var(--muted);margin:0}.empty strong{display:block;color:#382632;font-size:18px}.file-path{font-size:12px;color:var(--muted);line-height:1.6;margin:12px 0 24px;overflow-wrap:anywhere}.file-path summary{cursor:pointer}.file-path p{margin:8px 0}.download-tools{display:flex;gap:10px;flex-wrap:wrap}.status{color:var(--muted);font-size:13px;line-height:1.7;margin:12px 0}.status:empty{display:none}.records{margin-top:26px;border-top:1px solid #eadde4;padding-top:20px}.records>summary{font-size:18px;font-weight:650;cursor:pointer;padding:10px 0;color:#482b38}.records-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:15px 0}.records-toolbar h2{font-size:17px}.activity-card{padding:16px 0;border-bottom:1px solid #eadde4}.activity-entry summary{cursor:pointer;font-size:14px;line-height:1.7;font-weight:600}.activity-entry summary span{display:block;font-size:13px;font-weight:400;color:var(--muted);padding:6px 0}.activity-entry pre,.history-diff{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.75;background:#fff;padding:16px;border:1px solid #eadde4;border-radius:8px;color:#382632}.activity-card p{font-size:13px;color:var(--muted)}.history{margin:16px 0;padding:20px;border:1px solid #e6c6d6;border-radius:12px;background:#fff}.history h2{font-size:19px;line-height:1.5}.history .toolbar{align-items:flex-start}.history details{margin-top:18px}.history summary{cursor:pointer;font-size:14px;color:#634454}.history p{line-height:1.7}.history .document{border-top:1px solid #eadde4;margin-top:12px;padding:16px 0}.footer{font-size:12px;color:#79626d;line-height:1.7;text-align:center;margin-top:28px}.sheet-toolbar{padding:12px}.sheet-tabs{flex-wrap:wrap}.adoption-text{font-weight:500;color:#31533f}.adoption-text[data-selected=false]{color:#705664}@media(max-width:650px){header{padding:16px;gap:14px}header nav{order:3;width:100%;gap:18px}main{padding:26px 16px 48px}h1{font-size:26px}.document{padding:16px}.toolbar{gap:9px}.toolbar h2{width:100%}.history{padding:15px}.download-tools{width:100%}.records-toolbar{align-items:flex-start}}
+</style>
+</head>
+<body>
+<header><strong>项目管理器</strong><nav aria-label="项目导航"><a href="/projects">项目总览</a><a id="planning-link" href="/planning" aria-current="page">项目规划</a><a id="board-link" href="/" hidden>功能看板</a></nav><span id="sync-status" role="status">正在读取项目</span></header>
+<main>
+<h1 id="project-title">项目规划</h1>
+<p class="intro">在 Codex 或 Claude Code 对话中管理项目；此处查看已保存内容。</p>
+<div class="context"><p id="planning-state">正在检查项目规划书…</p><p id="planning-guidance">需求讨论、功能调整、建议采纳和保存都在对话中完成。</p></div>
+<section aria-label="已保存的规划书">
+<div class="toolbar"><h2>项目规划书</h2><div class="views" id="plan-views" aria-label="规划显示方式" hidden><button class="view-button" id="view-sheet" type="button" aria-pressed="true">功能表</button><button class="view-button" id="view-document" type="button" aria-pressed="false">文档</button></div><button class="secondary" id="refresh-plan" type="button">刷新</button><button class="secondary" id="open-plan-history" type="button">操作记录</button></div>
+<div id="plan-empty" class="panel"><p class="load-message" id="empty-message">正在读取已保存内容…</p></div>
+<div class="panel" id="plan-document" hidden><div id="plan-sheet"></div><article class="document planning-markdown" id="plan-content" hidden></article></div>
+<p class="status" id="read-warning" role="status"></p>
+<details class="file-path"><summary>文件位置</summary><p id="plan-location">读取后显示</p></details>
+<div class="download-tools" id="download-tools" hidden><a class="secondary" id="export-excel" href="/api/plan/export">下载已保存的 Excel</a><button class="secondary" id="download-plan" type="button">下载 Markdown</button><button class="secondary" id="copy-plan" type="button">复制规划书</button></div>
+<p class="status" id="download-status" role="status"></p>
+</section>
+<details class="records" id="suggestion-activity"><summary>操作记录<span id="activity-count"></span></summary>
+<div id="activity-timeline" tabindex="-1"><div class="records-toolbar"><h2>项目操作记录</h2><button class="secondary" id="refresh-activity" type="button">刷新记录</button></div><p class="status" id="activity-state" role="status">正在读取记录…</p><div id="activity-list"></div></div>
+<section class="history" id="plan-history" aria-label="当时的功能表" hidden><div class="toolbar"><h2 id="history-title" tabindex="-1">当时的功能表</h2><button class="secondary" id="history-back" type="button">返回操作记录</button></div><p class="status" id="history-status" role="status"></p><div id="history-detail" hidden><p class="status" id="history-meta"></p><div id="history-sheet" class="panel"></div><details><summary>查看当时的完整规划书</summary><article id="history-document" class="document planning-markdown"></article></details><details><summary>与上次保存比较</summary><pre id="history-diff" class="history-diff"></pre></details><div class="download-tools"><a class="secondary" id="history-download-excel">下载当时的 Excel</a><button class="secondary" id="history-download-md" type="button">下载当时的 Markdown</button></div></div></section>
+</details>
+<p class="footer">每 3 秒读取 Markdown 文件变化 · 功能完成以独立审核记录为准</p>
+</main>
+<script src="/assets/planning-markdown.js"></script><script src="/assets/planning-sheet-view.js"></script><script src="/assets/planning-activity.js"></script>
+<script>
+const project = new URLSearchParams(location.search).get('project');
+const $ = id => document.getElementById(id);
+const api = path => path + (project ? (path.includes('?') ? '&' : '?') + 'project=' + encodeURIComponent(project) : '');
+$('planning-link').href = api('/planning');
+$('board-link').href = api('/');
+$('export-excel').href = api('/api/plan/export');
+const sheetView = createPlanningSheetView($('plan-sheet'));
+const historySheet = createPlanningSheetView($('history-sheet'));
+let planText = '', planRevision = null, viewMode = 'sheet', refreshing = false, timer = null, hasRead = false;
+let historySequence = 0, historyCurrent = null;
+async function request(path) {
+  const response = await fetch(api(path), {cache:'no-store'});
+  const data = await response.json();
+  if (!response.ok) throw Error(data.error || '读取失败，请稍后刷新。');
   return data;
- }catch(e){
-  if(version!==planReadVersion)return null;
-  applyPlanningState({ready:false,reason:'规划书读取失败，请先恢复有效规划书。'});planSync.textContent='文件同步失败：'+e.message;notice(e.message,true);throw e;
- }finally{if(activePlanRead===version){planPolling=false;activePlanRead=0;}}
 }
-async function savePlan(source='用户保存'){
- planReadVersion++;
- if(planRevision===null)throw Error('尚未读取文件版本，请先读取文件后再生成。');
- const data=await request('/api/plan/save',{content:planText,revision:planRevision,source,note:document.getElementById('version-note').value.trim()});
- planRevision=data.revision;planPath=data.path||planPath;dirty=false;generatedDraft=false;sheetView.finishPreview?.();suggestionsView?.onSaved?.(data.revision);
- applyPlanningState(data.planning,data.source);
-
- document.getElementById('version-note').value='';
- planSync.textContent='已保存 · 历史版本已保留';document.getElementById('plan-location').textContent=planPath;return data;
+function setView(mode) {
+  viewMode = mode;
+  $('view-sheet').setAttribute('aria-pressed', String(mode === 'sheet'));
+  $('view-document').setAttribute('aria-pressed', String(mode === 'document'));
+  $('plan-sheet').hidden = mode !== 'sheet';
+  $('plan-content').hidden = mode !== 'document';
 }
-workflow=typeof createPlanningWorkflow==='function'?createPlanningWorkflow({request,notice,setBusy,getPlan:()=>({content:planText,revision:planRevision,ready:planningState.ready}),onSave:async content=>{const previous={content:planText,dirty};planText=content;dirty=true;try{await savePlan('功能表编辑');}catch(error){planText=previous.content;dirty=previous.dirty;throw error;}if(content!==previous.content)invalidateSourceReview();await showPlan(content);},referenceProgress,onReferencesChanged:invalidateSourceReview,resumePlanning:resumeReferencePlanning,guide:(text,fromReferences=false)=>{featureAction=true;referenceFlow=fromReferences;requestIntent='decompose';input.value=text;return form.requestSubmit();}}):null;
-suggestionsView=typeof createPlanningSuggestions==='function'?createPlanningSuggestions({request,setBusy,onState:state=>assistantView?.onSuggestions(state),onResults:()=>{const results=document.getElementById('suggestion-results');results.scrollIntoView({block:'start'});results.focus();},getFocus:()=>input.value.trim(),getDiscussion:()=>messages.slice(-6).map(m=>(m.role==='user'?'用户：':'助手：')+m.content.slice(0,1800)).join('\n\n'),getPlan:()=>({revision:planRevision,ready:planningState.ready,dirty:dirty||!!workflow?.editing}),onPreview:async data=>{
- const model=await request('/api/plan/table',{content:data.content});
- if(data.revision!==planRevision||dirty||workflow?.editing)throw Error('当前功能表已变化，请保存或重新读取后重试。');
- dirty=true;generatedDraft=false;showPlan(data.content,false,{model,changedIds:data.changedIds});setPlanView('sheet');
- planSync.textContent='当前显示已采纳建议的预览，尚未保存；可编辑后保存功能表。';
- document.getElementById('plan-document').scrollIntoView({behavior:'smooth',block:'start'});
-}}):null;
-assistantView=typeof createPlanningAssistant==='function'?createPlanningAssistant({storageKey:KEY+':assistant-input-v1',getState:()=>({ready:planningState.ready,dirty:dirty||!!workflow?.editing,editing:!!workflow?.editing,busy})}):null;
-for(const [key,target] of [['feature','new-feature-section'],['view','view-section'],['suggestions','suggestions-section'],['review','review-section']]){
- document.getElementById('nav-'+key).addEventListener('click',()=>{for(const name of ['feature','view','suggestions','review'])document.getElementById('nav-'+name).setAttribute('aria-current',name===key?'location':'false');const section=document.getElementById(target);if(target==='planning-discussion')section.open=true;if(section.hidden||!planText){document.getElementById('planning-discussion').open=true;document.getElementById('planning-discussion').scrollIntoView({block:'start'});return;}section.scrollIntoView({behavior:'smooth',block:'start'});});
+$('view-sheet').addEventListener('click', () => setView('sheet'));
+$('view-document').addEventListener('click', () => setView('document'));
+function applyProject(data, doc) {
+  document.title = data.name + ' · 项目规划';
+  $('project-title').textContent = data.name + ' · 项目规划';
+  const state = doc.planning || data.planning || {};
+  $('board-link').hidden = state.ready !== true;
+  $('planning-state').textContent = state.ready ? '已保存的项目规划书，与本机项目文件同步。' : '待规划：请在 Codex 或 Claude Code 中完成并保存项目规划书。';
+  $('planning-guidance').textContent = state.ready ? '需求讨论、功能调整、建议采纳和保存都在对话中完成。' : '已有资料可在下方查看；规划确认后，再在对话中生成功能台账。';
+  $('plan-location').textContent = doc.path || data.plan_path || '尚未创建规划文件';
 }
-document.getElementById('assistant-view-changes').addEventListener('click',()=>document.getElementById('plan-document').scrollIntoView({block:'start'}));
-document.getElementById('back-to-suggestions').addEventListener('click',()=>document.getElementById('suggestions-section').scrollIntoView({block:'start'}));
-document.getElementById('discard-suggestion-preview').addEventListener('click',async()=>{
- if(busy||workflow?.editing||!suggestionsView?.hasPreview)return;
- setBusy(true);
- try{const data=await request('/api/plan');suggestionsView.discardPreview();planRevision=data.revision;planPath=data.path||'';dirty=false;generatedDraft=false;applyPlanningState(data.planning,data.source);await showPlan(data.content);notice('已放弃建议预览，恢复最新已保存的功能表。');document.getElementById('suggestions-section').scrollIntoView({block:'start'});}
- catch(error){notice('未能恢复已保存版本，预览仍保留：'+error.message,true);}
- finally{setBusy(false);}
-});
-renderChat();
-(async()=>{try{await loadPlan();const p=await request('/api/project');applyPlanningState(p.planning,p.source);document.getElementById('project-title').textContent=p.name+' · 项目规划'}catch(e){}})();
-setInterval(()=>loadPlan().catch(()=>{}),3000);
-form.addEventListener('submit',async e=>{
- document.getElementById('planning-discussion').open=true;
- e.preventDefault();if(busy)return;
- if(requestIntent==='chat'&&!featureAction&&assistantView?.shouldGenerate()){if(assistantView.validate())return suggestionsView?.generate();return;}
- if(requestIntent==='chat'&&!featureAction&&assistantView&&!assistantView.validate())return;
- const value=input.value.trim();if(!value)return;
- const requested=requestIntent;
- const previous=messages.at(-1);
- const awaitingFeatureDetails=previous?.role==='assistant'&&previous.intent==='decompose'&&!latestFeatureProposal();
- const intent=requested==='chat'&&!planningState.ready&&!messages.length?'plan':requested==='chat'&&awaitingFeatureDetails?'decompose':requested;
- const generatingPlan=intent==='plan',merging=generatingPlan&&mergeFeature;
- const proposal=merging?latestFeatureProposal():null;
- let added=false;
- setBusy(true);
- try{
-  if(!workflow)throw Error('规划组件未加载，请刷新页面后重试。');
-  if(dirty||workflow?.editing)throw Error(featureAction?'请先点击这里的“保存当前功能表修改”，然后再继续。':'请先保存功能表或采用选择，再继续对话。');
-  if(workflow){notice(intent==='decompose'&&referenceFlow?'第 2 步：正在准备已选参考资料…':'先检索 GitHub 相似项目，请稍候…');await workflow.ensureResearch(messages.find(m=>m.role==='user')?.content||value||planText.slice(0,6000));}
-  if(intent==='ledger')await requirePlanningReady();
-  if(generatingPlan){if(dirty)throw Error('请先保存或下载当前未保存的规划书，再读取文件版本。');const current=await request('/api/plan');planRevision=current.revision;planPath=current.path;applyPlanningState(current.planning,current.source);showPlan(current.content)}
-  const ledgerBase=await request('/api/ledger/info');messages.push({role:'user',content:value});added=true;input.value='';saveChat();renderChat();notice(generatingPlan?'智能体正在根据参考资料生成功能表…':intent==='decompose'&&referenceFlow?'第 2 步：智能体正在结合已选资料拆分新增功能…':'智能体正在思考，请稍候…');
-  requestIntent='chat';
-  if(merging||intent==='ledger')sourceProgressStart();
-  const data=await request('/api/planning',{messages,intent,research_first:!!workflow,...(merging?{merge_feature:true,feature_proposal:proposal?.content}:{})});messages.push({role:'assistant',content:data.reply,ledgerRevision:ledgerBase.revision,planRevision:data.plan_revision,sourceRevision:data.source_revision,intent});saveChat();renderChat();
-  if(generatingPlan){suggestionsView?.discardPreview?.();const viewReady=showPlan(data.reply,true);dirty=true;generatedDraft=true;try{notice('功能表已生成，正在保存规划书…');await savePlan('智能体生成');await viewReady;setPlanView('sheet');document.getElementById('view-section').scrollIntoView({block:'start'});notice(merging?'新增功能已写入功能表，并保存为历史版本。':'功能表已生成并保存，可在下方项目规划书中查看。')}catch(e){planSync.textContent='规划书未保存：'+e.message;notice('规划书已生成，文件保存失败：'+e.message,true)}}
-  else {document.getElementById('conversation-history').open=true;if(intent==='decompose')assistantView?.showDiscussion();notice(intent==='decompose'?(latestFeatureProposal()?'拆分建议已生成，请在新增功能区确认后保存到功能表。':'请在功能建议的讨论区继续说明，形成拆分建议后即可保存。'):'讨论已保存。若要修改功能表，请选择“生成修改建议”。');}
- }catch(e){
-  pendingReferenceIntent=e.referenceSelection?intent:null;requestIntent='chat';
-  if(added){messages.pop();saveChat();renderChat();input.value=merging?'':value}
-  if(merging)input.value='';
-  const message=featureAction&&referenceFlow&&intent==='decompose'&&/超时/.test(e.message)
-   ?'参考选择已保存。智能体拆分超时，可点击“确认参考并拆分”重试。'
-   :e.message;
-  notice(message,!e.referenceSelection);
-  if(e.referenceSelection)document.getElementById('github-research').scrollIntoView({behavior:'smooth',block:'start'});
- }finally{if(requested==='chat'&&!featureAction)assistantView?.persistInput();if(merging||intent==='ledger')sourceProgressEnd(status.textContent);mergeFeature=false;featureAction=false;setBusy(false);if(referenceFlow){referenceProgress(document.getElementById('reference-progress-status').textContent,false);referenceFlow=false;}}
-});
-function latestFeatureProposal(){
- const last=messages.at(-1);
- return last?.role==='assistant'&&last.intent==='decompose'&&last.content.trim().endsWith('<!-- feature-proposal -->')?last:null;
+async function refreshPlan() {
+  if (refreshing) return;
+  refreshing = true; $('refresh-plan').disabled = true;
+  try {
+    let doc, model, metadata;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      [doc, metadata] = await Promise.all([request('/api/plan'), request('/api/project')]);
+      const content = typeof doc.content === 'string' ? doc.content : '';
+      const present = content.trim() && !/^# 项目规划书\s+尚未生成规划书[^\n]*\s*$/.test(content);
+      if (!present || doc.revision === planRevision && content === planText) { model = null; break; }
+      model = await request('/api/plan/table');
+      if (model.revision === doc.revision) break;
+      if (attempt === 1) throw Error('项目文件正在更新，稍后会自动读取最新版本。');
+    }
+    applyProject(metadata, doc);
+    const content = typeof doc.content === 'string' ? doc.content : '';
+    const present = !!content.trim() && !/^# 项目规划书\s+尚未生成规划书[^\n]*\s*$/.test(content);
+    if (content !== planText || doc.revision !== planRevision || !hasRead) {
+      planText = content; planRevision = doc.revision;
+      if (present) { renderPlanningMarkdown($('plan-content'), content); if (model) sheetView.show(model); }
+      else { sheetView.clear(); $('plan-content').replaceChildren(); }
+    }
+    $('plan-document').hidden = !present; $('plan-empty').hidden = present;
+    $('empty-message').textContent = '尚未保存项目规划书。请在 Codex 或 Claude Code 对话中描述项目需求，确认规划后保存；内容会自动出现在这里。';
+    $('download-tools').hidden = !present; $('plan-views').hidden = !present;
+    $('view-sheet').disabled = !present; $('view-document').disabled = !present;
+    setView(viewMode); hasRead = true;
+    $('read-warning').textContent = '';
+    $('sync-status').textContent = '已同步 · ' + new Date().toLocaleTimeString('zh-CN', {hour12:false});
+    $('sync-status').dataset.error = 'false';
+    if ($('suggestion-activity').open) await activity.refresh();
+  } catch (error) {
+    $('sync-status').textContent = hasRead ? '同步中断，保留上次内容' : '暂时无法读取项目';
+    $('sync-status').dataset.error = 'true';
+    $('read-warning').textContent = error.message + ' 可以点击“刷新”重试。';
+    if (!hasRead) $('empty-message').textContent = '未能读取项目资料。请确认在宿主对话中打开了项目管理器，再点击“刷新”。';
+  } finally {
+    refreshing = false; $('refresh-plan').disabled = false;
+    if (timer) clearTimeout(timer); timer = setTimeout(refreshPlan, 3000);
+  }
 }
-function syncFeatureActions(){
- const proposal=latestFeatureProposal();
- const preview=document.getElementById('feature-proposal');
- const apply=document.getElementById('apply-feature-proposal');
- const save=document.getElementById('save-current-feature-edits');
- preview.hidden=!proposal;preview.textContent=proposal?.content.trim().replace(/<!-- feature-proposal -->$/, '').trim()||'';
- apply.hidden=!proposal;apply.disabled=busy||!planningState.ready;
- save.hidden=!dirty&&!workflow?.editing;save.disabled=busy;
+$('refresh-plan').addEventListener('click', refreshPlan);
+function saveMarkdown(content, filename) {
+  saveDownload(new Blob([content], {type:'text/markdown;charset=utf-8'}), filename);
 }
-document.getElementById('save-current-feature-edits').addEventListener('click',async()=>{
- if(busy)return;
- featureAction=true;
- try{
-  if(workflow?.editing)await workflow.saveEdits();
-  else if(dirty){setBusy(true);await savePlan();notice('功能表修改已保存，现在可以继续拆分。');}
- }catch(error){notice(error.message,true);}
- finally{featureAction=false;setBusy(false);}
-});
-document.getElementById('apply-feature-proposal').addEventListener('click',async()=>{
- if(busy||!planningState.ready||!latestFeatureProposal())return;
- if(dirty||workflow?.editing){notice('请先保存当前功能表修改。',true);return;}
- const proposal=latestFeatureProposal();
- if(!proposal.planRevision){notice('这份旧提案没有结构化版本记录，请重新拆分或手动添加功能。',true);return;}
- setBusy(true);
- try{
-  const data=await request('/api/plan/merge',{revision:proposal.planRevision,feature_proposal:proposal.content});
-  planRevision=data.plan_revision;dirty=true;generatedDraft=false;await showPlan(data.content,true);
-  await savePlan('功能表编辑');notice('已按拆分提案合并并保存 '+data.added.length+' 个新功能，原功能保持不变。下一步可核对源码。');
- }catch(error){notice(error.message,true);}finally{setBusy(false);}
-});
-function resumeReferencePlanning(){
- referenceFlow=true;
- requestIntent=pendingReferenceIntent||'plan';pendingReferenceIntent=null;
- if(!input.value.trim())input.value=planPrompt;
- return form.requestSubmit();
+function saveDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a'); link.href = url; link.download = filename;
+  document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-const planPrompt='请结合已有对话与当前项目文件，生成以 Markdown 表格组织的完整项目规划书：按目标与场景、范围与边界、功能规划与验收、阶段与依赖、风险与待确认事项分节。功能表按编号、上级编号、功能名称、说明、验收标准、优先级、依赖、所需技术、前期准备、采用、备注分列；采用默认是，保持用户明确取消的否，不将勾选当作完成；大功能及子功能分别占一行，编号如 F01、F01-01、F01-01-01，上级编号明确包含关系，不能把包含关系写成依赖。导入项目请参考现有资料并保留实施与审核历史；资料不足的部分明确待确认。区分确认内容与假设，不编造工期。';
-document.getElementById('draft').addEventListener('click',()=>{
- if(!messages.length&&projectSource!=='import'){notice('请先描述项目想法，再生成规划书。',true);input.focus();return}
- requestIntent='plan';input.value=planPrompt;form.requestSubmit();
-});
-document.getElementById('generate-ledger').addEventListener('click',async()=>{
- if(busy)return;
- setBusy(true);
- try{
-  await requirePlanningReady();if(dirty||workflow?.editing)throw Error('请先保存功能表修改，再转换台账。');
-  const data=await request('/api/ledger/generate',{revision:planRevision});
-  messages.push({role:'assistant',content:data.content,intent:'ledger',ledgerRevision:data.ledger_revision,planRevision:data.plan_revision,sourceRevision:data.source_revision});saveChat();renderChat();
-  const panel=document.getElementById('ledger-code-preview');panel.hidden=false;panel.open=true;
-  document.getElementById('ledger-preview-summary').textContent='台账预览 · '+data.summary.total+' 个最细功能点（尚未保存）';
-  document.getElementById('ledger-preview-note').textContent=data.note;
-  document.getElementById('ledger-preview-content').textContent=data.content;panel.scrollIntoView({block:'start'});
-  notice('台账已按规则转换，未调用 AI。请审阅预览，再点击“保存到看板”。');
- }catch(error){notice(error.message,true);}finally{setBusy(false);}
-});
-document.getElementById('save-plan').addEventListener('click',async()=>{if(busy||!planText)return;if(workflow?.editing){await workflow.saveEdits();return;}setBusy(true);try{await savePlan();notice('规划书已保存')}catch(e){notice(e.message,true)}finally{setBusy(false)}});
-document.getElementById('reload-plan').addEventListener('click',async()=>{
- if(busy)return;
- if(workflow?.editing){notice('请先保存或取消表格编辑，再读取文件版本。',true);return;}
- if(dirty&&!confirm('当前功能表有未保存的修改，读取文件版本会替换页面内容。请先复制或下载保留。继续吗？'))return;
- setBusy(true);
- try{
-  const data=await localOperation('读取文件版本',()=>loadPlan(true));
-  if(!data)throw Error('文件读取未完成，请重试；当前修改仍保留在页面中。');
-  notice('已读取项目文件中的规划书。');
- }catch(e){notice(e.message,true);}finally{setBusy(false);}
-});
-document.getElementById('save-ledger').addEventListener('click',async()=>{
- if(busy)return;
- if(dirty||workflow?.editing){notice('请先保存功能表修改，再生成并保存台账。',true);return;}
- setBusy(true);
- try{
-  await requirePlanningReady();
-  const candidate=[...messages].reverse().find(m=>m.role==='assistant'&&/^##\s+大功能\s+/m.test(m.content));
-  if(!candidate){notice('请先生成并审阅功能台账。',true);return}
-  if(typeof candidate.ledgerRevision!=='string'){notice('这份旧台账草稿没有文件版本记录，请基于最新项目文件重新生成后保存。',true);return}
-  let content=candidate.content;
-  const fenced=content.match(/```(?:markdown|md)?\s*\n([\s\S]*?)```/i);
-  if(fenced&&/^##\s+大功能\s+/m.test(fenced[1]))content=fenced[1];
-  const meta=await request('/api/ledger/info');
-  if(meta.revision!==candidate.ledgerRevision)throw Error('生成后台账文件已更新，请基于最新项目文件重新生成，避免覆盖进度。');
-  const preview=await request('/api/ledger/preview',{content,revision:candidate.ledgerRevision,...(candidate.planRevision?{plan_revision:candidate.planRevision}:{}),...(candidate.sourceRevision?{source_revision:candidate.sourceRevision}:{})});
-  const changes=preview.adjustments.length?'\n\n将按实际功能结构校正摘要：\n'+preview.adjustments.join('\n')+'\n校正前的原文会另存保留。':'';
-  const confirmation='保存到当前项目：\n'+meta.path+'\n\n实际进度：已验收 '+preview.summary.done+'/'+preview.summary.total+' 个最细功能点。'+changes+'\n\n将替换台账并保留备份。请确认实现与审核历史已保留。';
-  if(!confirm(confirmation))return;
-  // Preserve the original candidate; the server recalculates and archives it if corrected.
-  const data=await request('/api/ledger/save',{content,revision:candidate.ledgerRevision,...(candidate.planRevision?{plan_revision:candidate.planRevision}:{}),...(candidate.sourceRevision?{source_revision:candidate.sourceRevision}:{})});
-  let result='已保存 '+data.count+' 个功能节点，其中 '+data.summary.total+' 个最细功能点。原文件已备份。';
-  if(data.adjustments.length)result+=' 已校正摘要：'+data.adjustments.join('；')+'。';
-  if(data.source_backup)result+=' 原始生成内容已保留：'+data.source_backup;
-  document.getElementById('ledger-preview-summary').textContent='台账已保存到看板 · '+data.summary.total+' 个最细功能点';
-  document.getElementById('ledger-preview-note').textContent='已写入项目台账；之后的实施与审核进度以文件和看板为准。';
-  notice(result);
- }catch(e){notice(e.message,true)}finally{setBusy(false)}
-});
-document.getElementById('clear').addEventListener('click',()=>{if(messages.length&&!confirm('清空当前项目在本浏览器中的对话？项目 Markdown 文件保持原样。'))return;messages=[];requestIntent='chat';saveChat();renderChat();syncFeatureActions();notice('对话已清空。')});
-async function localOperation(title,work){return operationProgress?operationProgress.run(title,async(id,step)=>{step(50,'执行操作');return work();},false):work();}
-document.getElementById('copy-plan').addEventListener('click',async()=>{try{await localOperation('复制规划书',()=>navigator.clipboard.writeText(planText));notice('已复制规划书')}catch(e){notice('复制失败，请选择文字手动复制。',true)}});
-document.getElementById('download-plan').addEventListener('click',async()=>{try{await localOperation('导出 Markdown',()=>{const url=URL.createObjectURL(new Blob([planText],{type:'text/markdown;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='项目规划书.md';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)});}catch(e){notice('导出失败：'+e.message,true)}});
-
-async function downloadPlanningExcel(content,filename='项目规划书.xlsx'){
- const perform=async id=>{
-  const headers={'Content-Type':'application/json','X-Planning-Token':TOKEN};if(id)headers['X-Operation-ID']=id;
-  const response=await fetch(api('/api/plan/export'),{method:'POST',headers,body:JSON.stringify({content})});
-  if(!response.ok){let error;try{error=await response.json()}catch(e){}throw Error(error?.error||'Excel 下载失败，请重试。')}
-  const url=URL.createObjectURL(await response.blob()),link=document.createElement('a');
-  link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
- };
- return operationProgress?operationProgress.run('导出 Excel',perform):perform();
+let downloadingExcel = false;
+async function downloadExcel(link, status, filename) {
+  if (downloadingExcel) return;
+  downloadingExcel = true; status.textContent = '正在读取 Excel 文件…';
+  try {
+    const response = await fetch(link.href, {cache:'no-store'});
+    if (!response.ok) { const data = await response.json(); throw Error(data.error || '导出失败'); }
+    saveDownload(await response.blob(), filename); status.textContent = 'Excel 已下载，项目文件未改动。';
+  } catch (error) { status.textContent = 'Excel 下载失败：' + error.message + '，可稍后重试。'; }
+  finally { downloadingExcel = false; }
 }
-
-document.getElementById('export-excel').addEventListener('click',async()=>{
- if(busy||!planText.trim())return;setBusy(true);
- try{await downloadPlanningExcel(planText);notice(dirty?'已下载当前未保存内容的 Excel，规划书仍未保存。':'已下载当前规划的 Excel；后续修改仍以项目文件为准。');}
- catch(e){notice(e.message,true)}finally{setBusy(false)}
+$('export-excel').addEventListener('click', event => { event.preventDefault(); return downloadExcel($('export-excel'), $('download-status'), '项目规划书.xlsx'); });
+$('history-download-excel').addEventListener('click', event => { event.preventDefault(); if(historyCurrent)return downloadExcel($('history-download-excel'), $('history-status'), '历史项目规划书.xlsx'); });
+$('download-plan').addEventListener('click', () => {
+  if (!planText.trim()) return;
+  saveMarkdown(planText, '项目规划书.md'); $('download-status').textContent = '已下载当前显示的已保存规划书。';
 });
-if(typeof createPlanningHistoryView==='function')historyView=createPlanningHistoryView({request,downloadExcel:downloadPlanningExcel,localOperation,onClose:()=>activityView?.open({reload:false})});
-document.getElementById('copy').addEventListener('click',async()=>{try{await localOperation('复制对话',()=>navigator.clipboard.writeText(messages.map(m=>(m.role==='user'?'你':'规划助手')+'：\n'+m.content).join('\n\n')));notice('已复制对话')}catch(e){notice('复制失败，请手动选择文字。',true)}});
-
-function showPlan(text,scroll=false,display={}){
- if(text!==planText){planReadVersion++;invalidateSourceReview();}
- planText=text;
- const section=document.getElementById('plan-document'),article=document.getElementById('plan-content');
- section.hidden=(!text||(!planningState.ready&&!dirty&&!generatedDraft&&/^# 项目规划书\s+尚未生成规划书/.test(text)));
- document.getElementById('plan-sidebar').hidden=(!planningState.ready&&!dirty);
- renderPlanningMarkdown(article,text);
- const version=++sheetRequest;let rendered=Promise.resolve();
- if(display.model){sheetView.show(display.model,{changedIds:display.changedIds});}
- else if(text.trim()){
-  sheetView.loading();
-  rendered=request('/api/plan/table',{content:text}).then(data=>{if(version===sheetRequest){sheetView.show(data,{preferFeatures:scroll});if(scroll)document.getElementById('view-section').scrollIntoView({block:'start'});}}).catch(()=>{if(version===sheetRequest)sheetView.error()});
- }else sheetView.clear();
- setPlanView(planView);
- document.getElementById('export-excel').disabled=busy||!text.trim();
- return rendered;
+$('copy-plan').addEventListener('click', async () => {
+  if (!planText.trim()) return;
+  try { await navigator.clipboard.writeText(planText); $('download-status').textContent = '已复制当前显示的已保存规划书。'; }
+  catch (_) { $('download-status').textContent = '复制失败，可切换到文档视图手动复制，或下载 Markdown。'; }
+});
+function closeHistory() {
+  historySequence++; historyCurrent = null; $('plan-history').hidden = true;
+  $('history-detail').hidden = true; $('activity-timeline').hidden = false;
 }
-</script></body></html>
+async function showHistory(id) {
+  const sequence = ++historySequence; historyCurrent = null;
+  $('plan-history').hidden = false; $('history-detail').hidden = true;
+  $('history-title').textContent = '当时的功能表'; $('history-status').textContent = '正在读取当时的功能表…';
+  $('history-title').focus({preventScroll:true}); $('plan-history').scrollIntoView({block:'start'});
+  try {
+    const data = await request('/api/plan/history?version=' + encodeURIComponent(id));
+    if (sequence !== historySequence) return;
+    historyCurrent = data; $('history-detail').hidden = false;
+    const date = new Date(data.saved_at);
+    $('history-title').textContent = (Number.isNaN(date.getTime()) ? '历史保存' : date.toLocaleString('zh-CN')) + '的功能表';
+    $('history-meta').textContent = [data.source, data.note].filter(Boolean).join(' · ');
+    $('history-status').textContent = '只读副本，查看和下载不会修改当前规划。' + (data.warnings || []).join('；');
+    historySheet.show(data.model); renderPlanningMarkdown($('history-document'), data.content);
+    $('history-diff').textContent = data.diff || '功能表正文与上次保存相同。';
+    $('history-download-excel').href = api('/api/plan/export?version=' + encodeURIComponent(id));
+  } catch (error) { if (sequence === historySequence) $('history-status').textContent = '读取失败：' + error.message + ' 可返回操作记录重试。'; }
+}
+$('history-back').addEventListener('click', () => { closeHistory(); $('activity-timeline').focus({preventScroll:true}); });
+$('history-download-md').addEventListener('click', () => {
+  if (historyCurrent) saveMarkdown(historyCurrent.content, '历史项目规划书.md');
+});
+const activity = createPlanningActivity({load:() => request('/api/plan/activity'), openSnapshot:showHistory, closeSnapshot:closeHistory});
+$('suggestion-activity').addEventListener('toggle', () => { if ($('suggestion-activity').open) activity.refresh(); });
+refreshPlan();
+</script>
+</body></html>

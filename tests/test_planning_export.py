@@ -207,63 +207,7 @@ class ExcelPackageTest(unittest.TestCase):
         self.assertTrue(dashboard.inspect_plan(content)['valid'])
 
 
-class PlanningExportHttpTest(project_tests.ManagerTest):
-    # Reuse only the server lifecycle, not inherited test cases.
-    test_project_isolation_external_edits_and_restart = None
-    test_unknown_scope_and_conflict_fail_closed = None
-    test_existing_acceptance_survives_and_fabrication_is_rejected = None
-    test_registry_and_cross_document_collisions_are_rejected = None
-    test_unreadable_ledger_is_reported_and_missing_plan_can_be_saved = None
-
-    def export(self, route, payload, headers=None):
-        request = urllib.request.Request(self.url + route, data=json.dumps(payload).encode(),
-                                          headers={'Content-Type':'application/json','X-Planning-Token':self.token, **(headers or {})})
-        try:
-            with urllib.request.urlopen(request) as response:
-                return response.status, dict(response.headers), response.read()
-        except urllib.error.HTTPError as exc:
-            return exc.code, dict(exc.headers), exc.read()
-
-    def test_pending_draft_table_and_excel_are_read_only_and_project_scoped(self):
-        a = self.request('/api/projects',{'name':'甲计划','directory':'a','mode':'new'})[1]['project']
-        b = self.request('/api/projects',{'name':'乙计划','directory':'b','mode':'new'})[1]['project']
-        watched = [self.workspace/'项目列表.md'] + [Path(p[key]) for p in (a,b) for key in ('plan_path','ledger_path')]
-        before = {str(path):path.read_bytes() for path in watched}
-        suffix = '?project=' + a['id']
-        code, model = self.request('/api/plan/table'+suffix,{'content':PLAN})
-        self.assertEqual(code,200,model)
-        self.assertTrue(model['sheets'])
-        self.assertIn('F01-01-01',json.dumps(model,ensure_ascii=False))
-        code, headers, body = self.export('/api/plan/export'+suffix,{'content':PLAN})
-        self.assertEqual(code,200,body)
-        self.assertIn('spreadsheetml.sheet',headers['Content-Type'])
-        self.assertIn('attachment;',headers['Content-Disposition'])
-        self.assertIn('filename*=UTF-8',headers['Content-Disposition'])
-        with ZipFile(BytesIO(body)) as package:
-            self.assertIsNone(package.testzip())
-        self.assertEqual(before,{str(path):path.read_bytes() for path in watched})
-        self.assertFalse(self.request('/api/project'+suffix)[1]['planning']['ready'])
-        self.assertFalse(self.request('/api/project?project='+b['id'])[1]['planning']['ready'])
-        for path in ('/api/plan/table','/api/plan/export'):
-            self.assertEqual(self.export(path,{'content':PLAN})[0],400)
-            self.assertEqual(self.export(path+'?project=missing',{'content':PLAN})[0],404)
-            self.assertEqual(self.export(path+suffix,{'content':PLAN},{'X-Planning-Token':'wrong'})[0],403)
-            self.assertEqual(self.export(path+suffix,{'content':PLAN},{'Origin':'https://example.com'})[0],403)
-            self.assertEqual(self.export(path+suffix,{'content':''})[0],400)
-            self.assertEqual(self.export(path+suffix,{'content':123})[0],400)
-            self.assertEqual(self.export(path+suffix,{'content':'x'}, {'Content-Length':'1000001'})[0],400)
-
-    def test_generated_table_plan_saves_and_prompt_has_hierarchy_contract(self):
-        project = self.request('/api/projects',{'name':'表格','directory':'table','mode':'new'})[1]['project']
-        self.generate_plan(project, PLAN)
-        prompt = self.fake_prompt.read_text()
-        self.assertIn('编号|上级编号|功能名称|说明|验收标准|优先级|依赖|备注',prompt)
-        self.assertIn('父行',prompt)
-        suffix = '?project=' + project['id']
-        revision = self.request('/api/plan'+suffix)[1]['revision']
-        code, data = self.request('/api/plan/save'+suffix,{'content':PLAN,'revision':revision})
-        self.assertEqual(code,200,data)
-        self.assertTrue(data['planning']['ready'])
+# 旧网页编排集成类已归档到 legacy_web/test_planning_export.py。
 
 
 if __name__ == '__main__':

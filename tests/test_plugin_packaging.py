@@ -59,7 +59,7 @@ class PluginPackagingTests(unittest.TestCase):
                                         for name in archive.namelist()))
                     package = self.base / ("isolated " + host)
                     archive.extractall(package)
-                self.assertEqual(builder.validate_package(package, host), "0.1.0")
+                self.assertEqual(builder.validate_package(package, host), "0.2.0")
                 mcp = json.loads((package / ".mcp.json").read_text())
                 server = mcp["mcpServers"][builder.PLUGIN_NAME]
                 variable = "${PLUGIN_ROOT}" if host == "codex" else "${CLAUDE_PLUGIN_ROOT}"
@@ -144,6 +144,25 @@ class PluginPackagingTests(unittest.TestCase):
 
 
 class ShippedRuntimeTests(unittest.TestCase):
+    def test_extracted_packages_complete_full_chat_workflow_without_model_cli(self):
+        from test_host_conversation import HostConversationTests
+        with tempfile.TemporaryDirectory(prefix="extracted chat check ") as temporary:
+            base = Path(temporary)
+            built = builder.build_plugins(ROOT, output_dir=base / "market", dist_dir=base / "archives")
+            entries = {}
+            for host in builder.HOSTS:
+                package = base / ("extracted " + host)
+                with zipfile.ZipFile(built["plugins"][host]["archive"]) as archive:
+                    self.assertNotIn("runtime/scripts/planning_agent.py", archive.namelist())
+                    archive.extractall(package)
+                entries[host] = package / "runtime/scripts/plugin_mcp.py"
+            case = HostConversationTests("test_two_hosts_create_edit_adopt_save_progress_history_export")
+            case.entrypoints = entries
+            result = unittest.TestResult()
+            case.run(result)
+            self.assertEqual(result.testsRun, 1)
+            self.assertTrue(result.wasSuccessful(), str(result.errors + result.failures))
+
     def test_both_extracted_plugins_serve_mcp_and_open_their_own_dashboard(self):
         with tempfile.TemporaryDirectory(prefix="shipped plugin check ") as temporary:
             base = Path(temporary)
@@ -178,8 +197,7 @@ class ShippedRuntimeTests(unittest.TestCase):
                     server = output.get(5, {}).get("result", {}).get("structuredContent", {})
                     try:
                         self.assertEqual(process.returncode, 0, process.stderr)
-                        self.assertEqual([t["name"] for t in output[2]["result"]["tools"]],
-                                         ["open_dashboard", "list_projects", "read_project"])
+                        self.assertTrue({"open_dashboard", "list_projects", "read_project", "create_project", "save_plan", "save_ledger", "export_project"} <= {t["name"] for t in output[2]["result"]["tools"]})
                         self.assertEqual(output[3]["result"]["structuredContent"]["projects"][0]["id"], "p-package-test")
                         self.assertEqual(output[4]["result"]["structuredContent"]["plan"]["content"], plan)
                         self.assertEqual(server["agent"], host)

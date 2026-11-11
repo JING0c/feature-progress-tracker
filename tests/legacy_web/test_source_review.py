@@ -1,0 +1,83 @@
+import json
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+import test_research_editor as existing
+
+class SourceReviewTests(unittest.TestCase):
+    def test_git_source_preserves_leading_lines(self):
+        source=existing.dashboard.planning_module('planning_source')
+        from types import SimpleNamespace
+        with patch.object(source.subprocess,'run',return_value=SimpleNamespace(returncode=0,stdout='\n\ndef source():\n    pass\n')):
+            self.assertTrue(source.git(['show','HEAD:src/app.py']).startswith('\n\n'))
+
+    def test_evidence_must_be_present_in_supplied_source(self):
+        source=existing.dashboard.planning_module('planning_source')
+        snippets=[{'repository':'org/repo','commit':'abc','path':'src/app.py','start':1,'end':3,'text':'1: def search():\n2:     return []\n3:'}]
+        rows=[{'编号':'F01','功能名称':'搜索','采用':'是'}]
+        report={'features':[{'id':'F01','status':'有源码依据','finding':'实现搜索','evidence':[{'repository':'org/repo','path':'src/app.py','line':1}]}]}
+        self.assertEqual(source.validate_report(report,rows,snippets)['features'][0]['status'],'有源码依据')
+        report['features'][0]['evidence'][0]['path']='invented.py'
+        with self.assertRaises(ValueError): source.validate_report(report,rows,snippets)
+        report['features']=[]
+        with self.assertRaises(ValueError): source.validate_report(report,rows,snippets)
+
+    def test_clone_is_reused_and_code_is_read_from_git_objects(self):
+        source=existing.dashboard.planning_module('planning_source')
+        calls=[]
+        def git(args,cwd=None,timeout=60):
+            calls.append(args)
+            if 'clone' in args: Path(args[-1]).mkdir(); return ''
+            if 'rev-parse' in args:return 'a'*40
+            if 'config' in args:return 'https://github.com/org/repo.git'
+            if 'ls-tree' in args:return 'src/app.py\0README.md\0'
+            if 'show' in args:return 'def search():\n    return []\n'
+            return ''
+        with tempfile.TemporaryDirectory() as tmp, patch.object(source,'git',side_effect=git):
+            repo={'name':'org/repo'}
+            a=source.collect_sources(Path(tmp),[repo],'search',lambda **kw:None)
+            b=source.collect_sources(Path(tmp),[repo],'search',lambda **kw:None)
+            self.assertEqual(sum('clone' in c for c in calls),1)
+            self.assertEqual(a['snippets'],b['snippets'])
+            self.assertEqual(b['repositories'][0]['state'],'已克隆，使用本地提交')
+            self.assertTrue(a['snippets'])
+            with self.assertRaises(ValueError):source.collect_sources(Path(tmp),[{'name':'../repo'}],'',lambda **kw:None)
+
+import test_references_history as history_tests
+class SourceHttpTests(history_tests.ReferencesHistoryHttpTest):
+    # Reuse only the fixture helpers; existing inherited integration checks remain useful.
+    def test_final_review_cache_invalidation_and_project_isolation(self):
+        p=self.project('source-a');q=self.project('source-b');suffix='?project='+p['id']
+        self.assertEqual(self.save(p,generate=True)[0],200)
+        self.refs(p);self.select(p,['org/two'])
+        fake=self.fake_bin/'git'
+        fake.write_text('#!/usr/bin/python3\nimport sys,pathlib\na=sys.argv\n'
+                        'if "clone" in a:pathlib.Path(a[-1]).mkdir()\n'
+                        'elif "config" in a:print("https://github.com/org/two.git")\n'
+                        'elif "rev-parse" in a:print("a"*40)\n'
+                        'elif "ls-tree" in a:print("src/app.py\\0",end="")\n'
+                        'elif "cat-file" in a:print(30)\n'
+                        'elif "show" in a:print("def book():\\n    return True")\n')
+        fake.chmod(0o755)
+        rows=existing.editor.editable_table(existing.PLAN)['rows']
+        report={'features':[{'id':r['编号'],'status':'部分依据','finding':'只有示例入口，业务规则尚未验证','evidence':[{'repository':'org/two','path':'src/app.py','line':1}]} for r in rows]}
+        self.fake_reply.write_text(json.dumps(report))
+        code,data=self.request('/api/research/source-check'+suffix,{})
+        self.assertEqual(code,200,data)
+        self.assertIn('a'*40,data['report']);self.assertTrue(Path(p['directory'],'规划源码核对.md').exists())
+        self.assertFalse(Path(q['directory'],'规划源码核对.md').exists())
+        self.fake_prompt.unlink()
+        revision=self.request('/api/plan'+suffix)[1]['revision']
+        code,converted=self.request('/api/ledger/generate'+suffix,{'revision':revision})
+        self.assertEqual(code,200,converted);self.assertEqual(converted['engine'],'code')
+        self.assertFalse(self.fake_prompt.exists(),'valid source report must be reused without Codex')
+        self.fake_reply.write_text('invalid JSON')
+        code,data=self.request('/api/research/source-check'+suffix,{})
+        self.assertEqual(code,200,data)  # exact plan/reference/commit match reuses report
+        plan=Path(p['plan_path']);plan.write_text(plan.read_text()+'\n新增边界说明。\n')
+        code,data=self.request('/api/research/source-check'+suffix,{})
+        self.assertEqual(code,400,data)  # changed plan must invoke real review, not reuse
+        progress=self.request('/api/research/source-progress'+suffix)[1]
+        self.assertFalse(progress['running']);self.assertEqual(progress['stage'],'核对失败')
+        self.assertEqual(self.request('/api/research/source-progress?project='+q['id'])[1]['stage'],'尚未核对')

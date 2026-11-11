@@ -76,7 +76,7 @@ def _status(path, agent):
             return empty
         runtime_path, signature = runtime_signature()
         return {**empty, 'running': True, 'agent': record['agent'], 'url': base + '/projects',
-                'runtime_current': record.get('runtime_path') == runtime_path and record.get('runtime_signature') == signature,
+                'runtime_current': record.get('runtime_signature') == signature,
                 'pid': record['pid'], 'log_path': record.get('log_path', '')}
     except (OSError, URLError, ValueError, KeyError, TypeError):
         return empty
@@ -133,8 +133,6 @@ def start(workspace, agent='codex', port=8765):
     with file_lock(state / 'dashboard.lock'):
         current = _status(path, agent)
         if current['running']:
-            if current['agent'] != agent:
-                raise RuntimeError('这个管理目录正由 ' + current['agent'] + ' 提供分析。请先停止原服务，再使用 ' + agent + ' 打开；项目文件会保留。原网页：' + current['url'])
             if not current['runtime_current']:
                 raise RuntimeError('项目管理器代码已更新，请先停止旧服务再重新打开。项目文件会保留。')
             return {**current, 'reused': True}

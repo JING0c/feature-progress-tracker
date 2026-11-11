@@ -94,7 +94,7 @@ class PluginRuntimeTests(unittest.TestCase):
         self.assertEqual(output[0]['error']['code'], -32700)
         by_id = {r['id']: r for r in output}
         self.assertEqual(by_id[1]['result']['protocolVersion'], '2025-06-18')
-        self.assertEqual([t['name'] for t in by_id[2]['result']['tools']], ['open_dashboard', 'list_projects', 'read_project'])
+        self.assertTrue({'open_dashboard','list_projects','read_project','create_project','save_plan','edit_features','record_suggestions','preview_suggestions','prepare_source_review','submit_source_review','generate_ledger','save_ledger','update_feature_progress','history','export_project','stop_dashboard'} <= {t['name'] for t in by_id[2]['result']['tools']})
         self.assertEqual(by_id[3]['result']['structuredContent']['plan']['content'], plan)
         self.assertTrue(by_id[4]['result']['isError'])
         self.assertEqual(by_id[5]['error']['code'], -32601)
@@ -117,9 +117,10 @@ class PluginRuntimeTests(unittest.TestCase):
         overview = manager.http_json(first['url'].replace('/projects', '/api/projects'))
         self.assertEqual(overview['workspace'], str(self.root))
         self.assertEqual(overview['projects'], [])
-        # One writable server per workspace, including when the host is different.
-        with self.assertRaisesRegex(RuntimeError, '正由 codex'):
-            manager.start(str(self.root), 'claude', 0)
+        # Both hosts may share the same read-only viewer; writes use MCP locks.
+        shared = manager.start(str(self.root), 'claude', 0)
+        self.assertTrue(shared['reused'])
+        self.assertEqual(shared['pid'], first['pid'])
         with self.assertRaisesRegex(RuntimeError, '--agent codex'):
             manager.stop(str(self.root), 'claude')
         self.assertTrue(manager.stop(str(self.root), 'codex')['stopped'])
