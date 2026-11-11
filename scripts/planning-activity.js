@@ -1,5 +1,10 @@
 (function(global){
  'use strict';
+ const actionLabels={save_plan:'保存规划',edit_features:'编辑功能表',record_suggestions:'记录功能建议',preview_suggestions:'预览采纳建议',search_references:'搜索 GitHub 参考',select_references:'保存参考选择',prepare_source_review:'准备源码核对',submit_source_review:'提交源码核对',generate_ledger:'生成功能台账',save_ledger:'保存功能台账',update_feature_progress:'更新功能进度',export_project:'导出规划书',create_project:'创建项目',read_project:'读取项目',history:'读取操作记录'};
+ function displayTitle(title){
+  const failure=/^([a-z]+(?:_[a-z]+)+)\s+失败$/.exec(title);
+  return failure?(actionLabels[failure[1]]||'项目操作')+'失败':title;
+ }
  global.createPlanningActivity=function(options){
   const $=id=>document.getElementById(id);const expanded=new Set();let generation=0,displayGeneration=0;
   function node(tag,text){const n=document.createElement(tag);n.textContent=text;return n;}
@@ -16,7 +21,7 @@
      const details=node('details','');details.className='activity-entry';details.open=expanded.has(record.id);
      details.addEventListener('toggle',()=>{if(current===displayGeneration){details.open?expanded.add(record.id):expanded.delete(record.id);}});
      const time=new Date(record.time),saved=record.snapshot;
-     const summary=node('summary',(Number.isNaN(time.getTime())?'时间未记录':time.toLocaleString('zh-CN'))+' · '+record.title);
+     const summary=node('summary',(Number.isNaN(time.getTime())?'时间未记录':time.toLocaleString('zh-CN'))+' · '+displayTitle(record.title));
      const visibleDetail=record.detail.split('\n').filter(line=>!/^历史版本：/.test(line.trim())).join('\n');
      const lines=visibleDetail.split('\n').map(line=>line.trim()).filter(Boolean);
      const description=lines.filter(line=>/^(F\d|新增 F|移除 F)/.test(line)).join('；')||saved?.note||(/^(功能表|规划书)已保存$/.test(record.title)?'规划内容已保存，展开查看具体改动':lines.find(line=>!/^来源：|^[-+#@|`]|^\s*$/.test(line))||'展开查看具体内容');

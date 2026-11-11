@@ -17,6 +17,19 @@ class Node{
  const opened=[];const controller=context.window.createPlanningActivity({load:async()=>data,openSnapshot:id=>opened.push(id)});await controller.refresh();
  assert.match(get('activity-list').textContent,/尚未保存/);assert.match(get('activity-list').textContent,/<script>/);
  assert.match(get('activity-count').textContent,/1 条/);
+ const legacy={id:'legacy-error',time:'2026-11-03T00:00:00Z',title:'save_plan 失败',state:'failed',detail:'文件已变化，请重新读取后操作。'};
+ const original=JSON.stringify(legacy);
+ data={records:[legacy]};await controller.refresh();
+ assert.match(get('activity-list').textContent,/保存规划失败/,'legacy tool failures have readable action names');
+ assert.doesNotMatch(get('activity-list').textContent,/save_plan/);
+ assert.match(get('activity-list').textContent,/文件已变化，请重新读取后操作/,'recovery explanation is retained');
+ assert.equal(JSON.stringify(legacy),original,'display translation does not rewrite historical facts');
+ data={records:[{...legacy,title:'保存规划失败'}]};await controller.refresh();
+ assert.match(get('activity-list').textContent,/保存规划失败/,'new localized failures remain unchanged');
+ data={records:[{...legacy,title:'future_operation 失败'}]};await controller.refresh();
+ assert.match(get('activity-list').textContent,/项目操作失败/,'unknown internal names use a readable fallback');
+ data={records:[{...legacy,title:'<script>失败</script>'}]};await controller.refresh();
+ assert.match(get('activity-list').textContent,/<script>失败<\/script>/,'arbitrary titles remain safe text');
  const entry=get('activity-list').children[0].children[0];entry.open=true;entry.handlers.toggle();await controller.refresh();assert.equal(get('activity-list').children[0].children[0].open,true,'refresh retains open record');
  data={records:[{id:'initial-save',time:'2026-11-03T00:00:00Z',title:'功能表已保存',detail:'历史版本：v-one\n--- 修改前\n+++ 修改后\n@@ -1 +1 @@\n # 项目规划书\n-尚未生成规划书。\n+正文'}]};await controller.refresh();assert.doesNotMatch(get('activity-list').children[0].children[0].children[0].textContent,/---|\+\+\+|# /,'list summary is readable, full diff stays inside details');
 
