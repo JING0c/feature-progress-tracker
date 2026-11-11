@@ -1,0 +1,50 @@
+{"case": "24_rounds_parent_child_review_requirement_history", "passed": false, "error": "AssertionError('F01-01')"}
+{"case": "legacy_nested_archives_preserved_after_12_saves", "passed": false, "error": "AssertionError('F01-01-01')"}
+{"case": "all_material_requirement_fields_block_stale_completion", "passed": false, "error": "AssertionError('operation unexpectedly succeeded')"}
+{"case": "adoption_restore_revokes_parent_child_approval", "passed": false, "error": "AssertionError('operation unexpectedly succeeded')"}
+{"case": "parent_scope_restore_and_manual_cancel_requirement_change", "passed": false, "error": "AssertionError('operation unexpectedly succeeded')"}
+{"case": "accepted_parent_new_child_rejects_stale_review", "passed": false, "error": "AssertionError('operation unexpectedly succeeded')"}
+{
+  "root": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/independent-history-acceptance-kzglwxs7",
+  "source": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/history-acceptance-baseline-n_0kvrc5/scripts",
+  "cases": [
+    {
+      "case": "24_rounds_parent_child_review_requirement_history",
+      "passed": false,
+      "error": "AssertionError('F01-01')"
+    },
+    {
+      "case": "legacy_nested_archives_preserved_after_12_saves",
+      "passed": false,
+      "error": "AssertionError('F01-01-01')"
+    },
+    {
+      "case": "all_material_requirement_fields_block_stale_completion",
+      "passed": false,
+      "error": "AssertionError('operation unexpectedly succeeded')"
+    },
+    {
+      "case": "nonmaterial_metadata_unrelated_branch_allow_completion",
+      "result": {
+        "unrelated_and_metadata_change_allows_target_completion": true
+      },
+      "passed": true
+    },
+    {
+      "case": "adoption_restore_revokes_parent_child_approval",
+      "passed": false,
+      "error": "AssertionError('operation unexpectedly succeeded')"
+    },
+    {
+      "case": "parent_scope_restore_and_manual_cancel_requirement_change",
+      "passed": false,
+      "error": "AssertionError('operation unexpectedly succeeded')"
+    },
+    {
+      "case": "accepted_parent_new_child_rejects_stale_review",
+      "passed": false,
+      "error": "AssertionError('operation unexpectedly succeeded')"
+    }
+  ]
+}
+REPORT=/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/independent-history-acceptance-kzglwxs7/report.json

@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "source_commit": "f5eef1d",
+  "artifacts": {
+    "feature-progress-tracker-claude.zip": {
+      "bytes": 125845,
+      "sha256": "28f21f93e2d4ab34044799e4ea9ee55c6d90ddc9ac5cd9650c5538afe139ea78"
+    },
+    "feature-progress-tracker-codex.zip": {
+      "bytes": 127202,
+      "sha256": "1a7c5dd7a71f64a8374574ecca26642cad15cbc4775b5fd8672ede7c5c9b1ac6"
+    },
+    "feature-progress-tracker-marketplace.zip": {
+      "bytes": 256016,
+      "sha256": "a498d868566af20546543ad47b39e08ca0f6a96caf598baa138629b488e4adf0"
+    }
+  }
+}

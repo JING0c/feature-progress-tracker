@@ -1,0 +1,45 @@
+test_child_cancel_readopt_repeated_counts_and_preserves_acceptance_history (__main__.IndependentReview) ... FAIL
+test_all_explicit_noncomplete_states_revoke_review_preserve_exact_state (__main__.IndependentReview) ... FAIL
+test_original_r5_single_temporary_reference_roundtrip (__main__.IndependentReview) ... FAIL
+
+======================================================================
+FAIL: test_child_cancel_readopt_repeated_counts_and_preserves_acceptance_history (__main__.IndependentReview)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/adversarial_r345_review.py", line 89, in test_child_cancel_readopt_repeated_counts_and_preserves_acceptance_history
+    records=f.items();self.assertEqual([c['id'] for c in records['F01']['children']],['F01-01'])
+AssertionError: Lists differ: [] != ['F01-01']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'F01-01'
+
+- []
++ ['F01-01']
+
+======================================================================
+FAIL: test_all_explicit_noncomplete_states_revoke_review_preserve_exact_state (__main__.IndependentReview)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/adversarial_r345_review.py", line 115, in test_all_explicit_noncomplete_states_revoke_review_preserve_exact_state
+    self.assertEqual(item['fields']['状态'],status);self.assertFalse(item['checked'])
+AssertionError: '进行中' != '待审核'
+- 进行中
++ 待审核
+
+
+======================================================================
+FAIL: test_original_r5_single_temporary_reference_roundtrip (__main__.IndependentReview)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/adversarial_r345_review.py", line 149, in test_original_r5_single_temporary_reference_roundtrip
+    self.assertEqual(rows['F02']['依赖'],expected)
+AssertionError: 'N1' != 'F01-01'
+- N1
++ F01-01
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.187s
+
+FAILED (failures=3)

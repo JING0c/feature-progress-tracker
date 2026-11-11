@@ -1,0 +1,21 @@
+R3_CYCLES [2, 2, 2, 2, 2, 2, 2, 2]
+E2E {"mapping": {"N1": "F01-01", "N4": "F01-02", "N2": "F01-01-01", "N3": "F01-01-01-01"}, "summary": {"total": 4, "done": 0, "working": 0, "review": 1, "blocked": 0, "issues": 0, "disputes": 0}}
+R5_MAPPING {"N20": "F01-01", "N10": "F01-02", "N30": "F01-02-01"}
+test_all_explicit_noncomplete_states_revoke_review_preserve_exact_state (__main__.IndependentReview) ... ok
+test_child_cancel_readopt_repeated_counts_and_preserves_acceptance_history (__main__.IndependentReview) ... ok
+test_completed_historical_evidence_cannot_be_edited_in_candidate (__main__.IndependentReview) ... ok
+test_completed_tree_structure_addition_still_refuses_history_rewrite (__main__.IndependentReview) ... ok
+test_end_to_end_new_tree_suggestions_preview_save_ledger_progress (__main__.IndependentReview) ... ok
+test_invalid_dependencies_rejected_without_document_writes (__main__.IndependentReview) ... ok
+test_multilevel_cancel_readopt_and_manual_parent_restore (__main__.IndependentReview) ... ok
+test_multiple_temporary_dependencies_forward_nested_and_known_final_id (__main__.IndependentReview) ... ok
+test_original_r5_single_temporary_reference_roundtrip (__main__.IndependentReview) ... ok
+test_removal_and_addition_dependency_resolves_final_graph (__main__.IndependentReview) ... ok
+test_removed_historical_id_is_reserved_for_future_allocations (__main__.IndependentReview) ... ok
+test_reversed_legacy_records_keep_parentage_fields_and_history (__main__.IndependentReview) ... ok
+test_stale_plan_suggestion_and_ledger_candidates_rejected (__main__.IndependentReview) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 1.316s
+
+OK

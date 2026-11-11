@@ -1,0 +1,1436 @@
+{
+  "reviewer": "/root/adversarial_upgrade_packages",
+  "source_head": "f5eef1dbff9377a222492b39f12e6b514b7d39be",
+  "artifacts": {
+    "codex": {
+      "path": "/Users/olcgb/code/protuct_plan/dist/feature-progress-tracker-codex.zip",
+      "sha256": "1a7c5dd7a71f64a8374574ecca26642cad15cbc4775b5fd8672ede7c5c9b1ac6",
+      "byte_identical_to_current_source_rebuild": true,
+      "inventory_files": 35,
+      "all_inventory_hashes_match": true,
+      "marketplace_bytes_match": true,
+      "runtime_source_bytes_match": true
+    },
+    "claude": {
+      "path": "/Users/olcgb/code/protuct_plan/dist/feature-progress-tracker-claude.zip",
+      "sha256": "28f21f93e2d4ab34044799e4ea9ee55c6d90ddc9ac5cd9650c5538afe139ea78",
+      "byte_identical_to_current_source_rebuild": true,
+      "inventory_files": 33,
+      "all_inventory_hashes_match": true,
+      "marketplace_bytes_match": true,
+      "runtime_source_bytes_match": true
+    },
+    "marketplace": {
+      "path": "/Users/olcgb/code/protuct_plan/dist/feature-progress-tracker-marketplace.zip",
+      "sha256": "a498d868566af20546543ad47b39e08ca0f6a96caf598baa138629b488e4adf0",
+      "byte_identical_to_current_source_rebuild": true
+    }
+  },
+  "hosts": {
+    "codex": {
+      "result": "PASS",
+      "workspace": "/private/tmp/r6-final-review-sq0i8i3g/codex-workspace-lepukv8j",
+      "tool_count": 18,
+      "tool_names": [
+        "open_dashboard",
+        "list_projects",
+        "read_project",
+        "create_project",
+        "save_plan",
+        "edit_features",
+        "search_references",
+        "record_suggestions",
+        "preview_suggestions",
+        "select_references",
+        "prepare_source_review",
+        "submit_source_review",
+        "generate_ledger",
+        "save_ledger",
+        "update_feature_progress",
+        "history",
+        "export_project",
+        "stop_dashboard"
+      ],
+      "full_chain": true,
+      "initial_and_suggestion_previews_not_saved": true,
+      "stale_save_rejected": true,
+      "history_versions": 3,
+      "mcp_export": {
+        "sha256": "5f10910e546c6f1f8ddcd6ea7a3050c996b9355dadd78ad8fe4eb48caaf4255b",
+        "zip_members": 10,
+        "expected_feature_and_acceptance_text": true
+      },
+      "http_markdown_unchanged": true,
+      "http_write_attempts_rejected": 4,
+      "viewer_stopped": true
+    },
+    "claude": {
+      "result": "PASS",
+      "workspace": "/private/tmp/r6-final-review-sq0i8i3g/claude-workspace-mw0_my2p",
+      "tool_count": 18,
+      "tool_names": [
+        "open_dashboard",
+        "list_projects",
+        "read_project",
+        "create_project",
+        "save_plan",
+        "edit_features",
+        "search_references",
+        "record_suggestions",
+        "preview_suggestions",
+        "select_references",
+        "prepare_source_review",
+        "submit_source_review",
+        "generate_ledger",
+        "save_ledger",
+        "update_feature_progress",
+        "history",
+        "export_project",
+        "stop_dashboard"
+      ],
+      "full_chain": true,
+      "initial_and_suggestion_previews_not_saved": true,
+      "stale_save_rejected": true,
+      "history_versions": 3,
+      "mcp_export": {
+        "sha256": "5f10910e546c6f1f8ddcd6ea7a3050c996b9355dadd78ad8fe4eb48caaf4255b",
+        "zip_members": 10,
+        "expected_feature_and_acceptance_text": true
+      },
+      "http_markdown_unchanged": true,
+      "http_write_attempts_rejected": 4,
+      "viewer_stopped": true
+    }
+  },
+  "calls": [
+    {
+      "host": "codex",
+      "method": "initialize",
+      "tool": null,
+      "response_sha256": "3cca58bed97d42a010c82799e73251571180ef7c78dafd4bb97ef926066b519c",
+      "progress": [],
+      "is_error": false,
+      "result_keys": [
+        "capabilities",
+        "instructions",
+        "protocolVersion",
+        "serverInfo"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/list",
+      "tool": null,
+      "response_sha256": "e26e6b1ad99e4fc805de6402aa40fa8b3361b9d56eef2e37a110eefcbe702003",
+      "progress": [],
+      "is_error": false,
+      "result_keys": [
+        "tools"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "create_project",
+      "response_sha256": "fe386c66121f3e9a1215abc0dcd16819fa90a05cae147d0ade19a2a768cb3756",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "project"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "list_projects",
+      "response_sha256": "a09506c28530f358b0b5d6759b92019db051688e9c69bfc218d3742d7ef50062",
+      "progress": [
+        5,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "projects",
+        "workspace"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "read_project",
+      "response_sha256": "ff6f7f1ae3b3b821efd3fc881c8f5d91f6e4f2b05ddf0115a75599d4ae75f237",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "ledger",
+        "plan",
+        "project",
+        "references",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "save_plan",
+      "response_sha256": "9647e1e3d92170073d52fd23367f12fc99ab1800833f755173d0c834c0ef2b6a",
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "backup",
+        "history_version",
+        "path",
+        "planning",
+        "revision",
+        "saved",
+        "source"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "read_project",
+      "response_sha256": "5b3d4dbcc079161e8fcb86d8838a0f4a5d760c337783b842ebcb5138ffe8ee7f",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "ledger",
+        "plan",
+        "project",
+        "references",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "edit_features",
+      "response_sha256": "85e9cd975da845db9d5ee18859bf62655bc04f8a4eae1e97de9ce0b5ea1d65f4",
+      "progress": [
+        5,
+        10,
+        40,
+        65,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "added",
+        "changes",
+        "content",
+        "engine",
+        "mapping",
+        "plan_revision",
+        "removed",
+        "revision",
+        "saved"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "read_project",
+      "response_sha256": "189b0798f257c987a7b4b37227699182ad2a5a2af0b63a48cf1fce6c00810de6",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "ledger",
+        "plan",
+        "project",
+        "references",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "save_plan",
+      "response_sha256": "8b5850480c4218e446b619b38bf28a61b71162e556c494ee1676860a78277969",
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "backup",
+        "history_version",
+        "path",
+        "planning",
+        "revision",
+        "saved",
+        "source"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "save_plan",
+      "response_sha256": "83fffdd0df13e0c27ee22ee15cdcdd59d7bb8e289740cb138231d0ec725d363d",
+      "progress": [
+        5,
+        10,
+        10
+      ],
+      "is_error": true,
+      "result_keys": [
+        "code",
+        "error"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "read_project",
+      "response_sha256": "f546850c7bd3f7f7aadbca62b751cf3f38f32170d75c931ceceaf6385a1b3d61",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "ledger",
+        "plan",
+        "project",
+        "references",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "record_suggestions",
+      "response_sha256": "44fa36f2b2b3adfe4472785a5c7ce2fb723e63adf598dbf4e92dcd319d0af6d8",
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "adopted",
+        "analyst",
+        "backup",
+        "generated_at",
+        "id",
+        "path",
+        "plan_revision",
+        "revision",
+        "source",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "preview_suggestions",
+      "response_sha256": "1f411de90d800742c9036b5b009194f8b84a6886d9477627c7199d7a9b7e65a1",
+      "progress": [
+        5,
+        10,
+        40,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "content",
+        "diff",
+        "plan_revision",
+        "revision",
+        "saved",
+        "suggestion_id"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "read_project",
+      "response_sha256": "9515c8dfc94e9a02b4d373b7481ffa0cfadbc3f9398820f77b76eb650342425b",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "ledger",
+        "plan",
+        "project",
+        "references",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "save_plan",
+      "response_sha256": "5051810671e40fee454ca3f8cd432a0c4342e90c870d685f00c84030441167c2",
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "backup",
+        "history_version",
+        "path",
+        "planning",
+        "revision",
+        "saved",
+        "source"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "prepare_source_review",
+      "response_sha256": "ed4634685fe48aded25a65fa5fb74f0f1ec75829a4ba85651facb96604e0504f",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "binding",
+        "features",
+        "instructions",
+        "review_id",
+        "sources"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "submit_source_review",
+      "response_sha256": "92ed6639f8783fb04fb6c79296f1c3efae913b8eecbc708af35a563fb7bb194f",
+      "progress": [
+        5,
+        10,
+        65,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "backup",
+        "path",
+        "report",
+        "repositories",
+        "revision"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "generate_ledger",
+      "response_sha256": "05e2ae52a07a5ae7adbae6e4f52ee91da0b9bbfb96a42c73a120f691892a8d3d",
+      "progress": [
+        5,
+        10,
+        65,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "added",
+        "adjustments",
+        "content",
+        "count",
+        "engine",
+        "ledger_revision",
+        "note",
+        "plan_revision",
+        "preserved",
+        "saved",
+        "source_revision",
+        "summary",
+        "updated"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "save_ledger",
+      "response_sha256": "90b64a7f6d65cd536ff5407c2f440955dfdbdad54969ad38b8e333f60c7201ca",
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "adjustments",
+        "backup",
+        "count",
+        "path",
+        "revision",
+        "saved",
+        "source_backup",
+        "summary"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "update_feature_progress",
+      "response_sha256": "b74d289910d8965eece45884bebe7273d14721bbb98e9744963ba2cdc66fedc6",
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "adjustments",
+        "backup",
+        "changed_ids",
+        "content",
+        "path",
+        "revision",
+        "saved",
+        "summary"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "history",
+      "response_sha256": "7366a3d8a810835d898be28993ce81af35dcc77a519be8fef2691eb7c6a0a5ba",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "records",
+        "versions",
+        "warnings"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "export_project",
+      "response_sha256": "f987f76510015cd08626fcae12e7af434839a9814e0344920f3022d08ebcf9cb",
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "bytes",
+        "format",
+        "path",
+        "revision",
+        "sha256"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "open_dashboard",
+      "response_sha256": "677c37d79c75a8d12223559591d2d3190390d353c29c6a65c2140ca561b52636",
+      "progress": [
+        5,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "agent",
+        "log_path",
+        "pid",
+        "reused",
+        "running",
+        "url",
+        "workspace"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "stop_dashboard",
+      "response_sha256": "eb4b6e67551e87efacef866efb132b23956827bb2ffe351a60af85cda50e7293",
+      "progress": [
+        5,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "agent",
+        "stopped",
+        "workspace"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "create_project",
+      "response_sha256": "a2439572d90cec3ff5b1114b8d4a22444730f5c25bb733da2b87ede52c7f2d14",
+      "progress": [
+        5,
+        5
+      ],
+      "is_error": true,
+      "result_keys": [
+        "code",
+        "error"
+      ]
+    },
+    {
+      "host": "codex",
+      "method": "ping",
+      "tool": null,
+      "response_sha256": "193f3f78046643c6e12d026ee4fa57a8d0c8676b24ae15688893f0440764f3db",
+      "progress": [],
+      "is_error": false,
+      "result_keys": []
+    },
+    {
+      "host": "claude",
+      "method": "initialize",
+      "tool": null,
+      "response_sha256": "3cca58bed97d42a010c82799e73251571180ef7c78dafd4bb97ef926066b519c",
+      "progress": [],
+      "is_error": false,
+      "result_keys": [
+        "capabilities",
+        "instructions",
+        "protocolVersion",
+        "serverInfo"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/list",
+      "tool": null,
+      "response_sha256": "e26e6b1ad99e4fc805de6402aa40fa8b3361b9d56eef2e37a110eefcbe702003",
+      "progress": [],
+      "is_error": false,
+      "result_keys": [
+        "tools"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "create_project",
+      "response_sha256": "2c6b5a8edaeab04e7b37bdbfadb932c3b30170eace01f12acaecfe15f22b6405",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "project"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "list_projects",
+      "response_sha256": "7fa7b9cc6957bdd59d77c8125c4b457ae2fa5c168f82a00e192f2bc3ec080594",
+      "progress": [
+        5,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "projects",
+        "workspace"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "read_project",
+      "response_sha256": "ba076d5df2e5b30080778d7ed2ea10c1fffb6677eb42766ec82241ef262c7506",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "ledger",
+        "plan",
+        "project",
+        "references",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "save_plan",
+      "response_sha256": "c3dd23e5db8233d83d17fe113d64f81ffe74a5a15d907fdd7fd4861736d2661d",
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "backup",
+        "history_version",
+        "path",
+        "planning",
+        "revision",
+        "saved",
+        "source"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "read_project",
+      "response_sha256": "4cdcde87aa287e9d34c035f7495af65bb141d142e7fc035e708ec337033e4ad5",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "ledger",
+        "plan",
+        "project",
+        "references",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "edit_features",
+      "response_sha256": "849aecce302b51c5d876896040d69ab8e1d4e8f7416ef40bf9e3a46d5156b384",
+      "progress": [
+        5,
+        10,
+        40,
+        65,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "added",
+        "changes",
+        "content",
+        "engine",
+        "mapping",
+        "plan_revision",
+        "removed",
+        "revision",
+        "saved"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "read_project",
+      "response_sha256": "199b5b1b3f821b041a1541cce16167b82a3bca077fced1807ce1a6e9204844f8",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "ledger",
+        "plan",
+        "project",
+        "references",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "save_plan",
+      "response_sha256": "78ce16db33bbba9ad3706700ffb665927db646e25b4d5851bce5a56365c32831",
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "backup",
+        "history_version",
+        "path",
+        "planning",
+        "revision",
+        "saved",
+        "source"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "save_plan",
+      "response_sha256": "1a7fcfac4169ce0445e1eeb4ab98c13ca1ea620f15d81533d8313804b8b5c406",
+      "progress": [
+        5,
+        10,
+        10
+      ],
+      "is_error": true,
+      "result_keys": [
+        "code",
+        "error"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "read_project",
+      "response_sha256": "5e2b370be154116a54642f7d173273fa6cc9647d1334f67e64493db49f061ec7",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "ledger",
+        "plan",
+        "project",
+        "references",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "record_suggestions",
+      "response_sha256": "b0e834b67cab525aca734ca85f2cf29c7766fec061e48f386795ea6bc738edab",
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "adopted",
+        "analyst",
+        "backup",
+        "generated_at",
+        "id",
+        "path",
+        "plan_revision",
+        "revision",
+        "source",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "preview_suggestions",
+      "response_sha256": "26772bb35b660e962545604b1a3ca603c2c92c92e16c88a2c8fbb92d321ac01a",
+      "progress": [
+        5,
+        10,
+        40,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "content",
+        "diff",
+        "plan_revision",
+        "revision",
+        "saved",
+        "suggestion_id"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "read_project",
+      "response_sha256": "d6e325d0f655efcbe6af44225645fbd2a6a014f413b5c2b5bbc18cea75acf51d",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "ledger",
+        "plan",
+        "project",
+        "references",
+        "suggestions"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "save_plan",
+      "response_sha256": "2e802c79b6454f248fba4f52efd06fc3d0c7cbcd39be4db219f01490af05479e",
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "backup",
+        "history_version",
+        "path",
+        "planning",
+        "revision",
+        "saved",
+        "source"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "prepare_source_review",
+      "response_sha256": "fd14a3b7928d5ca9f66e855fc93979402f13e0b3abf5f5a5d80e9875da7ad0a0",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "binding",
+        "features",
+        "instructions",
+        "review_id",
+        "sources"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "submit_source_review",
+      "response_sha256": "1a35df8697de50eb5f7fe467a2e862d988bcd8a738df690d035c44ef0aa0fdf4",
+      "progress": [
+        5,
+        10,
+        65,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "backup",
+        "path",
+        "report",
+        "repositories",
+        "revision"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "generate_ledger",
+      "response_sha256": "69437c87f73abf24aeb339ca2d4f539bf6e1f9336eb84e1ab049b7cb93a217d3",
+      "progress": [
+        5,
+        10,
+        65,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "added",
+        "adjustments",
+        "content",
+        "count",
+        "engine",
+        "ledger_revision",
+        "note",
+        "plan_revision",
+        "preserved",
+        "saved",
+        "source_revision",
+        "summary",
+        "updated"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "save_ledger",
+      "response_sha256": "0e49d284153aa19b77001dfd0b4ed6116e3d4403266b0a94681af059992b92ec",
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "adjustments",
+        "backup",
+        "count",
+        "path",
+        "revision",
+        "saved",
+        "source_backup",
+        "summary"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "update_feature_progress",
+      "response_sha256": "840cccc16992afdbe3892e73e9349b18b1efdff4e4e200b50f15b79e7102b2b2",
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "adjustments",
+        "backup",
+        "changed_ids",
+        "content",
+        "path",
+        "revision",
+        "saved",
+        "summary"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "history",
+      "response_sha256": "169d1f3d78b414e523096df6f550ba415d28a969d476badb512a94d075591b06",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "records",
+        "versions",
+        "warnings"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "export_project",
+      "response_sha256": "46e412d9613b2f28a2787541395318140809a8d59bf71f05c5a8b1f70c804fd7",
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "bytes",
+        "format",
+        "path",
+        "revision",
+        "sha256"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "open_dashboard",
+      "response_sha256": "0627dcf1d84117bc1baba698621bcdd8a0dfb1820510c74614506da966222c1d",
+      "progress": [
+        5,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "agent",
+        "log_path",
+        "pid",
+        "reused",
+        "running",
+        "url",
+        "workspace"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "stop_dashboard",
+      "response_sha256": "d8dbc27388f28f90e41f8c26eae590127f89ce82769962a2cb38175da59b92d4",
+      "progress": [
+        5,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "agent",
+        "stopped",
+        "workspace"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "create_project",
+      "response_sha256": "2ca65208a234441b3c650426acedf4920f6377b8940cc561ee942ac7dc2500c9",
+      "progress": [
+        5,
+        5
+      ],
+      "is_error": true,
+      "result_keys": [
+        "code",
+        "error"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "ping",
+      "tool": null,
+      "response_sha256": "193f3f78046643c6e12d026ee4fa57a8d0c8676b24ae15688893f0440764f3db",
+      "progress": [],
+      "is_error": false,
+      "result_keys": []
+    },
+    {
+      "host": "codex",
+      "method": "tools/call",
+      "tool": "stop_dashboard",
+      "response_sha256": "17104ca4a567342bead712a7cc8eb253dfc02355ef15e5e3b3e3ebea2eb826a5",
+      "progress": [
+        5,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "agent",
+        "reason",
+        "running",
+        "stopped",
+        "workspace"
+      ]
+    },
+    {
+      "host": "claude",
+      "method": "tools/call",
+      "tool": "stop_dashboard",
+      "response_sha256": "3e8b5bb1f55af676d4b19fbce2f9e7048e533714afce3094d52b146066287006",
+      "progress": [
+        5,
+        100
+      ],
+      "is_error": false,
+      "result_keys": [
+        "agent",
+        "reason",
+        "running",
+        "stopped",
+        "workspace"
+      ]
+    }
+  ],
+  "http": [
+    {
+      "host": "codex",
+      "path": "/",
+      "status": 200,
+      "length": 12788,
+      "sha256": "560b78d225891f50c5a4e8d9430825feb67052c8ed66acff11451e23da7f924b"
+    },
+    {
+      "host": "codex",
+      "path": "/api/runtime",
+      "status": 200,
+      "length": 162,
+      "sha256": "0ff785f44362a0d3d85ee6c85abd970fa66d32ea03ed00a01d3f3842c3d4dd84"
+    },
+    {
+      "host": "codex",
+      "path": "/api/projects",
+      "status": 200,
+      "length": 922,
+      "sha256": "162f2bbe3ee97e76c29129465dea2dad9f53c94ea84815382093b8eb1917ab28"
+    },
+    {
+      "host": "codex",
+      "path": "/planning?project=p-6e53b23e4a48",
+      "status": 200,
+      "length": 17285,
+      "sha256": "656592ed7c68305fb857b4b089419a0fead0ea89b15625caacbfd216d4635f6e"
+    },
+    {
+      "host": "codex",
+      "path": "/api/project?project=p-6e53b23e4a48",
+      "status": 200,
+      "length": 672,
+      "sha256": "ff03893c0809b91068cfcd75514e6403d093bc6f46d22edc289e6fa240882e3f"
+    },
+    {
+      "host": "codex",
+      "path": "/api/plan?project=p-6e53b23e4a48",
+      "status": 200,
+      "length": 1189,
+      "sha256": "05c858a14c4b7ee0f86f7e1afd4151816fead0a2251dcf7ad77ccb68801c3ffa"
+    },
+    {
+      "host": "codex",
+      "path": "/api/plan/table?project=p-6e53b23e4a48",
+      "status": 200,
+      "length": 2723,
+      "sha256": "73aa2e4e7844f5b75a6a1104f5051e56d8dea17aa82f9215c884f480a1405f29"
+    },
+    {
+      "host": "codex",
+      "path": "/api/ledger/info?project=p-6e53b23e4a48",
+      "status": 200,
+      "length": 217,
+      "sha256": "58a3f64b34530ad8a5badb6dd7a0e01a5e398757c79dc0786efa8689751c5999"
+    },
+    {
+      "host": "codex",
+      "path": "/api/ledger?project=p-6e53b23e4a48",
+      "status": 200,
+      "length": 1642,
+      "sha256": "38c3fdc7de7f24e6aa552b555d78674aa09e0b2996cfef2ca70bc364935de916"
+    },
+    {
+      "host": "codex",
+      "path": "/api/plan/history?project=p-6e53b23e4a48",
+      "status": 200,
+      "length": 722,
+      "sha256": "29ce8c605675393679f642fa66907fe2111ea41747745e5a78cd960990b33ebe"
+    },
+    {
+      "host": "codex",
+      "path": "/api/plan/export?project=p-6e53b23e4a48",
+      "status": 200,
+      "length": 7356,
+      "sha256": "5f10910e546c6f1f8ddcd6ea7a3050c996b9355dadd78ad8fe4eb48caaf4255b"
+    },
+    {
+      "host": "codex",
+      "path": "/api/plan/save",
+      "method": "POST",
+      "status": 410,
+      "code": "host_conversation_required"
+    },
+    {
+      "host": "codex",
+      "path": "/api/projects/create",
+      "method": "POST",
+      "status": 410,
+      "code": "host_conversation_required"
+    },
+    {
+      "host": "codex",
+      "path": "/api/plan/chat",
+      "method": "POST",
+      "status": 410,
+      "code": "host_conversation_required"
+    },
+    {
+      "host": "codex",
+      "path": "/api/ledger/save",
+      "method": "POST",
+      "status": 410,
+      "code": "host_conversation_required"
+    },
+    {
+      "host": "claude",
+      "path": "/",
+      "status": 200,
+      "length": 12788,
+      "sha256": "560b78d225891f50c5a4e8d9430825feb67052c8ed66acff11451e23da7f924b"
+    },
+    {
+      "host": "claude",
+      "path": "/api/runtime",
+      "status": 200,
+      "length": 164,
+      "sha256": "b0029e50ab1145575e2a7fa8128070e2000890752281d1918570394831beb51e"
+    },
+    {
+      "host": "claude",
+      "path": "/api/projects",
+      "status": 200,
+      "length": 930,
+      "sha256": "b2cf41383a6633204038428821207eaeda80ab6a4268477a19257626886fdde1"
+    },
+    {
+      "host": "claude",
+      "path": "/planning?project=p-40e1b4c7934f",
+      "status": 200,
+      "length": 17285,
+      "sha256": "656592ed7c68305fb857b4b089419a0fead0ea89b15625caacbfd216d4635f6e"
+    },
+    {
+      "host": "claude",
+      "path": "/api/project?project=p-40e1b4c7934f",
+      "status": 200,
+      "length": 679,
+      "sha256": "5dbdc751107d69d2d9a37ab98eca6376239cd817fff991a4b883639c8f96b987"
+    },
+    {
+      "host": "claude",
+      "path": "/api/plan?project=p-40e1b4c7934f",
+      "status": 200,
+      "length": 1191,
+      "sha256": "618a42956afb9ae62192a3f0d8be4848924aa243024e615346860ec33f91ab9d"
+    },
+    {
+      "host": "claude",
+      "path": "/api/plan/table?project=p-40e1b4c7934f",
+      "status": 200,
+      "length": 2723,
+      "sha256": "73aa2e4e7844f5b75a6a1104f5051e56d8dea17aa82f9215c884f480a1405f29"
+    },
+    {
+      "host": "claude",
+      "path": "/api/ledger/info?project=p-40e1b4c7934f",
+      "status": 200,
+      "length": 219,
+      "sha256": "a182d1ba1610758bc6e2362222760d77bb44b3fc3bfc32267d85ef491a20eb79"
+    },
+    {
+      "host": "claude",
+      "path": "/api/ledger?project=p-40e1b4c7934f",
+      "status": 200,
+      "length": 1643,
+      "sha256": "49e828497428cc68f6ce4cc50c679e4273beb7405700deb52be6fa14604700f4"
+    },
+    {
+      "host": "claude",
+      "path": "/api/plan/history?project=p-40e1b4c7934f",
+      "status": 200,
+      "length": 725,
+      "sha256": "d6c893645d6c94f378eecb6a09fec2590240c64b5db1e05fe0f09d3786a28979"
+    },
+    {
+      "host": "claude",
+      "path": "/api/plan/export?project=p-40e1b4c7934f",
+      "status": 200,
+      "length": 7356,
+      "sha256": "5f10910e546c6f1f8ddcd6ea7a3050c996b9355dadd78ad8fe4eb48caaf4255b"
+    },
+    {
+      "host": "claude",
+      "path": "/api/plan/save",
+      "method": "POST",
+      "status": 410,
+      "code": "host_conversation_required"
+    },
+    {
+      "host": "claude",
+      "path": "/api/projects/create",
+      "method": "POST",
+      "status": 410,
+      "code": "host_conversation_required"
+    },
+    {
+      "host": "claude",
+      "path": "/api/plan/chat",
+      "method": "POST",
+      "status": 410,
+      "code": "host_conversation_required"
+    },
+    {
+      "host": "claude",
+      "path": "/api/ledger/save",
+      "method": "POST",
+      "status": 410,
+      "code": "host_conversation_required"
+    }
+  ],
+  "limitations": [
+    "No real Claude CLI installation/upgrade/session",
+    "No real model or natural-language host conversation",
+    "No live GitHub research/source download",
+    "No browser visual QA"
+  ],
+  "result": "PASS"
+}

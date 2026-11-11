@@ -1,0 +1,228 @@
+{
+  "root": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/independent-history-acceptance-tpobhowo",
+  "source": "/Users/olcgb/code/protuct_plan/scripts",
+  "cases": [
+    {
+      "case": "24_rounds_parent_child_review_requirement_history",
+      "result": {
+        "rounds": 24,
+        "bytes": [
+          1112,
+          4799,
+          8664,
+          12529,
+          16394,
+          20259,
+          24124,
+          27989,
+          31854,
+          35719,
+          39591,
+          43463,
+          47335,
+          51207,
+          55079,
+          58951,
+          62823,
+          66695,
+          70567,
+          74439,
+          78311,
+          82183,
+          86055,
+          89927,
+          93799
+        ],
+        "increments": [
+          3687,
+          3865,
+          3865,
+          3865,
+          3865,
+          3865,
+          3865,
+          3865,
+          3865,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872,
+          3872
+        ],
+        "last_summary": {
+          "total": 2,
+          "done": 0,
+          "working": 1,
+          "review": 0,
+          "blocked": 0,
+          "issues": 0,
+          "disputes": 0
+        }
+      },
+      "passed": true
+    },
+    {
+      "case": "legacy_nested_archives_preserved_after_12_saves",
+      "result": {
+        "rounds": 12,
+        "legacy_plan_exact": true,
+        "legacy_progress_exact": true,
+        "legacy_evidence": "legacy-only reviewer evidence | ; preserved",
+        "bytes": 19844
+      },
+      "passed": true
+    },
+    {
+      "case": "all_material_requirement_fields_block_stale_completion",
+      "result": [
+        {
+          "field": "验收标准",
+          "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+          "code": 409,
+          "ledger_unchanged": true
+        },
+        {
+          "field": "说明",
+          "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+          "code": 409,
+          "ledger_unchanged": true
+        },
+        {
+          "field": "依赖",
+          "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+          "code": 409,
+          "ledger_unchanged": true
+        },
+        {
+          "field": "所需技术",
+          "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+          "code": 409,
+          "ledger_unchanged": true
+        },
+        {
+          "field": "前期准备",
+          "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+          "code": 409,
+          "ledger_unchanged": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": "nonmaterial_metadata_unrelated_branch_allow_completion",
+      "result": {
+        "unrelated_and_metadata_change_allows_target_completion": true
+      },
+      "passed": true
+    },
+    {
+      "case": "adoption_restore_revokes_parent_child_approval",
+      "result": {
+        "cycles": 3,
+        "rejections": [
+          {
+            "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+            "code": 409,
+            "ledger_unchanged": true
+          },
+          {
+            "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+            "code": 409,
+            "ledger_unchanged": true
+          },
+          {
+            "error": "上级功能只有在所有有效子功能均已验收后才能完成。",
+            "code": 400,
+            "ledger_unchanged": true
+          },
+          {
+            "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+            "code": 409,
+            "ledger_unchanged": true
+          },
+          {
+            "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+            "code": 409,
+            "ledger_unchanged": true
+          },
+          {
+            "error": "上级功能只有在所有有效子功能均已验收后才能完成。",
+            "code": 400,
+            "ledger_unchanged": true
+          },
+          {
+            "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+            "code": 409,
+            "ledger_unchanged": true
+          },
+          {
+            "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+            "code": 409,
+            "ledger_unchanged": true
+          },
+          {
+            "error": "上级功能只有在所有有效子功能均已验收后才能完成。",
+            "code": 400,
+            "ledger_unchanged": true
+          }
+        ],
+        "current_summary": {
+          "total": 2,
+          "done": 1,
+          "working": 0,
+          "review": 0,
+          "blocked": 0,
+          "issues": 0,
+          "disputes": 0
+        }
+      },
+      "passed": true
+    },
+    {
+      "case": "parent_scope_restore_and_manual_cancel_requirement_change",
+      "result": {
+        "cancelled_requirement_rejected": {
+          "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+          "code": 409,
+          "ledger_unchanged": true
+        },
+        "summary": {
+          "total": 2,
+          "done": 1,
+          "working": 0,
+          "review": 0,
+          "blocked": 0,
+          "issues": 0,
+          "disputes": 0
+        }
+      },
+      "passed": true
+    },
+    {
+      "case": "accepted_parent_new_child_rejects_stale_review",
+      "result": {
+        "completion_rejected": {
+          "error": "当前规划的采用范围或验收要求已变化，请先同步并保存功能台账，再提交完成审核。",
+          "code": 409,
+          "ledger_unchanged": true
+        },
+        "accepted_topology_sync_rejected": {
+          "error": "已验收功能必须保留实施及审核历史：F01-01。请按当前规划重新转换，需求变化后重新审核。",
+          "code": 400,
+          "ledger_unchanged": true
+        }
+      },
+      "passed": true
+    }
+  ]
+}
