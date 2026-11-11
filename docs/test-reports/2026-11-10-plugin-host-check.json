@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-10",
+  "scope": "Complete marketplace ZIP extracted outside repository; isolated Codex configuration; no real user project or model call.",
+  "codex_version": "0.166.0-alpha.6",
+  "install_command_exit_codes": [
+    0,
+    0
+  ],
+  "mcp_discovery": {
+    "name": "feature-progress-tracker",
+    "version": "0.1.0",
+    "tools": [
+      "list_projects",
+      "open_dashboard",
+      "read_project"
+    ],
+    "toolsError": null
+  },
+  "skill_names": [
+    "feature-progress-tracker:project-manager"
+  ],
+  "skill_errors": [],
+  "actual_tools_called": [
+    "list_projects",
+    "open_dashboard",
+    "read_project"
+  ],
+  "read_project_document_keys": [
+    "ledger",
+    "plan",
+    "project"
+  ],
+  "dashboard_running": true,
+  "stopped": true,
+  "claude_installed": false,
+  "claude_model_call_verified": false
+}

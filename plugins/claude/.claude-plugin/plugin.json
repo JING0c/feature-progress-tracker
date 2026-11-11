@@ -1,0 +1,9 @@
+{
+  "name": "feature-progress-tracker",
+  "version": "0.1.0",
+  "description": "在本机管理多个项目的规划书、功能清单和实施看板，以 Markdown 保存可追溯记录。",
+  "author": { "name": "JING0c" },
+  "repository": "https://github.com/JING0c/feature-progress-tracker",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

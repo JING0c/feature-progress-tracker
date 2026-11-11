@@ -1,0 +1,12 @@
+{
+  "name": "jing0c-project-tools",
+  "owner": { "name": "JING0c" },
+  "metadata": { "description": "Markdown 项目规划与功能进度管理工具" },
+  "plugins": [
+    {
+      "name": "feature-progress-tracker",
+      "source": "./build/plugin-marketplace/plugins/claude",
+      "description": "规划项目、编辑功能清单、跟踪实施进度"
+    }
+  ]
+}

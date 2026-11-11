@@ -19,6 +19,7 @@ dist/
 credentials.json
 secrets.*
 .reference-code/
+.feature-progress-tracker/
 
 # Local ledger backup files
 *.backup-*.md

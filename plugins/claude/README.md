@@ -1,0 +1,15 @@
+# 项目管理器 · Claude Code
+
+这是自包含的 Claude Code 插件，运行需要 Python 3.9+。网页 AI 功能使用已安装并登录的 Claude Code CLI。
+
+临时加载解压后的插件目录：
+
+```sh
+claude --plugin-dir "/插件解压目录"
+```
+
+在会话中运行 `/feature-progress-tracker:project-manager`，给出要使用的绝对管理目录。插件先列出项目，再打开本地网页；项目规划和功能台账保存在该管理目录，不写入插件缓存。
+
+包含 `open_dashboard`、`list_projects`、`read_project` 三个 MCP 工具。AI 提供分析和建议，确定性的表格操作、保存、台账转换和导出由程序完成。本包不是 Claude Desktop 扩展。
+
+源码与完整安装说明：[feature-progress-tracker](https://github.com/JING0c/feature-progress-tracker)。

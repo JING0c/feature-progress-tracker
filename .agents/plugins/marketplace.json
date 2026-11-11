@@ -1,0 +1,11 @@
+{
+  "name": "jing0c-project-tools",
+  "plugins": [
+    {
+      "name": "feature-progress-tracker",
+      "source": { "source": "local", "path": "./build/plugin-marketplace/plugins/codex" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}

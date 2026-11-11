@@ -45,6 +45,7 @@ class ManagerTest(unittest.TestCase):
         self.fake_reply.write_text(project_plan())
         fake = self.fake_bin / 'codex'
         fake.write_text('#!' + sys.executable + '\nimport json, os, pathlib, sys\n'
+                        'if "mcp" in sys.argv and "list" in sys.argv:\n print("[]"); sys.exit()\n'
                         'pathlib.Path(os.environ["FAKE_CODEX_PROMPT"]).write_text(sys.stdin.read())\n'
                         'reply = pathlib.Path(os.environ["FAKE_CODEX_REPLY"]).read_text()\n'
                         'print(json.dumps({"type":"item.completed","item":{"type":"agent_message","text":reply}}))\n')
