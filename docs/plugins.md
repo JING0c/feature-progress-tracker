@@ -14,7 +14,13 @@
 
 不需要安装 Python 第三方依赖。GitHub 初稿调研需要联网，最终源码核对需要本机可用的 Git。
 
-## 构建
+## 下载安装包（推荐）
+
+直接下载[完整插件市场 ZIP](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.1.0-preview.1/feature-progress-tracker-marketplace.zip)，解压后按下方各宿主的“只收到 ZIP 时”步骤安装，无需克隆源码或运行构建命令。
+
+[v0.1.0-preview.1 发行页](https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.1.0-preview.1)提供完整市场及两个单插件 ZIP、安装命令和 SHA-256。请选择命名为 `feature-progress-tracker-*.zip` 的附件；GitHub 自动生成的 `Source code` 是源码压缩包。此版本标为预览版：Codex 已实测隔离安装与 MCP 工具调用，Claude Code 真实宿主安装和模型调用尚待验证。
+
+## 从源码构建（可选）
 
 在本仓库根目录运行：
 

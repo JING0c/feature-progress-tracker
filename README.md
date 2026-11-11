@@ -20,6 +20,10 @@
 
 提供两套自包含的本地插件，共用同一套网页和 Markdown 格式。插件包含项目管理技能与 MCP 工具：打开管理器、列出项目、读取指定项目的规划和台账。Codex 插件调用本机 Codex，Claude Code 插件调用本机 Claude Code；表格操作、版本校验、保存、导出与台账转换继续由代码执行。
 
+**直接安装，无需构建：**[下载完整插件 ZIP（Codex + Claude Code）](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.1.0-preview.1/feature-progress-tracker-marketplace.zip)，解压后按[发行页的安装步骤](https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.1.0-preview.1)注册本地市场。发行页也提供两个单插件 ZIP、校验值和验证范围；本次为预览版，真实 Claude Code 宿主验证仍待完成。
+
+需要从源码自行构建时运行：
+
 ```bash
 python3 scripts/build_plugins.py
 ```
