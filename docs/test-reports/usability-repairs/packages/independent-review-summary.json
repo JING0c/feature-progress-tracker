@@ -1,0 +1,131 @@
+{
+  "reviewer": "/root/verify_repair_packages",
+  "result": "PASS",
+  "source_head": "4b9f60d7b58941d500eb5cd6c3b4f15c8d3abad2",
+  "mcp_requests": 60,
+  "http_requests": 30,
+  "hosts": {
+    "codex": {
+      "mcp_requests": 30,
+      "successful_tools": [
+        "create_project",
+        "edit_features",
+        "export_project",
+        "generate_ledger",
+        "history",
+        "list_projects",
+        "open_dashboard",
+        "prepare_source_review",
+        "preview_suggestions",
+        "read_project",
+        "record_suggestions",
+        "save_ledger",
+        "save_plan",
+        "search_references",
+        "select_references",
+        "stop_dashboard",
+        "submit_source_review",
+        "update_feature_progress"
+      ],
+      "expected_error_count": 2,
+      "http_requests": 15,
+      "rejected_http_writes": 4,
+      "history_versions": 3,
+      "source_review_records": [
+        {
+          "id": "2b18c4c59229411bb26fb0ba0d469e4e",
+          "time": "2026-11-11T08:22:47.314927+00:00",
+          "title": "源码核对资料已准备",
+          "detail": "未选择参考仓库，本次无源码证据；等待当前宿主提交逐项核对报告。",
+          "state": "success",
+          "history_version": "",
+          "actor": "codex"
+        }
+      ],
+      "history_evidence": "/tmp/independent-repair-packages-lnzb5nik/codex-history-records.json",
+      "inventory_files": 35
+    },
+    "claude": {
+      "mcp_requests": 30,
+      "successful_tools": [
+        "create_project",
+        "edit_features",
+        "export_project",
+        "generate_ledger",
+        "history",
+        "list_projects",
+        "open_dashboard",
+        "prepare_source_review",
+        "preview_suggestions",
+        "read_project",
+        "record_suggestions",
+        "save_ledger",
+        "save_plan",
+        "search_references",
+        "select_references",
+        "stop_dashboard",
+        "submit_source_review",
+        "update_feature_progress"
+      ],
+      "expected_error_count": 2,
+      "http_requests": 15,
+      "rejected_http_writes": 4,
+      "history_versions": 3,
+      "source_review_records": [
+        {
+          "id": "3f183b3e35244b61965af5e9964c7067",
+          "time": "2026-11-11T08:22:49.130065+00:00",
+          "title": "源码核对资料已准备",
+          "detail": "未选择参考仓库，本次无源码证据；等待当前宿主提交逐项核对报告。",
+          "state": "success",
+          "history_version": "",
+          "actor": "claude"
+        }
+      ],
+      "history_evidence": "/tmp/independent-repair-packages-lnzb5nik/claude-history-records.json",
+      "inventory_files": 33
+    }
+  },
+  "artifacts": {
+    "codex": {
+      "path": "/Users/olcgb/code/protuct_plan/dist/feature-progress-tracker-codex.zip",
+      "sha256": "92d4236f960fc76aa9db6156265a5397761c951de9371e44dd469c95bd2e271a",
+      "byte_identical_to_current_source_rebuild": true,
+      "inventory_files": 35,
+      "all_inventory_hashes_match": true,
+      "marketplace_bytes_match": true,
+      "runtime_source_bytes_match": true
+    },
+    "claude": {
+      "path": "/Users/olcgb/code/protuct_plan/dist/feature-progress-tracker-claude.zip",
+      "sha256": "797fbc2b2dc25a1e205dbe2f92686d4c9ba3cb3b6bf4340c36b1af30e5b4869b",
+      "byte_identical_to_current_source_rebuild": true,
+      "inventory_files": 33,
+      "all_inventory_hashes_match": true,
+      "marketplace_bytes_match": true,
+      "runtime_source_bytes_match": true
+    },
+    "marketplace": {
+      "path": "/Users/olcgb/code/protuct_plan/dist/feature-progress-tracker-marketplace.zip",
+      "sha256": "4c5acc15f50ad633e53bb5466ef1ded4149f9e7a992d460ca622397a49f9fd61",
+      "byte_identical_to_current_source_rebuild": true
+    }
+  },
+  "limitations": [
+    "No real Claude CLI installation/upgrade/session",
+    "No real model or natural-language host conversation",
+    "Live GitHub query only checks empty-result search; no repository README or source download",
+    "No browser visual QA"
+  ],
+  "base_protocol_evidence": "/tmp/independent-repair-packages-lnzb5nik/stdio-final-evidence.json",
+  "all_tools_evidence": "/tmp/independent-repair-packages-lnzb5nik/stdio-all-tools-evidence.json",
+  "score": {
+    "scope": "Installed ZIP, MCP stdio and read-only HTTP protocol only",
+    "total": 95,
+    "function": 40,
+    "correctness": 30,
+    "evidence": 15,
+    "maintainability": 10,
+    "deduction": "No native Claude/Codex host installation/session, model conversation, populated repository research, source checkout, or browser QA in this reviewer scope."
+  }
+}

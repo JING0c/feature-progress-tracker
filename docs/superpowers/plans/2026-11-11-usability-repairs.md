@@ -24,7 +24,9 @@
 
 ## 任务
 
-- [ ] 服务记录：`scripts/project_service.py`、`tests/test_source_activity_truth.py`。先复现空参考与失败标题，按实际来源生成记录，验证源码失败和真实来源分支。
-- [ ] 层级与路径：`scripts/dashboard.html`、`scripts/projects.html`、必要的层级行为测试。先显示子项、父字段按需展开；保留状态/计数/轮询/键盘与文件定位。
-- [ ] 历史记录展示：`scripts/planning-activity.js`、`tests/test_planning_activity.cjs`。旧 `save_plan 失败` 显示“保存规划失败”，中文新记录不变，未知旧动作使用可读兜底且保留原始记录。
-- [ ] 验证与交付：全量 Python/CJS、重建三份 ZIP；独立复核；在隔离数据下以1280×720/390×844重走总览、空规划、功能清单、建议、Excel、历史、嵌套看板及自动同步。修复通过才恢复F09-04，F09-07其他未做事项保持未开始；提交本地，不推送。
+- [x] 服务记录：`scripts/project_service.py`、`tests/test_source_activity_truth.py`。先复现空参考与失败标题，按实际来源生成记录，验证源码失败和真实来源分支。
+- [x] 层级与路径：`scripts/dashboard.html`、`scripts/projects.html`、必要的层级行为测试。先显示子项、父字段按需展开；保留状态/计数/轮询/键盘与文件定位。
+- [x] 历史记录展示：`scripts/planning-activity.js`、`tests/test_planning_activity.cjs`。旧 `save_plan 失败` 显示“保存规划失败”，中文新记录不变，未知旧动作使用可读兜底且保留原始记录。
+- [x] 验证与交付：全量 Python/CJS、重建三份 ZIP；独立复核；在隔离数据下以1280×720/390×844重走总览、空规划、功能清单、建议、Excel、历史、嵌套看板及自动同步。修复通过才恢复F09-04，F09-07其他未做事项保持未开始；提交本地，不推送。
+
+验收完成：提交 1eeaf33；详见 `docs/test-reports/2026-11-11-usability-repairs.md`。独立审核 96/100；未推送。

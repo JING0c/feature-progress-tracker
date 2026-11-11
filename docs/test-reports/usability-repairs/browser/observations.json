@@ -1,0 +1,35 @@
+{
+  "browser": "ChatGPT in-app browser",
+  "sizes": [
+    [
+      1280,
+      720
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "fixture_workspace": "/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fpt-usability-fixes-0c578d5h/workspace",
+  "original_test_fixture": "/private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf",
+  "runtime": "unpacked dist/feature-progress-tracker-codex.zip",
+  "parent_y": 439.3984375,
+  "child_y": 589.8984375,
+  "distance": 150.5,
+  "old_distance": 775,
+  "parent_open_page_height": 911,
+  "clicks": 15,
+  "keyboard_enters": 2,
+  "screenshots": 19,
+  "js_warning_errors": [],
+  "port": 59946,
+  "test_server_stopped": true,
+  "poll_preserved": [
+    "parent card",
+    "child card",
+    "parent detail disclosure",
+    "project file location"
+  ],
+  "mobile_page_width": 390,
+  "changed_real_user_data": false
+}

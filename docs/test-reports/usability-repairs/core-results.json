@@ -1,0 +1,30 @@
+{
+  "python": {
+    "executor": "/root/fix_truthful_activity",
+    "command": "python3 -m unittest discover -s tests -v",
+    "cwd": "/Users/olcgb/code/protuct_plan",
+    "count": 194,
+    "seconds": 14.21,
+    "exit_code": 0,
+    "raw_tail": "Ran 194 tests in 14.210s\n\nOK",
+    "tool_session": 85861,
+    "output_chunk": "2422fb",
+    "full_log_saved": false
+  },
+  "cjs": {
+    "executor": "/root",
+    "node": "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+    "files": [
+      "tests/test_adoption_dashboard.cjs",
+      "tests/test_dashboard_hierarchy_view.cjs",
+      "tests/test_dashboard_poll.cjs",
+      "tests/test_markdown.cjs",
+      "tests/test_planning_activity.cjs",
+      "tests/test_planning_history_races.cjs",
+      "tests/test_planning_sheet_view.cjs",
+      "tests/test_readonly_viewer.cjs"
+    ],
+    "all_exit_codes": 0
+  },
+  "diff_check": "passed"
+}
