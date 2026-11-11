@@ -1,0 +1,72 @@
+[
+  {
+    "test": "tests/test_adoption_dashboard.cjs",
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "/Users/olcgb/code/protuct_plan/tests/test_adoption_dashboard.cjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.047,
+    "log": "/tmp/tracker-retest-core-23_m_q8j/test_adoption_dashboard.log"
+  },
+  {
+    "test": "tests/test_dashboard_poll.cjs",
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "/Users/olcgb/code/protuct_plan/tests/test_dashboard_poll.cjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.04,
+    "log": "/tmp/tracker-retest-core-23_m_q8j/test_dashboard_poll.log"
+  },
+  {
+    "test": "tests/test_markdown.cjs",
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "/Users/olcgb/code/protuct_plan/tests/test_markdown.cjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.039,
+    "log": "/tmp/tracker-retest-core-23_m_q8j/test_markdown.log"
+  },
+  {
+    "test": "tests/test_planning_activity.cjs",
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "/Users/olcgb/code/protuct_plan/tests/test_planning_activity.cjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.049,
+    "log": "/tmp/tracker-retest-core-23_m_q8j/test_planning_activity.log"
+  },
+  {
+    "test": "tests/test_planning_history_races.cjs",
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "/Users/olcgb/code/protuct_plan/tests/test_planning_history_races.cjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.048,
+    "log": "/tmp/tracker-retest-core-23_m_q8j/test_planning_history_races.log"
+  },
+  {
+    "test": "tests/test_planning_sheet_view.cjs",
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "/Users/olcgb/code/protuct_plan/tests/test_planning_sheet_view.cjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.04,
+    "log": "/tmp/tracker-retest-core-23_m_q8j/test_planning_sheet_view.log"
+  },
+  {
+    "test": "tests/test_readonly_viewer.cjs",
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "/Users/olcgb/code/protuct_plan/tests/test_readonly_viewer.cjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.064,
+    "log": "/tmp/tracker-retest-core-23_m_q8j/test_readonly_viewer.log"
+  }
+]

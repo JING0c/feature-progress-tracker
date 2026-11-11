@@ -1,0 +1,238 @@
+{
+  "xlsx_nested_checks": {
+    "codex": [
+      "/private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf/项目/独立制品复核-codex-b9ff399d/exports/项目规划书-74e3d43e171042918b1e630f287b3204.xlsx"
+    ],
+    "claude": [
+      "/private/tmp/fpt-dist-retest-et8xhc58/claude-workspace-v2bxnr7o/项目/独立制品复核-claude-28504706/exports/项目规划书-bab7d0f9a8b24dc9911fecdb20fbb288.xlsx"
+    ]
+  },
+  "claude_cli": null,
+  "codex_cli": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+  "retained_viewer_runtime": {
+    "instance_id": "f5616fbf82a9ad7c128870716257c642",
+    "agent": "codex",
+    "workspace": "/private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf",
+    "pid": 1045
+  },
+  "version_command": {
+    "label": "codex-version",
+    "argv": [
+      "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+      "--version"
+    ],
+    "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-d__y54z8/inspection-home",
+    "exit": 0,
+    "stdout": "codex-cli 0.167.0-alpha.3.2\n",
+    "stderr": ""
+  },
+  "rpc_counts": {
+    "codex": {
+      "responses": 32,
+      "tool_responses": 29,
+      "unique_invoked": 18,
+      "expected_rejections": [
+        {
+          "tool": "save_plan",
+          "progress": [
+            5,
+            10,
+            10
+          ]
+        },
+        {
+          "tool": "create_project",
+          "progress": [
+            5,
+            5
+          ]
+        }
+      ]
+    },
+    "claude": {
+      "responses": 32,
+      "tool_responses": 29,
+      "unique_invoked": 18,
+      "expected_rejections": [
+        {
+          "tool": "save_plan",
+          "progress": [
+            5,
+            10,
+            10
+          ]
+        },
+        {
+          "tool": "create_project",
+          "progress": [
+            5,
+            5
+          ]
+        }
+      ]
+    }
+  },
+  "http_counts": {
+    "200": 22,
+    "410": 8
+  },
+  "upgrade_commands": 19,
+  "upgrade_installed_checks": [
+    {
+      "route": "changed-path",
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-B",
+        "/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-d__y54z8/changed-path-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.2.0/runtime/scripts/plugin_mcp.py",
+        "--agent",
+        "codex"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "requests": [
+        {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2025-06-18",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "upgrade-check",
+              "version": "1"
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "notifications/initialized"
+        },
+        {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "tools/list",
+          "params": {}
+        }
+      ],
+      "initialize_response": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "protocolVersion": "2025-06-18",
+          "capabilities": {
+            "tools": {}
+          },
+          "serverInfo": {
+            "name": "feature-progress-tracker",
+            "version": "0.2.0"
+          },
+          "instructions": "只访问用户明确指定的管理目录。所有分析在当前宿主会话完成，操作通过工具执行，不启动另一个模型。先读当前版本再预览修改，按用户授权保存；网页只读。不能把建议或源码核对当独立实现验收。"
+        }
+      },
+      "tool_count": 18,
+      "tool_names": [
+        "open_dashboard",
+        "list_projects",
+        "read_project",
+        "create_project",
+        "save_plan",
+        "edit_features",
+        "search_references",
+        "record_suggestions",
+        "preview_suggestions",
+        "select_references",
+        "prepare_source_review",
+        "submit_source_review",
+        "generate_ledger",
+        "save_ledger",
+        "update_feature_progress",
+        "history",
+        "export_project",
+        "stop_dashboard"
+      ],
+      "stdout_sha256": "c5c0f02aa5ef7605ef4fedeb8b53e315999cc32dcb209d33de03da1d6e19b799",
+      "stdout_note": "tools/list schemas omitted; names and count retained.",
+      "verified_inventory_file_count": 35,
+      "package_inventory_sha256": "dc99bb5caf83a6608a6bcb4cf36a968c49bd8885bd19b38c316500f8dab44e11",
+      "installed_mcp_sha256": "9e1fdd71e4ceb319dfc2ca0ae8f13cdc41c3208a8aa9f9301f48c9a6dbcdad2c"
+    },
+    {
+      "route": "same-path",
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-B",
+        "/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/codex-upgrade-check-d__y54z8/same-path-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.2.0/runtime/scripts/plugin_mcp.py",
+        "--agent",
+        "codex"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "requests": [
+        {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2025-06-18",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "upgrade-check",
+              "version": "1"
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "notifications/initialized"
+        },
+        {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "tools/list",
+          "params": {}
+        }
+      ],
+      "initialize_response": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "protocolVersion": "2025-06-18",
+          "capabilities": {
+            "tools": {}
+          },
+          "serverInfo": {
+            "name": "feature-progress-tracker",
+            "version": "0.2.0"
+          },
+          "instructions": "只访问用户明确指定的管理目录。所有分析在当前宿主会话完成，操作通过工具执行，不启动另一个模型。先读当前版本再预览修改，按用户授权保存；网页只读。不能把建议或源码核对当独立实现验收。"
+        }
+      },
+      "tool_count": 18,
+      "tool_names": [
+        "open_dashboard",
+        "list_projects",
+        "read_project",
+        "create_project",
+        "save_plan",
+        "edit_features",
+        "search_references",
+        "record_suggestions",
+        "preview_suggestions",
+        "select_references",
+        "prepare_source_review",
+        "submit_source_review",
+        "generate_ledger",
+        "save_ledger",
+        "update_feature_progress",
+        "history",
+        "export_project",
+        "stop_dashboard"
+      ],
+      "stdout_sha256": "c5c0f02aa5ef7605ef4fedeb8b53e315999cc32dcb209d33de03da1d6e19b799",
+      "stdout_note": "tools/list schemas omitted; names and count retained.",
+      "verified_inventory_file_count": 35,
+      "package_inventory_sha256": "dc99bb5caf83a6608a6bcb4cf36a968c49bd8885bd19b38c316500f8dab44e11",
+      "installed_mcp_sha256": "9e1fdd71e4ceb319dfc2ca0ae8f13cdc41c3208a8aa9f9301f48c9a6dbcdad2c"
+    }
+  ]
+}

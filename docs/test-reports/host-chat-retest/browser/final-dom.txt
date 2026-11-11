@@ -1,0 +1,163 @@
+- banner:
+  - strong: 项目管理器
+  - navigation "项目导航":
+    - link "项目总览":
+      - /url: /projects
+    - link "项目规划":
+      - /url: /planning?project=p-9f07576ef557
+    - link "功能看板":
+      - /url: /?project=p-9f07576ef557
+  - status: 已同步 · 00:09:30
+- main:
+  - heading "独立制品复核-codex · 项目规划" [level=1]
+  - paragraph: 在 Codex 或 Claude Code 对话中管理项目；此处查看已保存内容。
+  - paragraph: 已保存的项目规划书，与本机项目文件同步。
+  - paragraph: 需求讨论、功能调整、建议采纳和保存都在对话中完成。
+  - region "已保存的规划书":
+    - heading "项目规划书" [level=2]
+    - generic "规划显示方式":
+      - button "功能表" [pressed]
+      - button "文档"
+    - button "刷新"
+    - button "操作记录"
+    - navigation "规划章节":
+      - button "功能清单" [pressed]
+      - button "项目目标"
+      - button "项目范围"
+      - button "功能规划与验收"
+    - generic: 功能清单 · 显示 4 / 4 行 · 点击每行详情查看验收、技术与准备
+    - button "查看功能明细"
+    - button "展开技术与准备列"
+    - region "功能清单表格，可横向滚动":
+      - table "功能清单":
+        - caption: 功能清单
+        - rowgroup:
+          - row "# 采用 大功能 小功能 细分功能 功能介绍":
+            - columnheader "#"
+            - columnheader "采用"
+            - columnheader "大功能"
+            - columnheader "小功能"
+            - columnheader "细分功能"
+            - columnheader "功能介绍"
+        - rowgroup:
+          - row "1 采用 F01 图书管理 — — 保存并检索图书信息":
+            - rowheader "1"
+            - cell "采用"
+            - cell "F01 图书管理":
+              - generic: F01 图书管理
+            - cell "—"
+            - cell "—"
+            - cell "保存并检索图书信息":
+              - paragraph: 保存并检索图书信息
+              - generic "验收、技术与准备"
+          - row "2 采用 F01-01 添加图书 — 输入图书标题保存记录":
+            - rowheader "2"
+            - cell "采用"
+            - cell "F01-01 添加图书"
+            - cell "—"
+            - cell "输入图书标题保存记录":
+              - paragraph: 输入图书标题保存记录
+              - generic "验收、技术与准备"
+          - row "3 采用 F01-02 搜索图书 — 输入关键字查询目录":
+            - rowheader "3"
+            - cell "采用"
+            - cell "F01-02 搜索图书":
+              - generic: F01-02 搜索图书
+            - cell "—"
+            - cell "输入关键字查询目录":
+              - paragraph: 输入关键字查询目录
+              - generic "验收、技术与准备"
+          - row "4 采用 F01-02-01 筛选作者 在搜索结果内按作者过滤":
+            - rowheader "4"
+            - cell "采用"
+            - cell "F01-02-01 筛选作者"
+            - cell "在搜索结果内按作者过滤":
+              - paragraph: 在搜索结果内按作者过滤
+              - generic "验收、技术与准备"
+    - generic "文件位置"
+    - link "下载已保存的 Excel":
+      - /url: /api/plan/export?project=p-9f07576ef557
+    - button "下载 Markdown"
+    - button "复制规划书"
+  - generic "操作记录 · 18 条"
+  - heading "项目操作记录" [level=2]
+  - button "刷新记录"
+  - status: 已显示 18 条记录，按时间从新到旧排列。预览和讨论不会另存功能表。
+  - article:
+    - generic "2026/11/11 00:08:18 · 功能进度已更新 展开查看具体内容":
+      - text: 2026/11/11 00:08:18 · 功能进度已更新
+      - generic: 展开查看具体内容
+  - article:
+    - generic "2026/11/11 00:04:42 · 规划书已导出 /private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf/项目/独立制品复核-codex-b9ff399d/exports/项目规划书-74e3d43e171042918b1e630f287b3204.xlsx":
+      - text: 2026/11/11 00:04:42 · 规划书已导出
+      - generic: /private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf/项目/独立制品复核-codex-b9ff399d/exports/项目规划书-74e3d43e171042918b1e630f287b3204.xlsx
+  - article:
+    - generic "2026/11/11 00:04:42 · 规划书已导出 /private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf/项目/独立制品复核-codex-b9ff399d/exports/项目规划书-e0b99b52f12e4a28837f5e002a10e309.md":
+      - text: 2026/11/11 00:04:42 · 规划书已导出
+      - generic: /private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf/项目/独立制品复核-codex-b9ff399d/exports/项目规划书-e0b99b52f12e4a28837f5e002a10e309.md
+  - article:
+    - generic "2026/11/11 00:04:42 · 功能进度已更新 展开查看具体内容":
+      - text: 2026/11/11 00:04:42 · 功能进度已更新
+      - generic: 展开查看具体内容
+  - article:
+    - generic "2026/11/11 00:04:42 · 台账已保存到看板 已保存 2 个有效最细功能点，已验收 0 个。":
+      - text: 2026/11/11 00:04:42 · 台账已保存到看板
+      - generic: 已保存 2 个有效最细功能点，已验收 0 个。
+  - article:
+    - generic "2026/11/11 00:04:42 · 按规划转换台账（尚未保存） 由代码转换；新增：F01-01、F01-02、F01-02-01":
+      - text: 2026/11/11 00:04:42 · 按规划转换台账（尚未保存）
+      - generic: 由代码转换；新增：F01-01、F01-02、F01-02-01
+  - article:
+    - generic "2026/11/11 00:04:42 · 源码核对报告已保存 本报告为静态源码参考，不代表本项目已经实现或验收。":
+      - text: 2026/11/11 00:04:42 · 源码核对报告已保存
+      - generic: 本报告为静态源码参考，不代表本项目已经实现或验收。
+  - article:
+    - generic "2026/11/11 00:04:42 · 源码核对资料已准备 已读取固定提交；等待当前宿主提交逐项核对报告。":
+      - text: 2026/11/11 00:04:42 · 源码核对资料已准备
+      - generic: 已读取固定提交；等待当前宿主提交逐项核对报告。
+    - generic: 已读取固定提交；等待当前宿主提交逐项核对报告。
+  - article:
+    - generic "2026/11/11 00:04:42 · 保存参考选择 选作参考：明确不选":
+      - text: 2026/11/11 00:04:42 · 保存参考选择
+      - generic: 选作参考：明确不选
+  - article:
+    - generic "2026/11/11 00:04:42 · 搜索 GitHub 参考 搜索：repo:psf/requests":
+      - text: 2026/11/11 00:04:42 · 搜索 GitHub 参考
+      - generic: 搜索：repo:psf/requests
+  - article:
+    - generic "2026/11/11 00:04:40 · 功能表已保存 F01-01 · 验收标准":
+      - text: 2026/11/11 00:04:40 · 功能表已保存
+      - generic: F01-01 · 验收标准
+    - button "查看当时功能表"
+  - article:
+    - generic "2026/11/11 00:04:40 · 生成采纳建议预览（尚未保存） F01-01 · 验收标准":
+      - text: 2026/11/11 00:04:40 · 生成采纳建议预览（尚未保存）
+      - generic: F01-01 · 验收标准
+  - article:
+    - generic "2026/11/11 00:04:40 · 功能建议已记录（未采纳） S01 空值校验":
+      - text: 2026/11/11 00:04:40 · 功能建议已记录（未采纳）
+      - generic: S01 空值校验
+  - article:
+    - generic "2026/11/11 00:04:40 · save_plan 失败 文件已变化或缺少版本，请重新读取后操作。":
+      - text: 2026/11/11 00:04:40 · save_plan 失败
+      - generic: 文件已变化或缺少版本，请重新读取后操作。
+    - generic: 文件已变化或缺少版本，请重新读取后操作。
+  - article:
+    - generic "2026/11/11 00:04:40 · 功能表已保存 新增 F01-02 搜索图书；新增 F01-02-01 筛选作者":
+      - text: 2026/11/11 00:04:40 · 功能表已保存
+      - generic: 新增 F01-02 搜索图书；新增 F01-02-01 筛选作者
+    - button "查看当时功能表"
+  - article:
+    - generic "2026/11/11 00:04:40 · 功能修改预览（尚未保存） 新增 F01-02 搜索图书；新增 F01-02-01 筛选作者":
+      - text: 2026/11/11 00:04:40 · 功能修改预览（尚未保存）
+      - generic: 新增 F01-02 搜索图书；新增 F01-02-01 筛选作者
+  - article:
+    - generic "2026/11/11 00:04:40 · 功能表已保存 规划内容已保存，展开查看具体改动":
+      - text: 2026/11/11 00:04:40 · 功能表已保存
+      - generic: 规划内容已保存，展开查看具体改动
+    - button "查看当时功能表"
+  - article:
+    - generic "2026/11/11 00:04:40 · 项目已创建 展开查看具体内容":
+      - text: 2026/11/11 00:04:40 · 项目已创建
+      - generic: 展开查看具体内容
+  - paragraph: 每 3 秒读取 Markdown 文件变化 · 功能完成以独立审核记录为准

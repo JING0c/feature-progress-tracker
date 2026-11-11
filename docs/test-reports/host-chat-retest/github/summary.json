@@ -1,0 +1,296 @@
+{
+  "result": "PASS",
+  "source_head": "ef23caa41567a606d7ed19c9424815ec8c4e7c82",
+  "zip": {
+    "path": "/Users/olcgb/code/protuct_plan/dist/feature-progress-tracker-codex.zip",
+    "sha256": "1a7c5dd7a71f64a8374574ecca26642cad15cbc4775b5fd8672ede7c5c9b1ac6"
+  },
+  "workspace": "/tmp/fpt-live-github-20261111/workspace",
+  "project_id": "p-26e7249fdb48",
+  "finished_at": "2026-11-11T08:06:22Z",
+  "claude_cli": null,
+  "server_exit_code": 0,
+  "stderr": "",
+  "invalid_line_rejected": {
+    "error": "源码核对引用了未读取的文件或行号。",
+    "code": 400
+  },
+  "stale_report_generation_rejected": {
+    "error": "请先在当前宿主核对源码并提交报告，再生成台账。",
+    "code": 409
+  },
+  "stale_ticket_rejected": {
+    "error": "规划、参考或源码已变化，请重新准备核对资料。",
+    "code": 409
+  },
+  "stale_ledger_save_rejected": {
+    "error": "请先在当前宿主核对源码并提交报告，再生成台账。",
+    "code": 409
+  },
+  "ledger_unchanged_after_rejections": true,
+  "clone_verification": {
+    "head": "98e8ff1da1a89f93d1397a24d7413ed15421c139",
+    "shallow": "true",
+    "status": "D  .editorconfig\nD  .eslintrc.json\nD  .gitattributes\nD  .gitignore\nD  .npmrc\nD  .travis.yml\nD  .verb.md\nD  LICENSE\nD  README.md\nD  benchmark/fixtures.js\nD  benchmark/index.js\nD  benchmark/last.md\nD  index.js\nD  package.json\nD  test.js",
+    "no_checkout_confirmed": true,
+    "excerpt_matches_git_blob": true
+  },
+  "limits": [
+    "Static code read only; no downloaded code executed",
+    "MCP stdio integration, not real Claude CLI host session"
+  ],
+  "harness_correction": "Initial clean-worktree assertion was invalid: product intentionally clones with --no-checkout. Reverified shallow HEAD and exact blob excerpt; no product failure.",
+  "calls": [
+    {
+      "tool": "create_project",
+      "elapsed_seconds": 0.031,
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "search_references",
+      "elapsed_seconds": 1.886,
+      "progress": [
+        5,
+        10,
+        40,
+        55,
+        80,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "read_project",
+      "elapsed_seconds": 0.03,
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "select_references",
+      "elapsed_seconds": 0.003,
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "save_plan",
+      "elapsed_seconds": 0.006,
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "prepare_source_review",
+      "elapsed_seconds": 1.616,
+      "progress": [
+        5,
+        10,
+        30,
+        30,
+        30,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "submit_source_review",
+      "elapsed_seconds": 0.172,
+      "progress": [
+        5,
+        10,
+        30,
+        30,
+        30
+      ],
+      "is_error": true
+    },
+    {
+      "tool": "submit_source_review",
+      "elapsed_seconds": 0.14,
+      "progress": [
+        5,
+        10,
+        30,
+        30,
+        65,
+        80,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "generate_ledger",
+      "elapsed_seconds": 0.142,
+      "progress": [
+        5,
+        10,
+        30,
+        30,
+        65,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "save_ledger",
+      "elapsed_seconds": 0.141,
+      "progress": [
+        5,
+        10,
+        30,
+        30,
+        80,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "read_project",
+      "elapsed_seconds": 0.002,
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "generate_ledger",
+      "elapsed_seconds": 0.142,
+      "progress": [
+        5,
+        10,
+        30,
+        30,
+        65,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "save_plan",
+      "elapsed_seconds": 0.008,
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "generate_ledger",
+      "elapsed_seconds": 0.154,
+      "progress": [
+        5,
+        10,
+        30,
+        30,
+        30
+      ],
+      "is_error": true
+    },
+    {
+      "tool": "submit_source_review",
+      "elapsed_seconds": 0.153,
+      "progress": [
+        5,
+        10,
+        30,
+        30,
+        30
+      ],
+      "is_error": true
+    },
+    {
+      "tool": "save_ledger",
+      "elapsed_seconds": 0.14,
+      "progress": [
+        5,
+        10,
+        30,
+        30,
+        30
+      ],
+      "is_error": true
+    },
+    {
+      "tool": "read_project",
+      "elapsed_seconds": 0.002,
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false
+    },
+    {
+      "tool": "read_project",
+      "elapsed_seconds": 0.031,
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "is_error": false
+    }
+  ],
+  "commands": [
+    "python3 /tmp/fpt_live_references_test.py /tmp/fpt-live-github-20261111 search",
+    "python3 /tmp/fpt_live_references_test.py /tmp/fpt-live-github-20261111 prepare",
+    "python3 /tmp/fpt_live_references_test.py /tmp/fpt-live-github-20261111 finish",
+    "python3 /tmp/fpt_live_references_test.py /tmp/fpt-live-github-20261111 verify"
+  ],
+  "static_review": {
+    "repository": "https://github.com/jonschlinkert/is-number",
+    "commit": "98e8ff1da1a89f93d1397a24d7413ed15421c139",
+    "file_lines": [
+      "index.js:11-17",
+      "test.js:104"
+    ],
+    "third_party_code_executed": false,
+    "independent_project_implementation_review": false,
+    "saved_ledger_summary": {
+      "total": 1,
+      "done": 0,
+      "working": 0,
+      "review": 0,
+      "blocked": 0,
+      "issues": 0,
+      "disputes": 0
+    }
+  }
+}

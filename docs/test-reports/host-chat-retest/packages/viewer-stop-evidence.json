@@ -1,0 +1,102 @@
+{
+  "stopped_at_utc": "2026-11-11T08:10:24.482034+00:00",
+  "verified_before_stop": {
+    "instance_id": "f5616fbf82a9ad7c128870716257c642",
+    "agent": "codex",
+    "workspace": "/private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf",
+    "pid": 1045
+  },
+  "requests": [
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "independent-viewer-cleanup",
+          "version": "1"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "notifications/initialized"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "stop_dashboard",
+        "arguments": {
+          "workspace": "/private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf"
+        },
+        "_meta": {
+          "progressToken": "stop-test-viewer"
+        }
+      }
+    }
+  ],
+  "responses": [
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "feature-progress-tracker",
+          "version": "0.2.0"
+        },
+        "instructions": "只访问用户明确指定的管理目录。所有分析在当前宿主会话完成，操作通过工具执行，不启动另一个模型。先读当前版本再预览修改，按用户授权保存；网页只读。不能把建议或源码核对当独立实现验收。"
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "notifications/progress",
+      "params": {
+        "progressToken": "stop-test-viewer",
+        "progress": 5,
+        "total": 100,
+        "message": "检查工具参数"
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "notifications/progress",
+      "params": {
+        "progressToken": "stop-test-viewer",
+        "progress": 100,
+        "total": 100,
+        "message": "操作完成"
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"stopped\": true, \"workspace\": \"/private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf\", \"agent\": \"codex\"}"
+          }
+        ],
+        "structuredContent": {
+          "stopped": true,
+          "workspace": "/private/tmp/fpt-dist-retest-et8xhc58/codex-workspace-k83ocokf",
+          "agent": "codex"
+        }
+      }
+    }
+  ],
+  "exit": 0,
+  "stderr": "",
+  "port": 58961,
+  "connect_ex_result": 61,
+  "http_after_stop": "<urlopen error [Errno 61] Connection refused>",
+  "result": "PASS"
+}
