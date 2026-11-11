@@ -1,0 +1,5 @@
+NEW_TEMP_DEP {"mapping": {"N1": "F01-02"}, "dep": "N1"}
+SAVED_TEMP_DEP N1
+ROOT_TO_LEAF {'total': 2, 'done': 0, 'working': 0, 'review': 0, 'blocked': 0, 'issues': 0, 'disputes': 0}
+LEAF_TO_ROOT {'total': 2, 'done': 0, 'working': 0, 'review': 0, 'blocked': 0, 'issues': 0, 'disputes': 0} [('F01-01', '已取消'), ('F01-02', '已取消'), ('F01', '未开始'), ('F01-03', '未开始'), ('F02', '未开始')]
+TEMP_ROOT /var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-service-review-lp0c1aju

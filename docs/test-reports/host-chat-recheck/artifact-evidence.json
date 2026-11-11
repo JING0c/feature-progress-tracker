@@ -1,0 +1,26 @@
+{
+  "artifacts": {
+    "feature-progress-tracker-codex.zip": {
+      "sha256": "970fbaaa649c0f7e7d3cc6718cb2e97cb946bede5ea0865dd650e45870118e96",
+      "rebuilt_equal": true
+    },
+    "feature-progress-tracker-claude.zip": {
+      "sha256": "fd7c7a956157b34429f278799c1303f3b57022b8d173dcb41e92068df1a12798",
+      "rebuilt_equal": true
+    },
+    "feature-progress-tracker-marketplace.zip": {
+      "sha256": "c128ce0af6f383527f16f6abeadefec85c9c6cf2c9b216db7f4cf505d4413f04",
+      "rebuilt_equal": true
+    }
+  },
+  "skill_links": {
+    "codex": {
+      "references/workflow.md": true,
+      "../../runtime/SKILL.md": true
+    },
+    "claude": {
+      "references/workflow.md": true,
+      "../../runtime/SKILL.md": true
+    }
+  }
+}

@@ -1,0 +1,21 @@
+initial_plan {"chars": 186, "utf8_bytes": 386}
+round 0 saved {"chars": 200, "utf8_bytes": 414}
+round 1 after_progress {"chars": 481, "utf8_bytes": 875}
+round 1 generated_candidate {"chars": 1083, "utf8_bytes": 1821}
+round 1 saved {"chars": 1083, "utf8_bytes": 1821}
+round 2 after_progress {"chars": 2165, "utf8_bytes": 3411}
+round 2 generated_candidate {"chars": 4336, "utf8_bytes": 6420}
+round 2 saved {"chars": 4336, "utf8_bytes": 6420}
+round 3 after_progress {"chars": 8801, "utf8_bytes": 12231}
+round 3 generated_candidate {"chars": 18361, "utf8_bytes": 23975}
+round 3 saved {"chars": 18361, "utf8_bytes": 23975}
+round 4 after_progress {"chars": 39446, "utf8_bytes": 48590}
+round 4 generated_candidate {"chars": 87135, "utf8_bytes": 101993}
+round 4 saved {"chars": 87135, "utf8_bytes": 101993}
+round 5 after_progress {"chars": 197057, "utf8_bytes": 221159}
+round 5 generated_candidate {"chars": 454008, "utf8_bytes": 493068}
+round 5 saved {"chars": 454008, "utf8_bytes": 493068}
+round 6 after_progress {"chars": 1060709, "utf8_bytes": 1123971}
+round 6 generated_candidate {"chars": 2503357, "utf8_bytes": 2605779}
+round 6 SAVE_FAILED ValueError arguments.content 长度无效
+ledger_still_readable {'chars': 1060709, 'utf8_bytes': 1123971}

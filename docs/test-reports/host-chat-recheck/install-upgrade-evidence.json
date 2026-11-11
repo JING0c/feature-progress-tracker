@@ -1,0 +1,99 @@
+[
+  {
+    "label": "fresh-marketplace",
+    "argv": [
+      "codex",
+      "plugin",
+      "marketplace",
+      "add",
+      "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/marketplace",
+      "--json"
+    ],
+    "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/codex-home",
+    "exit": 0,
+    "stdout": "{\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"installedRoot\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/marketplace\",\n  \"alreadyAdded\": true\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "fresh-install",
+    "argv": [
+      "codex",
+      "plugin",
+      "add",
+      "feature-progress-tracker@jing0c-project-tools",
+      "--json"
+    ],
+    "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/codex-home",
+    "exit": 0,
+    "stdout": "{\n  \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n  \"name\": \"feature-progress-tracker\",\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"version\": \"0.2.0\",\n  \"installedPath\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/codex-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.2.0\",\n  \"authPolicy\": \"ON_INSTALL\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "fresh-list",
+    "argv": [
+      "codex",
+      "plugin",
+      "list",
+      "--json"
+    ],
+    "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/codex-home",
+    "exit": 0,
+    "stdout": "{\n  \"installed\": [\n    {\n      \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n      \"name\": \"feature-progress-tracker\",\n      \"marketplaceName\": \"jing0c-project-tools\",\n      \"version\": \"0.2.0\",\n      \"installed\": true,\n      \"enabled\": true,\n      \"source\": {\n        \"source\": \"local\",\n        \"path\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/marketplace/plugins/codex\"\n      },\n      \"marketplaceSource\": {\n        \"sourceType\": \"local\",\n        \"source\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/marketplace\"\n      },\n      \"installPolicy\": \"AVAILABLE\",\n      \"authPolicy\": \"ON_INSTALL\"\n    }\n  ],\n  \"available\": []\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "upgrade-new-marketplace",
+    "argv": [
+      "codex",
+      "plugin",
+      "marketplace",
+      "add",
+      "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/marketplace",
+      "--json"
+    ],
+    "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/upgrade-codex-home",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Error: marketplace 'jing0c-project-tools' is already added from a different source; remove it before adding this source\n"
+  },
+  {
+    "label": "upgrade-install",
+    "argv": [
+      "codex",
+      "plugin",
+      "add",
+      "feature-progress-tracker@jing0c-project-tools",
+      "--json"
+    ],
+    "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/upgrade-codex-home",
+    "exit": 0,
+    "stdout": "{\n  \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n  \"name\": \"feature-progress-tracker\",\n  \"marketplaceName\": \"jing0c-project-tools\",\n  \"version\": \"0.1.0\",\n  \"installedPath\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/upgrade-codex-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.1.0\",\n  \"authPolicy\": \"ON_INSTALL\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "upgrade-list",
+    "argv": [
+      "codex",
+      "plugin",
+      "list",
+      "--json"
+    ],
+    "isolated_codex_home": "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/upgrade-codex-home",
+    "exit": 0,
+    "stdout": "{\n  \"installed\": [\n    {\n      \"pluginId\": \"feature-progress-tracker@jing0c-project-tools\",\n      \"name\": \"feature-progress-tracker\",\n      \"marketplaceName\": \"jing0c-project-tools\",\n      \"version\": \"0.1.0\",\n      \"installed\": true,\n      \"enabled\": true,\n      \"source\": {\n        \"source\": \"local\",\n        \"path\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/old-market/plugins/codex\"\n      },\n      \"marketplaceSource\": {\n        \"sourceType\": \"local\",\n        \"source\": \"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/old-market\"\n      },\n      \"installPolicy\": \"AVAILABLE\",\n      \"authPolicy\": \"ON_INSTALL\"\n    }\n  ],\n  \"available\": []\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "installed-cache-actual-stdio",
+    "argv": [
+      "python3",
+      "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fresh-plugin-review-kco8brqg/codex-home/plugins/cache/jing0c-project-tools/feature-progress-tracker/0.2.0/runtime/scripts/plugin_mcp.py",
+      "--agent",
+      "codex"
+    ],
+    "exit": 0,
+    "tool_count": 18,
+    "server_version": "0.2.0",
+    "stderr": ""
+  }
+]
