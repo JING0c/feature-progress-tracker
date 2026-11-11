@@ -155,6 +155,10 @@ def update_progress(content, feature_id, changes, actor, review=None):
         current['checked'] = False
         if _accepted(old) or old['fields'].get('状态') == '已完成':
             current['fields'] = reopened_fields(current['fields'])
+            # Revoking approval must preserve an explicitly requested state.
+            # Evidence-only edits retain the default reopening to 进行中.
+            if '状态' in values:
+                current['fields']['状态'] = values['状态']
             current['fields']['审核证据'] = '待审核'
     changed = {}
     if current['fields'] != old['fields'] or current['checked'] != old['checked']:

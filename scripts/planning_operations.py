@@ -5,6 +5,8 @@ import re
 from planning_editor import editable_table, replace_features
 
 FIELDS = ('功能名称', '说明', '验收标准', '优先级', '依赖', '所需技术', '前期准备', '备注')
+# IDs may touch Chinese prose, but are not substrings of JSON1 or F1-score.
+DEPENDENCY_ID = re.compile(r'(?<![A-Za-z0-9_-])(?:F\d+(?:-\d+)*|N\d+)(?![A-Za-z0-9_-])')
 
 
 def proposal_rows(text):
@@ -67,9 +69,9 @@ def merge_proposal(content, proposal, reserved=()):
             pending.remove(item); advanced = True
         if not advanced:
             raise ValueError('提案上级存在循环或缺少对应功能。')
-    for row in rows[len(existing):]:
-        row['依赖'] = re.sub(r'\bN\d+\b', lambda m: mapping.get(m[0], m[0]), row.get('依赖', ''))
-        if re.search(r'\bN\d+\b', row['依赖']):
+    for row in rows:
+        row['依赖'] = DEPENDENCY_ID.sub(lambda m: mapping.get(m[0], m[0]), row.get('依赖', ''))
+        if any(identity.startswith('N') for identity in DEPENDENCY_ID.findall(row['依赖'])):
             raise ValueError('提案依赖引用了不存在的临时编号。')
     if not added:
         raise ValueError('提案中的同父同名功能已在清单中，无需重复添加。')

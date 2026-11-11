@@ -185,7 +185,10 @@ class ProjectService:
     def _validate_dependencies(rows):
         ids = {r['编号'] for r in rows}
         for row in rows:
-            missing = set(re.findall(r'\bF\d+(?:-\d+)*\b', row.get('依赖', ''))) - ids
+            references = set(operations.DEPENDENCY_ID.findall(row.get('依赖', '')))
+            if any(identity.startswith('N') for identity in references):
+                raise ValueError('功能依赖含未解析的临时编号，请先合并新增功能并使用正式编号。')
+            missing = references - ids
             if missing:
                 raise ValueError('功能依赖指向不存在的编号：' + '、'.join(sorted(missing)))
 
@@ -311,7 +314,6 @@ class ProjectService:
             raise ValueError('要移除的功能编号无效。')
         removed = {i for i in by_id if any(i == parent or i.startswith(parent + '-') for parent in remove)}
         rows = [r for r in rows if r['编号'] not in removed]
-        self._validate_dependencies(rows)
         content = editor.replace_features(doc['content'], rows)
         additions = payload.get('additions', [])
         added = []; mapping = {}
@@ -438,6 +440,7 @@ class ProjectService:
     def _ledger_binding(self, project):
         snapshot = self._snapshot(project)
         doc = self._document(project['plan_path']); refs = self._references(project)
+        self._validate_dependencies(self._rows(doc['content']))
         if refs.get('completed') and not refs.get('selection_confirmed'):
             raise RequestError('请先确认 GitHub 参考选择。', 409)
         binding = {}
@@ -535,7 +538,9 @@ class ProjectService:
             raise ValueError('功能编号格式无效。')
         def in_scope(identity):
             return identity == feature_id or identity.startswith(feature_id + '-')
-        expected = {row['编号']: row for row in self._rows(plan['content'])
+        rows = self._rows(plan['content'])
+        self._validate_dependencies(rows)
+        expected = {row['编号']: row for row in rows
                     if row.get('采用') != '否' and in_scope(row['编号'])}
         actual = {item['id']: item for group in parse(ledger['content']) for item in flatten(group['items'])
                   if in_scope(item['id']) and item['fields'].get(operations.TRACKING_FIELD) not in operations.INACTIVE_TRACKING}
