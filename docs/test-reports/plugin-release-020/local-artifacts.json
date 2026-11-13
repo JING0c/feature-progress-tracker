@@ -1,0 +1,22 @@
+{
+  "source_commit": "7df820349f43c3a48fa0c9ab6d1e3eecbe482394",
+  "tag": "v0.2.0-preview.1",
+  "branch": "feat/chat-project-orchestration",
+  "files": [
+    {
+      "name": "feature-progress-tracker-claude.zip",
+      "size": 129591,
+      "sha256": "cac96d0b7275ceb299fe1fa126c7ff4bd69680eed83194d14fd81a86b7e1765a"
+    },
+    {
+      "name": "feature-progress-tracker-codex.zip",
+      "size": 130942,
+      "sha256": "a3f3547a034d4b05e769f9da14da82ab1c22750c0a172345e3bc5676533900a4"
+    },
+    {
+      "name": "feature-progress-tracker-marketplace.zip",
+      "size": 263502,
+      "sha256": "cbc268a87ff7ec934d29f08a839b0860bcbae2a32a6544aa70735656b1a0ecb2"
+    }
+  ]
+}

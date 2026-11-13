@@ -1,0 +1,67 @@
+{
+  "release": "https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.2.0-preview.1",
+  "draft": false,
+  "prerelease": true,
+  "tag": "v0.2.0-preview.1",
+  "resolved_commit": "7df820349f43c3a48fa0c9ab6d1e3eecbe482394",
+  "annotated_tags": [
+    {
+      "status": 200,
+      "url": "https://api.github.com/repos/JING0c/feature-progress-tracker/git/tags/403c24140e4f9ff802d8a89cd89aa7a0b07e99a7",
+      "data": {
+        "node_id": "TA_kwDOVfqYIdoAKDQwM2MyNDE0MGU0ZjlmZjgwMmQ4YTg5Y2Q4OWFhN2EwYjA3ZTk5YTc",
+        "sha": "403c24140e4f9ff802d8a89cd89aa7a0b07e99a7",
+        "url": "https://api.github.com/repos/JING0c/feature-progress-tracker/git/tags/403c24140e4f9ff802d8a89cd89aa7a0b07e99a7",
+        "tagger": {
+          "name": "olcgb",
+          "email": "18383095545@163.com",
+          "date": "2026-11-13T07:36:29Z"
+        },
+        "object": {
+          "sha": "7df820349f43c3a48fa0c9ab6d1e3eecbe482394",
+          "type": "commit",
+          "url": "https://api.github.com/repos/JING0c/feature-progress-tracker/git/commits/7df820349f43c3a48fa0c9ab6d1e3eecbe482394"
+        },
+        "tag": "v0.2.0-preview.1",
+        "message": "Project manager plugins 0.2.0 preview: host conversation orchestration and verified goal/detail repairs\n",
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      }
+    }
+  ],
+  "assets": [
+    {
+      "name": "feature-progress-tracker-claude.zip",
+      "size": 129591,
+      "sha256": "cac96d0b7275ceb299fe1fa126c7ff4bd69680eed83194d14fd81a86b7e1765a",
+      "api_digest_matches": true,
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-claude.zip"
+    },
+    {
+      "name": "feature-progress-tracker-codex.zip",
+      "size": 130942,
+      "sha256": "a3f3547a034d4b05e769f9da14da82ab1c22750c0a172345e3bc5676533900a4",
+      "api_digest_matches": true,
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-codex.zip"
+    },
+    {
+      "name": "feature-progress-tracker-marketplace.zip",
+      "size": 263502,
+      "sha256": "cbc268a87ff7ec934d29f08a839b0860bcbae2a32a6544aa70735656b1a0ecb2",
+      "api_digest_matches": true,
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-marketplace.zip"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "size": 310,
+      "sha256": "36da9dde62982958315611ff3d182c6ed4bd0d40befdddd5ce4fe8fc8b5bd56c",
+      "api_digest_matches": true,
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/SHA256SUMS.txt"
+    }
+  ]
+}

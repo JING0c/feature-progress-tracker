@@ -1,0 +1,272 @@
+{
+  "reviewer": "/root/release_package_review",
+  "archives": {
+    "codex": {
+      "sha256": "a3f3547a034d4b05e769f9da14da82ab1c22750c0a172345e3bc5676533900a4",
+      "files": 36,
+      "forbidden_files": [],
+      "version": "0.2.0",
+      "inventory_source_match": true
+    },
+    "claude": {
+      "sha256": "cac96d0b7275ceb299fe1fa126c7ff4bd69680eed83194d14fd81a86b7e1765a",
+      "files": 34,
+      "forbidden_files": [],
+      "version": "0.2.0",
+      "inventory_source_match": true
+    },
+    "marketplace": {
+      "sha256": "cbc268a87ff7ec934d29f08a839b0860bcbae2a32a6544aa70735656b1a0ecb2",
+      "files": 73,
+      "forbidden_files": [],
+      "nested_plugins_equal_single_zips": true
+    }
+  },
+  "calls": [
+    {
+      "host": "codex",
+      "tool": "create_project",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "codex",
+      "tool": "read_project",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "codex",
+      "tool": "save_plan",
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "codex",
+      "tool": "generate_ledger",
+      "progress": [
+        5,
+        10,
+        65,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "codex",
+      "tool": "read_project",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "codex",
+      "tool": "save_ledger",
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "codex",
+      "tool": "read_project",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "codex",
+      "tool": "export_project",
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "claude",
+      "tool": "create_project",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "claude",
+      "tool": "read_project",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "claude",
+      "tool": "save_plan",
+      "progress": [
+        5,
+        10,
+        40,
+        80,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "claude",
+      "tool": "generate_ledger",
+      "progress": [
+        5,
+        10,
+        65,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "claude",
+      "tool": "read_project",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "claude",
+      "tool": "save_ledger",
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "claude",
+      "tool": "read_project",
+      "progress": [
+        5,
+        10,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    },
+    {
+      "host": "claude",
+      "tool": "export_project",
+      "progress": [
+        5,
+        10,
+        80,
+        95,
+        100
+      ],
+      "exit_code": 0,
+      "error": false
+    }
+  ],
+  "result": "PASS",
+  "hosts": {
+    "codex": {
+      "goal_sync": true,
+      "preview_not_saved": true,
+      "details_export_separate": true,
+      "no_model_or_git_on_path": true
+    },
+    "claude": {
+      "goal_sync": true,
+      "preview_not_saved": true,
+      "details_export_separate": true,
+      "no_model_or_git_on_path": true
+    }
+  },
+  "source_sha256": {
+    "scripts/planning_activity.py": "354110a775b6dbb413ed9cf07682ddf50fbf7359cc555a5cc05e6a156213f7aa",
+    "scripts/planning-sheet.css": "5beda999fbb077ae1eb9fd7a763d19ca23860144a64240a6dbde601d77ddf5cc",
+    "scripts/planning_operations.py": "ecb66077798314e07e8d711074600b003b6f7f33434e7b4e181c538b6622f216",
+    "scripts/project_service.py": "56cccc7a85aa98340c46776655cd631b90f525f2b7f899a741b7b53dd22b3481",
+    "scripts/planning.html": "656592ed7c68305fb857b4b089419a0fead0ea89b15625caacbfd216d4635f6e",
+    "scripts/planning-sheet-view.js": "48642b431ff9a55d7eab9c290bec132580f57fbc9609ed96c411775e8481a1f1",
+    "scripts/build_plugins.py": "9e588692890798eba8b77a6c55ebe6d5e9b7da5ff35f1ad8d6624c446e2f5d41",
+    "scripts/planning_xlsx.py": "2f8630eb5892c3dc82544590451bd1625cdfdb012a0d6b4e564527c00d6ec7b2",
+    "scripts/serve_dashboard.py": "c67fda8ed1057932d2a9052ad7af4eea01792315caf166f54a3fcaf6be95a41a",
+    "scripts/planning_research.py": "9e7ae1aaaccb6b0fa46e9eb85fd277b77e5e16f2b8deaf9a3b842373e7a07f09",
+    "scripts/planning_suggestions.py": "5eff067570073c0acbb24dd7146802c383f826b60c99f2e53b642deef4f45505",
+    "scripts/planning-markdown.css": "a7cabb5f8a7e24622505ee03ddb59dfb2112974ecf70840eda8c906b9cfe4681",
+    "scripts/dashboard.html": "6012fb5f68734ba78ebb9d7f529038252a0f7b10ab39b9c7055b292a9f765e98",
+    "scripts/planning-markdown.js": "248303e46dd510b1ce7eee9665e09cd70e4bfdf0701866968c007307e523fabe",
+    "scripts/projects.html": "2da2a6eae08d9f99d35a3f9a4dda587a7c2b42c52bd4bdcbb6bd03fd030cf0b4",
+    "scripts/planning-history-view.js": "53b9a2a9f087f19a37500e0ad115aec04ec93b9434f11b751b6a4057a6907f75",
+    "scripts/plugin_mcp.py": "9e1fdd71e4ceb319dfc2ca0ae8f13cdc41c3208a8aa9f9301f48c9a6dbcdad2c",
+    "scripts/project_tools.py": "227399de5671bf31458d86b44ffaf706cdaaccccde3b8419902e6df3cf264a31",
+    "scripts/planning_progress.py": "fe17532c09462d3c53270d426ea9e9e7daf0617c7c3379c70a0f182b33abdc8b",
+    "scripts/planning-activity.js": "da23721ad2d83c2aab9d4bc6b49d12f7f18f72d4f7425281bd92f47041b0438c",
+    "scripts/planning_sheet.py": "08d355f7826fa233b84ba57056cc7b700f4077d0f01026ade75b10440ce478ad",
+    "scripts/planning_editor.py": "92465b4ab4363b8e805eb177d371e828121255805e57ab51c201f5a08810f0c3",
+    "scripts/planning_history.py": "3c49105c6bfa5a7bd3e27b14c5b53f8c0b374a3797ec42051c4b3fd5294ea410",
+    "scripts/project_progress.py": "abe7524d2400f49ed37ceae4890f68ecac9e498465c1432e6cd24d023d3427ce",
+    "scripts/planning_source.py": "237f16c11b80bebc4df41bf7b501a25dbdbc1a996b9a8161b7ba9c957f020475",
+    "scripts/plugin_manager.py": "30fe9711976e99ed39c31b4adee1372e88773015936f451df216b194d7f4999a"
+  }
+}

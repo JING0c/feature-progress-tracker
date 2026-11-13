@@ -1,0 +1,17 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "scripts/build_plugins.py",
+    "--output-dir",
+    "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fpt-release-package-review-i04bbdvh/independent-market",
+    "--dist-dir",
+    "/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fpt-release-package-review-i04bbdvh/independent-dist"
+  ],
+  "result": "PASS",
+  "sha256": {
+    "feature-progress-tracker-claude.zip": "cac96d0b7275ceb299fe1fa126c7ff4bd69680eed83194d14fd81a86b7e1765a",
+    "feature-progress-tracker-marketplace.zip": "cbc268a87ff7ec934d29f08a839b0860bcbae2a32a6544aa70735656b1a0ecb2",
+    "feature-progress-tracker-codex.zip": "a3f3547a034d4b05e769f9da14da82ab1c22750c0a172345e3bc5676533900a4"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "source_commit": "7df820349f43c3a48fa0c9ab6d1e3eecbe482394",
+  "results": [
+    {
+      "command": "python3 -B -m unittest discover -s tests -p test_ledger_goal_sync.py -v",
+      "count": 9,
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -B -m unittest discover -s tests -p test_feature_detail_projection.py -v",
+      "count": 7,
+      "exit_code": 0
+    }
+  ],
+  "evidence_origin": "root terminal run this release turn"
+}

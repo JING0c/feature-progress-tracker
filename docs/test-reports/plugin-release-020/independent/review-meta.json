@@ -1,0 +1,15 @@
+{
+  "reviewer": "/root/release_package_review",
+  "head": "7df820349f43c3a48fa0c9ab6d1e3eecbe482394",
+  "verdict": "PASS",
+  "score": 97,
+  "score_parts": [
+    40,
+    29,
+    19,
+    9
+  ],
+  "scope": "local release ZIP audit plus public release metadata, annotated tag, asset digests and tag documentation; download bytes separately verified by root",
+  "remote_release": "https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.2.0-preview.1",
+  "remote_commit": "7df820349f43c3a48fa0c9ab6d1e3eecbe482394"
+}

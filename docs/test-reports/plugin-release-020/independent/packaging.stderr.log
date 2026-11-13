@@ -1,0 +1,16 @@
+test_build_is_reproducible_and_inventory_matches_contents (test_plugin_packaging.PluginPackagingTests) ... ok
+test_does_not_copy_project_data_secrets_or_python_cache (test_plugin_packaging.PluginPackagingTests) ... ok
+test_extracted_packages_have_all_runtime_files_and_host_specific_entrypoints (test_plugin_packaging.PluginPackagingTests) ... ok
+test_marketplace_archive_can_be_installed_without_source_checkout (test_plugin_packaging.PluginPackagingTests) ... ok
+test_marketplace_sources_resolve_to_complete_plugins (test_plugin_packaging.PluginPackagingTests) ... ok
+test_missing_runtime_fails_before_publishing_archive (test_plugin_packaging.PluginPackagingTests) ... ok
+test_refuses_to_replace_unrelated_directory (test_plugin_packaging.PluginPackagingTests) ... ok
+test_rejects_archive_directory_inside_the_directory_being_archived (test_plugin_packaging.PluginPackagingTests) ... ok
+test_rejects_linked_source_and_does_not_replace_existing_build_on_failure (test_plugin_packaging.PluginPackagingTests) ... ok
+test_both_extracted_plugins_serve_mcp_and_open_their_own_dashboard (test_plugin_packaging.ShippedRuntimeTests) ... ok
+test_extracted_packages_complete_full_chat_workflow_without_model_cli (test_plugin_packaging.ShippedRuntimeTests) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 4.010s
+
+OK

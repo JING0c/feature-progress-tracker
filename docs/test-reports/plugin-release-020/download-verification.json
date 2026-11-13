@@ -1,0 +1,44 @@
+{
+  "result": "PASS",
+  "release_id": 443940912,
+  "tag": "v0.2.0-preview.1",
+  "published_at": "2026-11-13T07:37:47Z",
+  "draft": false,
+  "prerelease": true,
+  "release_url": "https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.2.0-preview.1",
+  "downloads": [
+    {
+      "name": "feature-progress-tracker-claude.zip",
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-claude.zip",
+      "size": 129591,
+      "sha256": "cac96d0b7275ceb299fe1fa126c7ff4bd69680eed83194d14fd81a86b7e1765a",
+      "downloaded_bytes_match": true,
+      "zip_crc_pass": true
+    },
+    {
+      "name": "feature-progress-tracker-codex.zip",
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-codex.zip",
+      "size": 130942,
+      "sha256": "a3f3547a034d4b05e769f9da14da82ab1c22750c0a172345e3bc5676533900a4",
+      "downloaded_bytes_match": true,
+      "zip_crc_pass": true
+    },
+    {
+      "name": "feature-progress-tracker-marketplace.zip",
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-marketplace.zip",
+      "size": 263502,
+      "sha256": "cbc268a87ff7ec934d29f08a839b0860bcbae2a32a6544aa70735656b1a0ecb2",
+      "downloaded_bytes_match": true,
+      "zip_crc_pass": true
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/SHA256SUMS.txt",
+      "size": 310,
+      "sha256": "36da9dde62982958315611ff3d182c6ed4bd0d40befdddd5ce4fe8fc8b5bd56c",
+      "downloaded_bytes_match": true,
+      "zip_crc_pass": null
+    }
+  ],
+  "remote_refs": "7df820349f43c3a48fa0c9ab6d1e3eecbe482394\trefs/heads/feat/chat-project-orchestration\n403c24140e4f9ff802d8a89cd89aa7a0b07e99a7\trefs/tags/v0.2.0-preview.1\n7df820349f43c3a48fa0c9ab6d1e3eecbe482394\trefs/tags/v0.2.0-preview.1^{}\n"
+}

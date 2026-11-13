@@ -1,0 +1,14 @@
+{
+  "status": 200,
+  "url": "https://api.github.com/repos/JING0c/feature-progress-tracker/git/ref/tags/v0.2.0-preview.1",
+  "data": {
+    "ref": "refs/tags/v0.2.0-preview.1",
+    "node_id": "REF_kwDOVfqYIbpyZWZzL3RhZ3MvdjAuMi4wLXByZXZpZXcuMQ",
+    "url": "https://api.github.com/repos/JING0c/feature-progress-tracker/git/refs/tags/v0.2.0-preview.1",
+    "object": {
+      "sha": "403c24140e4f9ff802d8a89cd89aa7a0b07e99a7",
+      "type": "tag",
+      "url": "https://api.github.com/repos/JING0c/feature-progress-tracker/git/tags/403c24140e4f9ff802d8a89cd89aa7a0b07e99a7"
+    }
+  }
+}

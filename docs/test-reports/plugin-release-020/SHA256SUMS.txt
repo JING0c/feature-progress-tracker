@@ -1,0 +1,3 @@
+cac96d0b7275ceb299fe1fa126c7ff4bd69680eed83194d14fd81a86b7e1765a  feature-progress-tracker-claude.zip
+a3f3547a034d4b05e769f9da14da82ab1c22750c0a172345e3bc5676533900a4  feature-progress-tracker-codex.zip
+cbc268a87ff7ec934d29f08a839b0860bcbae2a32a6544aa70735656b1a0ecb2  feature-progress-tracker-marketplace.zip

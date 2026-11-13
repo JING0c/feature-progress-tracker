@@ -1,0 +1,25 @@
+{
+  "phase": "pre-final-doc-update",
+  "source": "b29f113",
+  "archives": {
+    "codex": {
+      "sha256": "6850922d6835c922e8cf7713ac48917b475e49c6847bcc943001df591983ed85",
+      "file_count": 36,
+      "inventory_and_source_match": true,
+      "forbidden_files": []
+    },
+    "claude": {
+      "sha256": "63fdf38f92a1eb1e82b077e39cdcaf7947172592127c7742029c797832e539a3",
+      "file_count": 34,
+      "inventory_and_source_match": true,
+      "forbidden_files": []
+    },
+    "marketplace": {
+      "sha256": "cf9dba664fd1e0f64ab7375aaad8f280e9eb1612bdccf95928a24bd54cda6752",
+      "file_count": 73,
+      "inventory_and_source_match": false,
+      "forbidden_files": []
+    }
+  },
+  "notes": []
+}

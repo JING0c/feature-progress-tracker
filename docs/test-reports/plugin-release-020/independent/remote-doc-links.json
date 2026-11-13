@@ -1,0 +1,16 @@
+[
+  {
+    "path": "README.md",
+    "tag_content_matches_local": true,
+    "sha256": "0674c24a80d3f380be8535790b4b4cdfcabc5f27996ed7bef4665be9821a800e",
+    "html_url": "https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/README.md",
+    "http_status": 200
+  },
+  {
+    "path": "docs/plugins.md",
+    "tag_content_matches_local": true,
+    "sha256": "16c7487d9f76d90f949534475d96e4d80c2281c66c257c51127d2af4b59a9b19",
+    "html_url": "https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/plugins.md",
+    "http_status": 200
+  }
+]
