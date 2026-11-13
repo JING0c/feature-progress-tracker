@@ -1,0 +1,13 @@
+{
+  "bytes": 8274,
+  "sha256": "a9bf629122973eba4308dacff437ce57c673039f906fb56cb1d4154ddecfe5b8",
+  "zip_files": 10,
+  "xml_files_parsed": 8,
+  "expected_text": {
+    "图书管理": true,
+    "搜索图书": true,
+    "筛选作者": true,
+    "拒绝空标题": true
+  },
+  "native_excel_opened": false
+}

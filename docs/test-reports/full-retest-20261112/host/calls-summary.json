@@ -1,0 +1,111 @@
+{
+  "events_are_filtered": "Only MCP tool-call events retained; model reasoning and unrelated shell reads omitted",
+  "successful": 18,
+  "failed": 2,
+  "calls": [
+    {
+      "tool": "create_project",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "read_project",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "save_plan",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "read_project",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "edit_features",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "read_project",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "save_plan",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "read_project",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "record_suggestions",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "preview_suggestions",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "read_project",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "save_plan",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "prepare_source_review",
+      "status": "failed",
+      "error": {
+        "message": "MCP tool call requires approval, but approval policy is never"
+      }
+    },
+    {
+      "tool": "prepare_source_review",
+      "status": "failed",
+      "error": {
+        "message": "MCP tool call requires approval, but approval policy is never"
+      }
+    },
+    {
+      "tool": "generate_ledger",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "save_ledger",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "export_project",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "read_project",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "history",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "tool": "create_project",
+      "status": "completed",
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "result": "PASS",
+  "base": "/tmp/fpt-20261112-github-final-d67v4d1j",
+  "calls": 48,
+  "rejections": {
+    "invalid_line": {
+      "code": 400,
+      "final_progress": 30
+    },
+    "plan_stale_report_generation": {
+      "code": 409,
+      "final_progress": 30
+    },
+    "plan_stale_ticket": {
+      "code": 409,
+      "final_progress": 30
+    },
+    "plan_stale_candidate": {
+      "code": 409,
+      "final_progress": 30
+    },
+    "replaced_report_stale_candidate": {
+      "code": 409,
+      "final_progress": 30
+    },
+    "source_stale_report_generation": {
+      "code": 409,
+      "final_progress": 30
+    },
+    "source_stale_ticket": {
+      "code": 409,
+      "final_progress": 30
+    },
+    "source_stale_candidate": {
+      "code": 409,
+      "final_progress": 30
+    },
+    "missing_cache_report_generation": {
+      "code": 409,
+      "final_progress": 30
+    },
+    "selection_stale_ticket": {
+      "code": 409,
+      "final_progress": 10
+    },
+    "selection_stale_candidate": {
+      "code": 409,
+      "final_progress": 10
+    }
+  },
+  "clone": {
+    "head": "98e8ff1da1a89f93d1397a24d7413ed15421c139",
+    "shallow": "true",
+    "origin": "https://github.com/jonschlinkert/is-number.git",
+    "no_checkout": true
+  },
+  "preparation_logs": [
+    {
+      "id": "e7e16798433f434dbe3dabe59d6a2773",
+      "time": "2026-11-13T02:40:16.455046+00:00",
+      "title": "源码核对资料已准备",
+      "detail": "已读取 1 个参考仓库的固定提交，共 4 个源码片段；等待当前宿主提交逐项核对报告。",
+      "state": "success",
+      "history_version": "",
+      "actor": "codex"
+    },
+    {
+      "id": "f1ee3d9043384377995565bcefbc2812",
+      "time": "2026-11-13T02:40:16.845925+00:00",
+      "title": "源码核对资料已准备",
+      "detail": "已读取 1 个参考仓库的固定提交，共 4 个源码片段；等待当前宿主提交逐项核对报告。",
+      "state": "success",
+      "history_version": "",
+      "actor": "codex"
+    },
+    {
+      "id": "8f69b8c8555646c28551f890d1df4faa",
+      "time": "2026-11-13T02:40:19.809294+00:00",
+      "title": "源码核对资料已准备",
+      "detail": "未选择参考仓库，本次无源码证据；等待当前宿主提交逐项核对报告。",
+      "state": "success",
+      "history_version": "",
+      "actor": "codex"
+    }
+  ],
+  "saved_summary": {
+    "total": 1,
+    "done": 0,
+    "working": 0,
+    "review": 0,
+    "blocked": 0,
+    "issues": 0,
+    "disputes": 0
+  },
+  "limits": [
+    "Real MCP stdio from current Codex ZIP, not an actual Codex/Claude natural-language host session",
+    "Only public jonschlinkert/is-number; four bounded static snippets; no downloaded repository code, package installation, benchmark, or tests executed",
+    "Temporary local synthetic commit used only for source-binding drift rejection, then restored; no fabricated model or development-review claims",
+    "No browser, no UI verification; source test task only; no source, project ledger or git commit changes in product repository"
+  ]
+}

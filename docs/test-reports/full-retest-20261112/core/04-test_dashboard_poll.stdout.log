@@ -1,0 +1,1 @@
+Dashboard polling: no overlapping stale writes, latest content retained, failure recovery, unchanged-render checks passed.

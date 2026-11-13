@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "hosts": {
+    "codex": "PASS",
+    "claude": "PASS"
+  },
+  "calls": 69,
+  "http_requests": 30,
+  "evidence": "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/stdio-all-tools-evidence.json"
+}

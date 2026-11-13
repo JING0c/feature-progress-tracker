@@ -1,0 +1,8 @@
+PASS reference links are readable and unsafe protocols stay inert
+PASS deep headings and tables from real planning output become semantic elements
+PASS table alignment and pipes inside code or escapes remain in their cells
+PASS quotes and numbered lists keep structure and numbering
+PASS fenced code preserves Markdown and HTML literally
+PASS long fences and tabs preserve code text without premature closure
+PASS Markdown source cannot create active HTML, image requests, or unsafe links
+PASS ordinary pipe paragraphs stay text and re-render clears old content

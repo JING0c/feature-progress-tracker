@@ -1,0 +1,32 @@
+{
+  "codex": {
+    "command": [
+      "python3",
+      "-B",
+      "/tmp/fpt-30985b1-package-review-r5g3m8xp/codex/runtime/scripts/plugin_manager.py",
+      "status",
+      "--workspace",
+      "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/codex-workspace-vw6rs4mg",
+      "--agent",
+      "codex"
+    ],
+    "stdout": "{\"running\": false, \"workspace\": \"/private/tmp/fpt-30985b1-package-review-r5g3m8xp/codex-workspace-vw6rs4mg\", \"agent\": \"codex\"}\n",
+    "stderr": "",
+    "returncode": 0
+  },
+  "claude": {
+    "command": [
+      "python3",
+      "-B",
+      "/tmp/fpt-30985b1-package-review-r5g3m8xp/claude/runtime/scripts/plugin_manager.py",
+      "status",
+      "--workspace",
+      "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/claude-workspace-_skqvmhg",
+      "--agent",
+      "claude"
+    ],
+    "stdout": "{\"running\": false, \"workspace\": \"/private/tmp/fpt-30985b1-package-review-r5g3m8xp/claude-workspace-_skqvmhg\", \"agent\": \"claude\"}\n",
+    "stderr": "",
+    "returncode": 0
+  }
+}

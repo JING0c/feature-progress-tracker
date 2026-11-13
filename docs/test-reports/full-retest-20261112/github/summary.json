@@ -1,0 +1,56 @@
+{
+  "result": "PASS",
+  "tested_head": "30985b117bae716b699bd07f9dcf89bd2e65bbfe",
+  "tested_package": {
+    "path": "/Users/olcgb/code/protuct_plan/dist/feature-progress-tracker-codex.zip",
+    "sha256": "92d4236f960fc76aa9db6156265a5397761c951de9371e44dd469c95bd2e271a"
+  },
+  "tool_calls": 48,
+  "jsonrpc_responses": 51,
+  "expected_rejections": 11,
+  "unexpected_product_failures": 0,
+  "server_exit": 0,
+  "server_stderr": "",
+  "commands": [
+    "python3 /tmp/fpt-20261112-github-final-d67v4d1j/run_stdio_live_test.py /tmp/fpt-20261112-github-final-d67v4d1j search",
+    "python3 /tmp/fpt-20261112-github-final-d67v4d1j/run_stdio_live_test.py /tmp/fpt-20261112-github-final-d67v4d1j prepare",
+    "python3 /tmp/fpt-20261112-github-final-d67v4d1j/finish_stdio_source_test.py /tmp/fpt-20261112-github-final-d67v4d1j finish"
+  ],
+  "score": {
+    "functional": 40,
+    "correctness_boundaries": 28,
+    "verification_evidence": 19,
+    "maintainability": 9,
+    "total": 96
+  },
+  "scope": "Real GitHub/static source/MCP binding workflow only",
+  "progress_final_by_rejection": {
+    "invalid_line": 30,
+    "plan_stale_report_generation": 30,
+    "plan_stale_ticket": 30,
+    "plan_stale_candidate": 30,
+    "replaced_report_stale_candidate": 30,
+    "source_stale_report_generation": 30,
+    "source_stale_ticket": 30,
+    "source_stale_candidate": 30,
+    "missing_cache_report_generation": 30,
+    "selection_stale_ticket": 10,
+    "selection_stale_candidate": 10
+  },
+  "repo_status_end": "",
+  "report_actor": "/root/retest_12_sources",
+  "limits": [
+    "Real MCP stdio from current Codex ZIP, not an actual Codex/Claude natural-language host session",
+    "Only public jonschlinkert/is-number; four bounded static snippets; no downloaded repository code, package installation, benchmark, or tests executed",
+    "Temporary local synthetic commit used only for source-binding drift rejection, then restored; no fabricated model or development-review claims",
+    "No browser, no UI verification; source test task only; no source, project ledger or git commit changes in product repository"
+  ],
+  "harness_correction": {
+    "previous_run": "/tmp/fpt-20261112-github-u19x4mm_",
+    "failure": "AssertionError({'id': '35898ad58e164962bb9ee343e0a107d7', 'time': '2026-11-13T02:37:29.327785+00:00', 'title': '源码核对资料已准备', 'detail': '已读取 1 个参考仓库的固定提交，共 4 个源码片段；等待当前宿主提交逐项核对报告。', 'state': 'success', 'history_version': '', 'actor': 'codex'})",
+    "cause": "history tool returns newest first; old harness read records[-1] as latest",
+    "fix": "Use records[0] and rerun all phases in new isolated workspace",
+    "product_failure": false
+  },
+  "verification_script_path_correction": "Post-run package comparison initially used package/scripts, causing FileNotFoundError; read .mcp.json and corrected to package/runtime/scripts. Targeted four product sources now byte-identical."
+}

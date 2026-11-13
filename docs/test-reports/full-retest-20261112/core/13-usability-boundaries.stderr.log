@@ -1,0 +1,10 @@
+test_independent_invalid_utf8_records_failure (__main__.IndependentReview) ... ok
+test_independent_reads_do_not_rewrite_legacy_failure (__main__.IndependentReview) ... ok
+test_independent_supported_files_all_empty_oversized_or_binary (__main__.IndependentReview) ... ok
+test_independent_ticket_write_failure_not_success (__main__.IndependentReview) ... ok
+test_independent_unborn_git_repository_fails_without_success_record (__main__.IndependentReview) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.488s
+
+OK

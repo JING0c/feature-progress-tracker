@@ -1,0 +1,18 @@
+{
+  "method": "read-only pure function using extracted actual ZIP runtime; no data files written except this evidence",
+  "plan": "# 独立制品项目规划书\n## 项目目标\n帮助管理员整理和查看个人借阅图书。\n## 项目范围\n本地单用户图书管理，本期不需要联网登录。\n## 功能规划与验收\n| 编号 | 上级编号 | 功能名称 | 说明 | 验收标准 | 采用 | 依赖 |\n|---|---|---|---|---|---|---|\n| F01 | 无 | 图书管理 | 保存并检索图书信息 | 保存后可找到图书 | 是 | 无 |\n| F01-01 | F01 | 添加图书 | 输入图书标题保存记录 | 重启后能读取新记录 | 是 | 无 |\n",
+  "plan_validation": {
+    "valid": true,
+    "missing": []
+  },
+  "existing_ledger": "# 功能执行情况\n\n目标：待规划\n",
+  "result": {
+    "content": "# 功能执行情况\n\n目标：待规划\n\n## 大功能 F01：图书管理\n\n- [ ] F01-01 添加图书｜状态：未开始\n  - 验收：重启后能读取新记录\n  - 说明：输入图书标题保存记录\n  - 优先级：待确认\n  - 依赖：无\n  - 所需技术：待确认\n  - 前期准备：待确认\n  - 执行 Agent：待分配\n  - 实现证据：无\n  - 审核 Agent：待审核\n  - 评分：待审核\n  - 问题：无\n",
+    "added": [
+      "F01-01"
+    ],
+    "preserved": [],
+    "updated": [],
+    "note": "按已采用功能转换；新条目均为未开始、待审核。"
+  }
+}

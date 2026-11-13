@@ -1,0 +1,46 @@
+{
+  "workspace": "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/codex-workspace-vw6rs4mg",
+  "package": "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/codex",
+  "planned_project_id": "p-f27375b3eb85",
+  "empty_project_id": "p-9d95580a7662",
+  "planned_project": {
+    "id": "p-f27375b3eb85",
+    "name": "独立制品复核-codex",
+    "directory": "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/codex-workspace-vw6rs4mg/项目/独立制品复核-codex-06993466",
+    "ledger_path": "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/codex-workspace-vw6rs4mg/项目/独立制品复核-codex-06993466/功能执行情况.md",
+    "plan_path": "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/codex-workspace-vw6rs4mg/项目/独立制品复核-codex-06993466/项目规划书.md",
+    "source": "new",
+    "planning_status": "ready",
+    "planning": {
+      "ready": true,
+      "reason": "项目规划书已保存，可以继续管理功能。",
+      "missing": [],
+      "planning_url": "/planning?project=p-f27375b3eb85"
+    }
+  },
+  "empty_project": {
+    "id": "p-9d95580a7662",
+    "name": "待规划空项目-codex-browser",
+    "directory": "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/codex-workspace-vw6rs4mg/项目/待规划空项目-codex-browser-534d86a5",
+    "ledger_path": "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/codex-workspace-vw6rs4mg/项目/待规划空项目-codex-browser-534d86a5/功能执行情况.md",
+    "plan_path": "/private/tmp/fpt-30985b1-package-review-r5g3m8xp/codex-workspace-vw6rs4mg/项目/待规划空项目-codex-browser-534d86a5/项目规划书.md",
+    "source": "new",
+    "planning_status": "pending",
+    "planning": {
+      "ready": false,
+      "reason": "请先生成并保存项目规划书，补齐目标、范围、功能、验收。",
+      "missing": [
+        "目标",
+        "范围",
+        "功能",
+        "验收"
+      ],
+      "planning_url": "/planning?project=p-9d95580a7662"
+    }
+  },
+  "child_id": "F01-02-01",
+  "child_name": "筛选作者",
+  "service_state": "stopped; parent may start for browser validation",
+  "plan_revision": "5991c53e9afe110732af6784d6980789ced790a03b8814b5ed21ecfd6e621380",
+  "ledger_revision": "20c8878f97716b6928cd4f39a4a37d3f8a8cf6da4279ebc969543efe3de58fb1"
+}

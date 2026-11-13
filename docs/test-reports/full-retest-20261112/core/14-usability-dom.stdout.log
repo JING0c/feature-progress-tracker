@@ -1,0 +1,3 @@
+Independent dashboard: 3 levels, status class, every field/note, hidden descendant disclosure persistence, scoped arrow selector PASS
+Independent paths: default collapse, project identity/reorder persistence, full updated path retained, workspace/single mode PASS
+Independent legacy localization: 14 historical labels, frozen original records unchanged, detail retained PASS

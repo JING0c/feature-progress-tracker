@@ -1,0 +1,456 @@
+[
+  {
+    "host": "codex",
+    "tool": "create_project",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "list_projects",
+    "error": false,
+    "percent": [
+      5,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "read_project",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "save_plan",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      40,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "edit_features",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      40,
+      65,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "save_plan",
+    "error": true,
+    "percent": [
+      5,
+      10,
+      10
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "record_suggestions",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      40,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "preview_suggestions",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      40,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "search_references",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      40,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "select_references",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "prepare_source_review",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "submit_source_review",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      65,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "generate_ledger",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      65,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "save_ledger",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "update_feature_progress",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "history",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "export_project",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "open_dashboard",
+    "error": false,
+    "percent": [
+      5,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "stop_dashboard",
+    "error": false,
+    "percent": [
+      5,
+      100
+    ]
+  },
+  {
+    "host": "codex",
+    "tool": "create_project",
+    "error": true,
+    "percent": [
+      5,
+      5
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "create_project",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "list_projects",
+    "error": false,
+    "percent": [
+      5,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "read_project",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "save_plan",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      40,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "edit_features",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      40,
+      65,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "save_plan",
+    "error": true,
+    "percent": [
+      5,
+      10,
+      10
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "record_suggestions",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      40,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "preview_suggestions",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      40,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "search_references",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      40,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "select_references",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "prepare_source_review",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "submit_source_review",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      65,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "generate_ledger",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      65,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "save_ledger",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "update_feature_progress",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "history",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "export_project",
+    "error": false,
+    "percent": [
+      5,
+      10,
+      80,
+      95,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "open_dashboard",
+    "error": false,
+    "percent": [
+      5,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "stop_dashboard",
+    "error": false,
+    "percent": [
+      5,
+      100
+    ]
+  },
+  {
+    "host": "claude",
+    "tool": "create_project",
+    "error": true,
+    "percent": [
+      5,
+      5
+    ]
+  }
+]

@@ -1,0 +1,759 @@
+18:40:16.716315 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.716776 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.717284 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:16.728242 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.728617 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.728915 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:16.740724 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.741115 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.741818 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:16.754180 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.754544 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.755086 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:16.766848 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.767217 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.767777 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:16.779597 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.779891 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.780374 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:16.791721 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.792102 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.792607 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:16.804521 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.804898 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.805405 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:16.817074 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.817394 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.817917 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:16.829823 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.830166 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.830668 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:16.842499 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.842893 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.843436 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:16.863716 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.864034 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.864442 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:16.875516 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.875907 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.876190 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:16.887328 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.887692 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.888198 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:16.900089 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.900467 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.901045 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:16.912711 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.913021 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.913492 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:16.928226 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.928651 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.929309 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:16.941966 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.942394 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.942910 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:16.954816 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.955127 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.955617 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:16.967998 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.968484 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.969003 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:16.981807 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.982242 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.982785 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:16.995344 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:16.995880 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:16.996440 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.014331 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.014773 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.015254 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:17.026089 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.026443 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.026721 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:17.038494 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.038922 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.039462 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:17.052775 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.053251 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.053894 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.066589 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.067046 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.067569 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.079942 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.080309 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.080827 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.093604 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.094044 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.094608 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.106920 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.107237 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.107720 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.119901 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.120263 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.120767 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.132965 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.133356 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.134038 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.147145 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.147513 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.148005 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.166822 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.167213 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.167638 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:17.178803 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.179188 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.179453 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:17.191149 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.191547 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.192087 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:17.204786 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.205213 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.205907 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.219163 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.219594 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.220111 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.232437 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.232762 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.233269 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.246466 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.246856 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.247386 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.260305 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.260715 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.261234 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.273164 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.273473 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.273952 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.286685 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.287121 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.287645 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.299927 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.300341 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.300866 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.322982 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.323274 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.323691 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:17.335153 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.335590 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.335955 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:17.348199 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.348607 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.349143 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:17.361682 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.362053 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.362566 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.374928 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.375373 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.375917 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.388228 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.388609 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.389121 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.401459 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.401914 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.402534 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.415129 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.415455 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.415946 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.428099 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.428469 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.428987 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.441082 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.441443 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.441971 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.453562 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.453995 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.454521 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.480328 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.480630 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.481044 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:17.491618 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.491895 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.492145 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:17.504570 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.504983 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.505594 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:17.518759 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.519117 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.519760 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.532203 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.532558 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.533041 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.545568 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.545922 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.546424 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.558098 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.558385 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.558929 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.572350 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.572749 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.573392 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.585447 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.585852 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.586397 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.598373 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.598714 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.599195 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.611507 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.611886 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.612386 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.643775 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.644198 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.644678 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:17.655209 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.655510 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.655771 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:17.667254 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.667695 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.668310 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:17.680345 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.680693 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.681186 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.693135 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.693541 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.694087 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.706121 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.706501 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.707021 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.718861 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.719255 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.719787 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.732466 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.732920 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.733481 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.745501 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.745837 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.746369 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.758886 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.759244 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.759797 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.772634 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.773178 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.773780 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.792878 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.793259 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.793700 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:17.805474 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.805859 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.806128 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:17.818040 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.818500 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.819062 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:17.831269 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.831725 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.832299 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.843948 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.844340 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.844844 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.857392 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.857792 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.858306 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.870341 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.870836 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.871474 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:17.884087 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.884464 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.885037 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.897010 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.897410 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.897940 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:17.910447 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.910811 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.911309 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.923355 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.923700 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.924270 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:17.945369 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.945678 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.946149 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:17.957608 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.957997 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.958316 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:17.970773 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.971216 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.971757 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:17.984754 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.985181 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.985713 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:17.998478 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:17.999042 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:17.999644 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.012446 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.012799 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.013293 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.024312 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.024621 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.025155 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.037789 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.038236 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.038794 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.050444 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.050854 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.051441 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.063183 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.063521 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.064031 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.075990 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.076413 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.076926 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.099609 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.099965 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.100397 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:18.111374 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.111697 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.111963 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:18.123480 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.123921 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.124441 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:18.136391 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.136787 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.137294 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.148621 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.149040 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.149574 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.160806 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.161149 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.161644 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.173116 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.173432 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.173986 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.185815 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.186160 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.186692 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.199171 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.199673 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.200310 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.214091 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.214563 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.215147 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.228386 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.228868 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.229603 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.251121 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.251559 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.252138 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:18.264880 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.265304 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.265619 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:18.278087 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.278398 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.278903 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:18.290493 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.290773 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.291264 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.303159 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.303569 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.304216 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.316320 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.316756 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.317284 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.329232 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.329568 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.330067 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.343019 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.343431 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.343941 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.355267 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.355578 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.356054 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.369038 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.369452 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.369979 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.381778 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.382085 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.382618 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.405420 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.405848 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.406350 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:18.417424 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.417780 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.418114 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:18.429418 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.429812 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.430328 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:18.443652 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.444078 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.444613 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.456644 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.457009 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.457550 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.470011 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.470471 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.471084 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.483719 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.484137 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.484692 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.498188 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.498631 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.499174 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.513230 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.513659 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.514185 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.527989 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.528479 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.529206 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.542836 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.543330 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.543944 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.566869 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.567329 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.567820 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:18.580718 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.581218 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.581713 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:18.594512 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.594963 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.595620 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:18.608023 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.608414 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.608946 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.621327 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.621665 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.622212 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.635224 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.635749 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.636437 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.649133 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.649585 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.650117 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.662640 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.663040 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.663663 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.676577 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.676985 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.677512 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.690539 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.690963 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.691631 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.704273 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.704670 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.705193 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.727852 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.728238 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.728710 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:18.740381 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.740810 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.741180 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:18.753251 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.753741 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.754431 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:18.767489 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.767958 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.768560 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.781441 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.781934 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.782482 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.794890 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.795379 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.796065 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.809361 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.809860 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.810388 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.822450 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.822941 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.823563 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.837296 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.837795 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.838375 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:18.851898 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.852409 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.853085 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.866069 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.866527 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.867092 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:18.896207 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.896682 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.897250 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:18.908727 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.909081 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.909353 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:18.922248 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.922661 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.923243 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:18.937224 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.937741 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.938410 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.952255 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.952698 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.953408 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:18.966037 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.966493 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.967211 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.979574 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.979937 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.980593 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:18.994428 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:18.994924 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:18.995482 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:19.008322 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.008669 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.009202 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:19.022501 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.022969 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.023517 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:19.036714 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.037107 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.037674 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:19.102490 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.102993 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.103466 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:19.115032 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.115388 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.115666 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:19.127548 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.127925 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.128438 git.c:502               trace: built-in: git ls-tree -r --name-only -z 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb
+18:40:19.140952 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.141352 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.141859 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:index.js
+18:40:19.153412 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.153813 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.154355 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:index.js
+18:40:19.166562 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.166958 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.167507 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:test.js
+18:40:19.181555 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.182027 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.182668 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:test.js
+18:40:19.196118 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.196509 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.197006 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/fixtures.js
+18:40:19.208896 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.209197 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.209719 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/fixtures.js
+18:40:19.222754 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.223193 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.223762 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/index.js
+18:40:19.235915 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.236413 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.237072 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/index.js
+18:40:19.259329 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.259839 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.260291 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:19.272431 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.272855 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.273245 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:19.285457 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.285801 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.286324 git.c:502               trace: built-in: git ls-tree -r --name-only -z 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb
+18:40:19.297671 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.298025 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.298506 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:index.js
+18:40:19.310078 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.310522 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.311057 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:index.js
+18:40:19.324917 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.325336 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.325859 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:test.js
+18:40:19.338226 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.338646 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.339181 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:test.js
+18:40:19.352744 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.353181 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.353754 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/fixtures.js
+18:40:19.366506 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.366959 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.367651 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/fixtures.js
+18:40:19.380994 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.381394 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.381958 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/index.js
+18:40:19.395034 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.395418 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.395969 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/index.js
+18:40:19.418439 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.418884 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.419340 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:19.430713 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.431140 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.431443 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:19.444010 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.444423 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.444953 git.c:502               trace: built-in: git ls-tree -r --name-only -z 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb
+18:40:19.457216 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.457529 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.458034 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:index.js
+18:40:19.471319 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.471685 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.472239 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:index.js
+18:40:19.485120 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.485515 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.486027 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:test.js
+18:40:19.498042 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.498337 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.498818 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:test.js
+18:40:19.511366 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.511755 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.512287 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/fixtures.js
+18:40:19.525094 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.525522 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.526045 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/fixtures.js
+18:40:19.539182 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.539516 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.540009 git.c:502               trace: built-in: git cat-file -s 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/index.js
+18:40:19.552583 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.553097 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.553734 git.c:502               trace: built-in: git show 67a80c80b844fc6ec1f50f5727f6d93554fcf1bb:benchmark/index.js
+18:40:19.609149 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.609644 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.610122 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:19.621481 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.621863 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.622126 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:19.634276 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.634781 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.635350 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:19.647860 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.648245 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.648728 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:19.660795 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.661176 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.661687 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:19.673819 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.674121 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.674597 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:19.687083 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.687482 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.688033 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:19.700796 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.701254 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.701870 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:19.714174 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.714552 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.715049 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:19.728133 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.728487 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.728993 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:19.740726 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.741128 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.741642 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:19.855224 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.855599 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.856130 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:19.866886 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.867209 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.867474 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:19.879494 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.879846 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.880347 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:19.892319 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.892650 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.893174 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:19.905563 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.905961 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.906530 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:19.918684 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.919054 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.919546 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:19.931921 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.932274 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.932763 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:19.945676 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.946017 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.946518 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:19.957753 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.958061 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.958589 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:19.971446 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.971798 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.972301 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:19.984354 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:19.984774 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:19.985301 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:20.007736 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.008094 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.008546 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:20.019538 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.019884 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.020135 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:20.031275 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.031608 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.032106 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:20.044843 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.045192 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.045683 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:20.057933 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.058314 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.058869 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:20.071968 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.072408 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.072995 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:20.085169 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.085518 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.086014 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:20.097210 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.097552 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.098037 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:20.109560 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.109932 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.110427 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:20.121885 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.122181 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.122673 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:20.135451 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.135880 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.136407 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:20.160781 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.161251 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.161722 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:20.172945 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.173303 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.173571 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:20.185556 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.185968 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.186467 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:20.199632 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.200055 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.200602 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:20.212230 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.212516 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.212988 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:20.224892 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.225259 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.225758 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:20.238443 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.238802 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.239295 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:20.252309 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.252699 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.253276 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:20.265090 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.265437 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.265925 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:20.278643 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.278964 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.279448 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:20.290839 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.291126 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.291623 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:20.316554 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.316950 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.317493 git.c:502               trace: built-in: git config --get remote.origin.url
+18:40:20.328873 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.329279 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.329595 git.c:502               trace: built-in: git rev-parse --verify HEAD
+18:40:20.341646 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.342026 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.342510 git.c:502               trace: built-in: git ls-tree -r --name-only -z 98e8ff1da1a89f93d1397a24d7413ed15421c139
+18:40:20.353921 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.354238 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.354727 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:20.366003 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.366362 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.366913 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:index.js
+18:40:20.379239 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.379577 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.380085 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:20.391565 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.391852 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.392334 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:test.js
+18:40:20.405013 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.405364 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.405877 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:20.417108 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.417462 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.417954 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/fixtures.js
+18:40:20.429912 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.430258 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.430745 git.c:502               trace: built-in: git cat-file -s 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js
+18:40:20.442474 exec-cmd.c:145          trace: resolved executable path from Darwin stack: /Library/Developer/CommandLineTools/usr/bin/git
+18:40:20.442807 exec-cmd.c:267          trace: resolved executable dir: /Library/Developer/CommandLineTools/usr/bin
+18:40:20.443323 git.c:502               trace: built-in: git show 98e8ff1da1a89f93d1397a24d7413ed15421c139:benchmark/index.js

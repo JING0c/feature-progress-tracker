@@ -1,0 +1,19 @@
+{
+  "marketplace": "/tmp/fpt-30985b1-package-review-r5g3m8xp/rebuilt",
+  "marketplace_archive": "/tmp/fpt-30985b1-package-review-r5g3m8xp/rebuilt-dist/feature-progress-tracker-marketplace.zip",
+  "marketplace_sha256": "4c5acc15f50ad633e53bb5466ef1ded4149f9e7a992d460ca622397a49f9fd61",
+  "plugins": {
+    "codex": {
+      "version": "0.2.0",
+      "directory": "/tmp/fpt-30985b1-package-review-r5g3m8xp/rebuilt/plugins/codex",
+      "archive": "/tmp/fpt-30985b1-package-review-r5g3m8xp/rebuilt-dist/feature-progress-tracker-codex.zip",
+      "sha256": "92d4236f960fc76aa9db6156265a5397761c951de9371e44dd469c95bd2e271a"
+    },
+    "claude": {
+      "version": "0.2.0",
+      "directory": "/tmp/fpt-30985b1-package-review-r5g3m8xp/rebuilt/plugins/claude",
+      "archive": "/tmp/fpt-30985b1-package-review-r5g3m8xp/rebuilt-dist/feature-progress-tracker-claude.zip",
+      "sha256": "797fbc2b2dc25a1e205dbe2f92686d4c9ba3cb3b6bf4340c36b1af30e5b4869b"
+    }
+  }
+}

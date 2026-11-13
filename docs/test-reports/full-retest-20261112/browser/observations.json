@@ -1,0 +1,41 @@
+{
+  "version": "30985b117bae716b699bd07f9dcf89bd2e65bbfe",
+  "desktop": [
+    1280,
+    720
+  ],
+  "narrow": [
+    390,
+    844
+  ],
+  "clicks": 13,
+  "enter_keys": 2,
+  "screenshots": 16,
+  "screenshots_span_seconds": 305.21,
+  "timing_caveat": "Includes evidence writing and agent coordination; not a novice completion time.",
+  "parent_to_child_px": 151,
+  "narrow_viewport_width": 390,
+  "narrow_document_width": 390,
+  "narrow_body_width": 390,
+  "console_warnings_errors": [],
+  "route": [
+    "项目总览",
+    "待规划项目",
+    "返回总览",
+    "已规划项目",
+    "展开验收详情",
+    "下载Excel",
+    "操作记录",
+    "首次保存表",
+    "展开旧验收",
+    "返回记录",
+    "功能看板",
+    "搜索图书",
+    "筛选作者",
+    "Enter父详情",
+    "返回总览",
+    "390宽Enter文件位置"
+  ],
+  "server_port": 61779,
+  "business_data": "Created by real Codex under isolated temporary workspace; no user business files touched."
+}

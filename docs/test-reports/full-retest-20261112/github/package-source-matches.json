@@ -1,0 +1,26 @@
+[
+  {
+    "path": "scripts/project_service.py",
+    "package_path": "/tmp/fpt-20261112-github-final-d67v4d1j/package/runtime/scripts/project_service.py",
+    "matches_current_source": true,
+    "sha256": "e118984bc2bfbd1c424ad94a2b57f6b267ff71e2ec9eb5f7f0741cfd7ec13e7f"
+  },
+  {
+    "path": "scripts/planning_source.py",
+    "package_path": "/tmp/fpt-20261112-github-final-d67v4d1j/package/runtime/scripts/planning_source.py",
+    "matches_current_source": true,
+    "sha256": "237f16c11b80bebc4df41bf7b501a25dbdbc1a996b9a8161b7ba9c957f020475"
+  },
+  {
+    "path": "scripts/plugin_mcp.py",
+    "package_path": "/tmp/fpt-20261112-github-final-d67v4d1j/package/runtime/scripts/plugin_mcp.py",
+    "matches_current_source": true,
+    "sha256": "9e1fdd71e4ceb319dfc2ca0ae8f13cdc41c3208a8aa9f9301f48c9a6dbcdad2c"
+  },
+  {
+    "path": "scripts/project_tools.py",
+    "package_path": "/tmp/fpt-20261112-github-final-d67v4d1j/package/runtime/scripts/project_tools.py",
+    "matches_current_source": true,
+    "sha256": "227399de5671bf31458d86b44ffaf706cdaaccccde3b8419902e6df3cf264a31"
+  }
+]

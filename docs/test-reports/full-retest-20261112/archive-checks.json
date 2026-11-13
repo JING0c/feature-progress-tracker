@@ -1,0 +1,30 @@
+{
+  "note": "Raw host operation-record fixture retains its original trailing whitespace on lines 18 and 119; scoped authored-document check passes.",
+  "checks": [
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit_code": 2,
+      "stdout": "docs/test-reports/full-retest-20261112/host/规划操作记录.md:18: trailing whitespace.\n+ \ndocs/test-reports/full-retest-20261112/host/规划操作记录.md:119: trailing whitespace.\n+ \n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "功能执行情况.md",
+        "docs/test-reports/2026-11-12-full-retest.md"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

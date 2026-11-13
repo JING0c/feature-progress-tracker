@@ -1,0 +1,159 @@
+{
+  "head": "30985b117bae716b699bd07f9dcf89bd2e65bbfe",
+  "root": "/private/tmp/protuct-plan-retest-core-20261112-qimezpq3",
+  "command_count": 14,
+  "commands": [
+    {
+      "name": "01-unittest",
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 15.418
+    },
+    {
+      "name": "02-test_adoption_dashboard",
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+        "tests/test_adoption_dashboard.cjs"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.039
+    },
+    {
+      "name": "03-test_dashboard_hierarchy_view",
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+        "tests/test_dashboard_hierarchy_view.cjs"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.038
+    },
+    {
+      "name": "04-test_dashboard_poll",
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+        "tests/test_dashboard_poll.cjs"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.039
+    },
+    {
+      "name": "05-test_markdown",
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+        "tests/test_markdown.cjs"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.041
+    },
+    {
+      "name": "06-test_planning_activity",
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+        "tests/test_planning_activity.cjs"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.055
+    },
+    {
+      "name": "07-test_planning_history_races",
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+        "tests/test_planning_history_races.cjs"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.052
+    },
+    {
+      "name": "08-test_planning_sheet_view",
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+        "tests/test_planning_sheet_view.cjs"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.041
+    },
+    {
+      "name": "09-test_readonly_viewer",
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+        "tests/test_readonly_viewer.cjs"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.061
+    },
+    {
+      "name": "10-diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.014
+    },
+    {
+      "name": "11-history-acceptance",
+      "command": [
+        "python3",
+        "-B",
+        "docs/test-reports/host-chat-repairs/history_acceptance_audit.py"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 8.915
+    },
+    {
+      "name": "12-r345-adversarial",
+      "command": [
+        "python3",
+        "-B",
+        "docs/test-reports/host-chat-repairs/adversarial_r345_review.py"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 1.57
+    },
+    {
+      "name": "13-usability-boundaries",
+      "command": [
+        "python3",
+        "-B",
+        "docs/test-reports/usability-repairs/review_usability_repairs.py"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.588
+    },
+    {
+      "name": "14-usability-dom",
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+        "docs/test-reports/usability-repairs/review_usability_repairs.cjs"
+      ],
+      "cwd": "/Users/olcgb/code/protuct_plan",
+      "exit_code": 0,
+      "seconds": 0.054
+    }
+  ],
+  "tracked_changed": [],
+  "git_status": ""
+}

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>项目规划 · 项目管理器</title>
+<link rel="stylesheet" href="/assets/planning-markdown.css">
+<link rel="stylesheet" href="/assets/planning-sheet.css">
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#382632;background:#fff9fc;--muted:#705664;--magenta:#832d51;--green:#447a5f}*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0}a{color:var(--magenta);text-decoration:none}a:hover{text-decoration:underline}button{font:inherit;cursor:pointer;border:1px solid #dfbdce;border-radius:7px;background:#fff;color:#71354f;padding:8px 12px}button:hover{background:#faedf3}button:disabled{opacity:.55;cursor:default}a,button,summary{touch-action:manipulation}:focus-visible{outline:3px solid #ea6993;outline-offset:3px}header{padding:18px max(24px,calc((100vw - 1120px)/2));display:flex;align-items:center;gap:24px;flex-wrap:wrap;border-bottom:1px solid #efc6d9;background:#fff;font-size:14px}header strong{font-size:15px;white-space:nowrap}header nav{display:flex;gap:20px;flex-wrap:wrap;margin-right:auto}header a[aria-current=page]{font-weight:700;color:#382632}#sync-status{font-size:13px;color:var(--green)}#sync-status[data-error=true]{color:var(--magenta)}main{max-width:1280px;margin:auto;padding:34px 24px 70px}h1{font-size:30px;letter-spacing:-.02em;margin:0 0 10px}h2{font-size:20px;margin:0}.intro{color:var(--muted);font-size:14px;line-height:1.75;margin:0 0 20px}.context{padding:14px 0 20px;border-bottom:1px solid #eadde4;margin-bottom:22px;color:#634454;line-height:1.7;font-size:14px}.context p{margin:0}.context p+p{margin-top:5px}.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.toolbar h2{margin-right:auto}.secondary,.view-button{border:1px solid #dfbdce;background:#fff;color:#71354f;padding:9px 13px;min-height:40px;border-radius:7px;font-size:14px;display:inline-flex;align-items:center;justify-content:center}.secondary:hover,.view-button:hover{background:#faedf3;text-decoration:none}.secondary:disabled{opacity:.55;cursor:wait}.views{display:flex;gap:6px}.view-button[aria-pressed=true]{border-color:#447a5f;color:#294c3a;background:#edf3df;font-weight:650}.panel{background:white;border:1px solid #e6c6d6;border-radius:12px;overflow:hidden;min-width:0}.document{padding:24px;line-height:1.8;overflow-wrap:anywhere}.empty,.load-message{padding:28px;line-height:1.8;color:var(--muted);margin:0}.empty strong{display:block;color:#382632;font-size:18px}.file-path{font-size:12px;color:var(--muted);line-height:1.6;margin:12px 0 24px;overflow-wrap:anywhere}.file-path summary{cursor:pointer}.file-path p{margin:8px 0}.download-tools{display:flex;gap:10px;flex-wrap:wrap}.status{color:var(--muted);font-size:13px;line-height:1.7;margin:12px 0}.status:empty{display:none}.records{margin-top:26px;border-top:1px solid #eadde4;padding-top:20px}.records>summary{font-size:18px;font-weight:650;cursor:pointer;padding:10px 0;color:#482b38}.records-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:15px 0}.records-toolbar h2{font-size:17px}.activity-card{padding:16px 0;border-bottom:1px solid #eadde4}.activity-entry summary{cursor:pointer;font-size:14px;line-height:1.7;font-weight:600}.activity-entry summary span{display:block;font-size:13px;font-weight:400;color:var(--muted);padding:6px 0}.activity-entry pre,.history-diff{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.75;background:#fff;padding:16px;border:1px solid #eadde4;border-radius:8px;color:#382632}.activity-card p{font-size:13px;color:var(--muted)}.history{margin:16px 0;padding:20px;border:1px solid #e6c6d6;border-radius:12px;background:#fff}.history h2{font-size:19px;line-height:1.5}.history .toolbar{align-items:flex-start}.history details{margin-top:18px}.history summary{cursor:pointer;font-size:14px;color:#634454}.history p{line-height:1.7}.history .document{border-top:1px solid #eadde4;margin-top:12px;padding:16px 0}.footer{font-size:12px;color:#79626d;line-height:1.7;text-align:center;margin-top:28px}.sheet-toolbar{padding:12px}.sheet-tabs{flex-wrap:wrap}.adoption-text{font-weight:500;color:#31533f}.adoption-text[data-selected=false]{color:#705664}@media(max-width:650px){header{padding:16px;gap:14px}header nav{order:3;width:100%;gap:18px}main{padding:26px 16px 48px}h1{font-size:26px}.document{padding:16px}.toolbar{gap:9px}.toolbar h2{width:100%}.history{padding:15px}.download-tools{width:100%}.records-toolbar{align-items:flex-start}}
+</style>
+</head>
+<body>
+<header><strong>项目管理器</strong><nav aria-label="项目导航"><a href="/projects">项目总览</a><a id="planning-link" href="/planning" aria-current="page">项目规划</a><a id="board-link" href="/" hidden>功能看板</a></nav><span id="sync-status" role="status">正在读取项目</span></header>
+<main>
+<h1 id="project-title">项目规划</h1>
+<p class="intro">在 Codex 或 Claude Code 对话中管理项目；此处查看已保存内容。</p>
+<div class="context"><p id="planning-state">正在检查项目规划书…</p><p id="planning-guidance">需求讨论、功能调整、建议采纳和保存都在对话中完成。</p></div>
+<section aria-label="已保存的规划书">
+<div class="toolbar"><h2>项目规划书</h2><div class="views" id="plan-views" aria-label="规划显示方式" hidden><button class="view-button" id="view-sheet" type="button" aria-pressed="true">功能表</button><button class="view-button" id="view-document" type="button" aria-pressed="false">文档</button></div><button class="secondary" id="refresh-plan" type="button">刷新</button><button class="secondary" id="open-plan-history" type="button">操作记录</button></div>
+<div id="plan-empty" class="panel"><p class="load-message" id="empty-message">正在读取已保存内容…</p></div>
+<div class="panel" id="plan-document" hidden><div id="plan-sheet"></div><article class="document planning-markdown" id="plan-content" hidden></article></div>
+<p class="status" id="read-warning" role="status"></p>
+<details class="file-path"><summary>文件位置</summary><p id="plan-location">读取后显示</p></details>
+<div class="download-tools" id="download-tools" hidden><a class="secondary" id="export-excel" href="/api/plan/export">下载已保存的 Excel</a><button class="secondary" id="download-plan" type="button">下载 Markdown</button><button class="secondary" id="copy-plan" type="button">复制规划书</button></div>
+<p class="status" id="download-status" role="status"></p>
+</section>
+<details class="records" id="suggestion-activity"><summary>操作记录<span id="activity-count"></span></summary>
+<div id="activity-timeline" tabindex="-1"><div class="records-toolbar"><h2>项目操作记录</h2><button class="secondary" id="refresh-activity" type="button">刷新记录</button></div><p class="status" id="activity-state" role="status">正在读取记录…</p><div id="activity-list"></div></div>
+<section class="history" id="plan-history" aria-label="当时的功能表" hidden><div class="toolbar"><h2 id="history-title" tabindex="-1">当时的功能表</h2><button class="secondary" id="history-back" type="button">返回操作记录</button></div><p class="status" id="history-status" role="status"></p><div id="history-detail" hidden><p class="status" id="history-meta"></p><div id="history-sheet" class="panel"></div><details><summary>查看当时的完整规划书</summary><article id="history-document" class="document planning-markdown"></article></details><details><summary>与上次保存比较</summary><pre id="history-diff" class="history-diff"></pre></details><div class="download-tools"><a class="secondary" id="history-download-excel">下载当时的 Excel</a><button class="secondary" id="history-download-md" type="button">下载当时的 Markdown</button></div></div></section>
+</details>
+<p class="footer">每 3 秒读取 Markdown 文件变化 · 功能完成以独立审核记录为准</p>
+</main>
+<script src="/assets/planning-markdown.js"></script><script src="/assets/planning-sheet-view.js"></script><script src="/assets/planning-activity.js"></script>
+<script>
+const project = new URLSearchParams(location.search).get('project');
+const $ = id => document.getElementById(id);
+const api = path => path + (project ? (path.includes('?') ? '&' : '?') + 'project=' + encodeURIComponent(project) : '');
+$('planning-link').href = api('/planning');
+$('board-link').href = api('/');
+$('export-excel').href = api('/api/plan/export');
+const sheetView = createPlanningSheetView($('plan-sheet'));
+const historySheet = createPlanningSheetView($('history-sheet'));
+let planText = '', planRevision = null, viewMode = 'sheet', refreshing = false, timer = null, hasRead = false;
+let historySequence = 0, historyCurrent = null;
+async function request(path) {
+  const response = await fetch(api(path), {cache:'no-store'});
+  const data = await response.json();
+  if (!response.ok) throw Error(data.error || '读取失败，请稍后刷新。');
+  return data;
+}
+function setView(mode) {
+  viewMode = mode;
+  $('view-sheet').setAttribute('aria-pressed', String(mode === 'sheet'));
+  $('view-document').setAttribute('aria-pressed', String(mode === 'document'));
+  $('plan-sheet').hidden = mode !== 'sheet';
+  $('plan-content').hidden = mode !== 'document';
+}
+$('view-sheet').addEventListener('click', () => setView('sheet'));
+$('view-document').addEventListener('click', () => setView('document'));
+function applyProject(data, doc) {
+  document.title = data.name + ' · 项目规划';
+  $('project-title').textContent = data.name + ' · 项目规划';
+  const state = doc.planning || data.planning || {};
+  $('board-link').hidden = state.ready !== true;
+  $('planning-state').textContent = state.ready ? '已保存的项目规划书，与本机项目文件同步。' : '待规划：请在 Codex 或 Claude Code 中完成并保存项目规划书。';
+  $('planning-guidance').textContent = state.ready ? '需求讨论、功能调整、建议采纳和保存都在对话中完成。' : '已有资料可在下方查看；规划确认后，再在对话中生成功能台账。';
+  $('plan-location').textContent = doc.path || data.plan_path || '尚未创建规划文件';
+}
+async function refreshPlan() {
+  if (refreshing) return;
+  refreshing = true; $('refresh-plan').disabled = true;
+  try {
+    let doc, model, metadata;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      [doc, metadata] = await Promise.all([request('/api/plan'), request('/api/project')]);
+      const content = typeof doc.content === 'string' ? doc.content : '';
+      const present = content.trim() && !/^# 项目规划书\s+尚未生成规划书[^\n]*\s*$/.test(content);
+      if (!present || doc.revision === planRevision && content === planText) { model = null; break; }
+      model = await request('/api/plan/table');
+      if (model.revision === doc.revision) break;
+      if (attempt === 1) throw Error('项目文件正在更新，稍后会自动读取最新版本。');
+    }
+    applyProject(metadata, doc);
+    const content = typeof doc.content === 'string' ? doc.content : '';
+    const present = !!content.trim() && !/^# 项目规划书\s+尚未生成规划书[^\n]*\s*$/.test(content);
+    if (content !== planText || doc.revision !== planRevision || !hasRead) {
+      planText = content; planRevision = doc.revision;
+      if (present) { renderPlanningMarkdown($('plan-content'), content); if (model) sheetView.show(model); }
+      else { sheetView.clear(); $('plan-content').replaceChildren(); }
+    }
+    $('plan-document').hidden = !present; $('plan-empty').hidden = present;
+    $('empty-message').textContent = '尚未保存项目规划书。请在 Codex 或 Claude Code 对话中描述项目需求，确认规划后保存；内容会自动出现在这里。';
+    $('download-tools').hidden = !present; $('plan-views').hidden = !present;
+    $('view-sheet').disabled = !present; $('view-document').disabled = !present;
+    setView(viewMode); hasRead = true;
+    $('read-warning').textContent = '';
+    $('sync-status').textContent = '已同步 · ' + new Date().toLocaleTimeString('zh-CN', {hour12:false});
+    $('sync-status').dataset.error = 'false';
+    if ($('suggestion-activity').open) await activity.refresh();
+  } catch (error) {
+    $('sync-status').textContent = hasRead ? '同步中断，保留上次内容' : '暂时无法读取项目';
+    $('sync-status').dataset.error = 'true';
+    $('read-warning').textContent = error.message + ' 可以点击“刷新”重试。';
+    if (!hasRead) $('empty-message').textContent = '未能读取项目资料。请确认在宿主对话中打开了项目管理器，再点击“刷新”。';
+  } finally {
+    refreshing = false; $('refresh-plan').disabled = false;
+    if (timer) clearTimeout(timer); timer = setTimeout(refreshPlan, 3000);
+  }
+}
+$('refresh-plan').addEventListener('click', refreshPlan);
+function saveMarkdown(content, filename) {
+  saveDownload(new Blob([content], {type:'text/markdown;charset=utf-8'}), filename);
+}
+function saveDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a'); link.href = url; link.download = filename;
+  document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+let downloadingExcel = false;
+async function downloadExcel(link, status, filename) {
+  if (downloadingExcel) return;
+  downloadingExcel = true; status.textContent = '正在读取 Excel 文件…';
+  try {
+    const response = await fetch(link.href, {cache:'no-store'});
+    if (!response.ok) { const data = await response.json(); throw Error(data.error || '导出失败'); }
+    saveDownload(await response.blob(), filename); status.textContent = 'Excel 已下载，项目文件未改动。';
+  } catch (error) { status.textContent = 'Excel 下载失败：' + error.message + '，可稍后重试。'; }
+  finally { downloadingExcel = false; }
+}
+$('export-excel').addEventListener('click', event => { event.preventDefault(); return downloadExcel($('export-excel'), $('download-status'), '项目规划书.xlsx'); });
+$('history-download-excel').addEventListener('click', event => { event.preventDefault(); if(historyCurrent)return downloadExcel($('history-download-excel'), $('history-status'), '历史项目规划书.xlsx'); });
+$('download-plan').addEventListener('click', () => {
+  if (!planText.trim()) return;
+  saveMarkdown(planText, '项目规划书.md'); $('download-status').textContent = '已下载当前显示的已保存规划书。';
+});
+$('copy-plan').addEventListener('click', async () => {
+  if (!planText.trim()) return;
+  try { await navigator.clipboard.writeText(planText); $('download-status').textContent = '已复制当前显示的已保存规划书。'; }
+  catch (_) { $('download-status').textContent = '复制失败，可切换到文档视图手动复制，或下载 Markdown。'; }
+});
+function closeHistory() {
+  historySequence++; historyCurrent = null; $('plan-history').hidden = true;
+  $('history-detail').hidden = true; $('activity-timeline').hidden = false;
+}
+async function showHistory(id) {
+  const sequence = ++historySequence; historyCurrent = null;
+  $('plan-history').hidden = false; $('history-detail').hidden = true;
+  $('history-title').textContent = '当时的功能表'; $('history-status').textContent = '正在读取当时的功能表…';
+  $('history-title').focus({preventScroll:true}); $('plan-history').scrollIntoView({block:'start'});
+  try {
+    const data = await request('/api/plan/history?version=' + encodeURIComponent(id));
+    if (sequence !== historySequence) return;
+    historyCurrent = data; $('history-detail').hidden = false;
+    const date = new Date(data.saved_at);
+    $('history-title').textContent = (Number.isNaN(date.getTime()) ? '历史保存' : date.toLocaleString('zh-CN')) + '的功能表';
+    $('history-meta').textContent = [data.source, data.note].filter(Boolean).join(' · ');
+    $('history-status').textContent = '只读副本，查看和下载不会修改当前规划。' + (data.warnings || []).join('；');
+    historySheet.show(data.model); renderPlanningMarkdown($('history-document'), data.content);
+    $('history-diff').textContent = data.diff || '功能表正文与上次保存相同。';
+    $('history-download-excel').href = api('/api/plan/export?version=' + encodeURIComponent(id));
+  } catch (error) { if (sequence === historySequence) $('history-status').textContent = '读取失败：' + error.message + ' 可返回操作记录重试。'; }
+}
+$('history-back').addEventListener('click', () => { closeHistory(); $('activity-timeline').focus({preventScroll:true}); });
+$('history-download-md').addEventListener('click', () => {
+  if (historyCurrent) saveMarkdown(historyCurrent.content, '历史项目规划书.md');
+});
+const activity = createPlanningActivity({load:() => request('/api/plan/activity'), openSnapshot:showHistory, closeSnapshot:closeHistory});
+$('suggestion-activity').addEventListener('toggle', () => { if ($('suggestion-activity').open) activity.refresh(); });
+refreshPlan();
+</script>
+</body></html>

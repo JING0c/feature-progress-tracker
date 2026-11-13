@@ -1,0 +1,23 @@
+[
+  "codex",
+  "exec",
+  "--ignore-user-config",
+  "--ephemeral",
+  "--skip-git-repo-check",
+  "-s",
+  "workspace-write",
+  "-C",
+  "/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fpt-20261112-retest-y41a_d5n/host/workspace",
+  "-c",
+  "approval_policy=\"never\"",
+  "-c",
+  "mcp_servers.fpt.command=\"python3\"",
+  "-c",
+  "mcp_servers.fpt.args=[\"/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fpt-20261112-retest-y41a_d5n/host/codex/runtime/scripts/plugin_mcp.py\", \"--agent\", \"codex\"]",
+  "-c",
+  "mcp_servers.fpt.tool_timeout_sec=90",
+  "--json",
+  "-o",
+  "/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fpt-20261112-retest-y41a_d5n/host/final.txt",
+  "-"
+]

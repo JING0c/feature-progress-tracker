@@ -1,0 +1,8 @@
+这是 feature-progress-tracker 的隔离交付验收，用户已授权创建和修改下述测试数据。只能写 /private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fpt-20261112-retest-y41a_d5n/host/workspace；不修改真实项目、源码、全局配置，不提交git。请使用 fpt MCP 工具实际完成操作，禁止用shell或手改文件代替这些工具。所有数据是测试夹具，不代表项目已实现。
+测试工作区：/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fpt-20261112-retest-y41a_d5n/host/workspace
+1. 新建项目“宿主实测-阅读清单”，保存含目标、范围和标准功能表的规划：F01 图书管理；F01-01 添加图书，验收“保存后重启能读取新记录”。明确当前测试不选外部参考（真实GitHub及源码由另一独立测试负责）。
+2. 用结构化edit_features在F01下新增“搜索图书”，并在它下面新增“筛选作者”，在同批临时N编号上建立父子关系。先预览、read_project确认文件没变，再保存；由代码分配编号，不手改旧行。
+3. 阅读当前功能后由你自己提出一条针对“添加图书”的改进建议，验收增加“拒绝空标题”；通过record_suggestions记录你这个真实Codex测试会话作为分析者，不冒称另一个审核人。本测试授权采纳这条建议：用preview_suggestions预览，确认未自动保存，再save_plan。
+4. prepare_source_review确认无仓库无源码，若需要report则各功能写未找到依据并明确测试无参考，不编造引用。生成并保存功能台账，导出Excel，read_project/history确认规划、台账与历史一致。不要勾选功能完成。
+5. 再创建“宿主实测-待规划”的空项目，保留待规划。不要打开浏览器或启动查看服务（主验收Agent随后操作）。
+最后中文回答项目ID、目录、功能编号与层级、预览前文件是否不变、最新验收是否进入台账、Excel路径、历史记录数量和任何失败。如工具无法使用直说，不能改用内部函数绕过。

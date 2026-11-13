@@ -1,0 +1,50 @@
+{
+  "method": "two new read-only pure-function reproductions against current checkout; screenshot separately inspected with view_image",
+  "head": "30985b117bae716b699bd07f9dcf89bd2e65bbfe",
+  "goal": {
+    "input_valid": {
+      "valid": true,
+      "missing": []
+    },
+    "goal_text": "帮助管理员整理和查看个人借阅图书。",
+    "ledger": {
+      "content": "# 功能执行情况\n\n目标：待规划\n\n## 大功能 F01：图书管理\n\n- [ ] F01-01 添加图书｜状态：未开始\n  - 验收：重启后能读取新记录\n  - 说明：输入图书标题保存记录\n  - 优先级：待确认\n  - 依赖：无\n  - 所需技术：待确认\n  - 前期准备：待确认\n  - 执行 Agent：待分配\n  - 实现证据：无\n  - 审核 Agent：待审核\n  - 评分：待审核\n  - 问题：无\n",
+      "added": [
+        "F01-01"
+      ],
+      "preserved": [],
+      "updated": [],
+      "note": "按已采用功能转换；新条目均为未开始、待审核。"
+    },
+    "confirmed": true
+  },
+  "detail": {
+    "source_path": "/private/var/folders/qf/r4lx43010kx0s658zr73bpbw0000gn/T/fpt-20261112-retest-y41a_d5n/host/workspace/项目/宿主实测-阅读清单-039593bf/项目规划书.md",
+    "source_sha256": "4307162e10f6a28bc7ee922e98bd47e827c3a588345cee03b4ad7c8239d99f2a",
+    "source_row": {
+      "采用": "是",
+      "编号": "F01-01",
+      "上级编号": "F01",
+      "功能名称": "添加图书",
+      "说明": "录入并保存图书记录",
+      "验收标准": "保存后重启能读取新记录；拒绝空标题，且不写入记录。",
+      "优先级": "高",
+      "依赖": "无",
+      "所需技术": "待确认",
+      "前期准备": "测试书目",
+      "备注": "测试夹具"
+    },
+    "projected_row": {
+      "采用": "是",
+      "大功能": "F01 图书管理",
+      "小功能": "F01-01 添加图书",
+      "细分功能": "",
+      "功能介绍": "说明：录入并保存图书记录\n验收标准：保存后重启能读取新记录；拒绝空标题，且不写入记录。\n优先级：高\n依赖：无\n备注：采用：是\n所需技术：待确认\n前期准备：测试书目\n测试夹具",
+      "所需技术": "待确认",
+      "前期准备": "测试书目"
+    },
+    "renderer": "planning-sheet-view.js:118 appends full 功能介绍 then 所需技术/前期准备 again",
+    "confirmed": true,
+    "source_unchanged": true
+  }
+}

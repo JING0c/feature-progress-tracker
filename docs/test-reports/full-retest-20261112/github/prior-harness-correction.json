@@ -1,0 +1,7 @@
+{
+  "previous_run": "/tmp/fpt-20261112-github-u19x4mm_",
+  "failure": "AssertionError({'id': '35898ad58e164962bb9ee343e0a107d7', 'time': '2026-11-13T02:37:29.327785+00:00', 'title': '源码核对资料已准备', 'detail': '已读取 1 个参考仓库的固定提交，共 4 个源码片段；等待当前宿主提交逐项核对报告。', 'state': 'success', 'history_version': '', 'actor': 'codex'})",
+  "cause": "history tool returns newest first; old harness read records[-1] as latest",
+  "fix": "Use records[0] and rerun all phases in new isolated workspace",
+  "product_failure": false
+}

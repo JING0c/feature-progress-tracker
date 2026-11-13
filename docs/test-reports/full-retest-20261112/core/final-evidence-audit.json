@@ -1,0 +1,27 @@
+{
+  "audited_files_sha256": {
+    "docs/test-reports/2026-11-12-full-retest.md": "783e976a9fc069b92580efa85eeec6f99fbd48e2f8b1c4115c11b6932537a67f",
+    "功能执行情况.md": "de4ec0cdbe033013990b512c5279666954bfafc635481b01d1efd7490788d9f9"
+  },
+  "before_summary": {
+    "total": 46,
+    "done": 43,
+    "working": 0,
+    "review": 2,
+    "blocked": 0,
+    "issues": 11,
+    "disputes": 0
+  },
+  "after_summary": {
+    "total": 46,
+    "done": 43,
+    "working": 0,
+    "review": 2,
+    "blocked": 0,
+    "issues": 11,
+    "disputes": 0
+  },
+  "targeted_staged_diff_check_exit": 0,
+  "targeted_staged_diff_check_output": "",
+  "scope": "Documentation/evidence audit only; no product changes or test reruns"
+}

@@ -1,0 +1,7 @@
+{
+  "port": 61779,
+  "connect_ex": 61,
+  "listening": false,
+  "pid": 63694,
+  "stopped_only_isolated_server": true
+}
