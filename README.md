@@ -21,7 +21,11 @@
 
 ## 插件与安装包
 
-当前源码版本 **0.2.0（宿主对话编排）**。构建不需要第三方Python依赖：
+当前插件版本 **0.2.0（宿主对话编排）**，发行标签为 **v0.2.0-preview.1**，包含台账目标同步与功能详情去重修复。
+
+直接下载：[双宿主完整安装包（推荐）](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-marketplace.zip) · [Codex 插件](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-codex.zip) · [Claude Code 插件](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-claude.zip)。下载后解压并按[安装说明](docs/plugins.md)注册，不用自己构建。
+
+如需自行构建，不需要第三方Python依赖：
 
 ```sh
 python3 scripts/build_plugins.py
@@ -31,7 +35,7 @@ python3 scripts/build_plugins.py
 
 已安装旧版的用户请按[Codex 升级步骤](docs/plugins.md#在-codex-升级到-020)选择原目录或换目录路线，并核对实际安装版本为 `0.2.0`；Claude 的更新方式与未实测范围也在同页说明。
 
-[GitHub发行页](https://github.com/JING0c/feature-progress-tracker/releases)目前已发布的 `v0.1.0-preview.1` 是旧网页编排版；本轮0.2.0本地包尚未发布到GitHub，不要把旧下载包当作本轮新版。
+[本次发行页与校验文件](https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.2.0-preview.1)。旧 `v0.1.0-preview.1` 保留为历史版本；当前为预览版，Claude Code 真实安装与升级的未验证范围见安装说明。
 
 ## 数据与流程
 

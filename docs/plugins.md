@@ -11,7 +11,14 @@
 
 ## 安装包与构建
 
-当前本地成品版本0.2.0。此前发布的[v0.1.0-preview.1](https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.1.0-preview.1)是旧网页编排版，不包含本次改动。新版源码可运行：
+当前成品版本0.2.0，下载发行标签为[v0.2.0-preview.1](https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.2.0-preview.1)，包含台账目标同步和功能详情去重修复。直接下载安装包即可，无需自己构建：
+
+- [双宿主完整市场包（推荐首次安装）](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-marketplace.zip)
+- [Codex 单插件包](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-codex.zip)
+- [Claude Code 单插件包](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-claude.zip)
+- [SHA-256 校验文件](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/SHA256SUMS.txt)
+
+旧[v0.1.0-preview.1](https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.1.0-preview.1)保留为历史网页编排版。当前仍为预览版，实际验证和未验证范围见下文。若需要自行构建，运行：
 
 ```sh
 python3 scripts/build_plugins.py
