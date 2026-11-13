@@ -1,77 +1,87 @@
 # Markdown 项目管理器
 
-在 **Codex 或 Claude Code 对话中**管理多个项目：讨论需求、参考 GitHub、编辑功能清单、采纳建议、核对源码、保存台账、更新进度和导出 Excel。AI 负责分析，代码工具负责操作，项目资料保存在 Markdown 中。
+在 **Codex 或 Claude Code 对话中**完成项目规划、功能拆分、进度跟踪与验收。支持同时管理多个项目，把规划书、功能台账和操作记录保存成 Markdown，方便人和 AI 持续阅读、修改和接手。
 
-网页保留粉绿配色和大功能包含小功能的看板，仅用于查看已保存内容。新版不再提供网页聊天、创建项目或编辑保存入口。
+**AI 负责分析，代码工具负责修改和保存。** 网页提供只读的项目总览、层级功能表与进度看板；项目操作在 Codex／Claude Code 对话中完成。
 
-## 开始使用
+## 下载与安装
 
-| 需要什么 | 入口 |
-|---|---|
-| 安装插件并在对话中使用 | [插件安装与工具说明](docs/plugins.md) |
-| 看懂代码、安装包和项目资料的位置 | [项目文件说明](docs/项目文件说明.md) |
-| AI 接手项目及独立审核规则 | [SKILL.md](SKILL.md) |
-| 本工具自身的开发记录 | [规划书](项目规划书.md)、[功能台账](功能执行情况.md) |
+当前插件版本 **0.2.0**，发行标签 **v0.2.0-preview.1（预览版）**，已包含台账目标同步和功能详情去重修复。
 
-安装并开启新会话后可以直接说：
+| 安装包 | 适用场景 |
+| --- | --- |
+| **[双宿主完整安装包（推荐）](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-marketplace.zip)** | 首次安装；包含 Codex、Claude Code 插件及本地市场清单 |
+| [Codex 单插件包](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-codex.zip) | 加入已有本地插件市场 |
+| [Claude Code 单插件包](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-claude.zip) | 单独加载 Claude Code 插件 |
 
-> 使用 /我的目录/项目管理，新建一个图书借阅项目。先找 GitHub 参考，再和我梳理功能清单。
+需要 **Python 3.9+** 和支持本地插件的 Codex 或 Claude Code。下载完整安装包，解压后按[安装与升级说明](https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/plugins.md)注册即可，无需自行构建或安装 Python 第三方依赖。
 
-随后继续说“在图书管理下面增加预约功能”“采纳第2条建议并保存”“核对所选仓库源码后生成台账”“把登记图书标为待审核，证据是……”“导出这次规划的Excel”。工具会在同一对话完成操作并返回文件与实际结果，未保存预览会明确标注。
+[发行说明](https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.2.0-preview.1) · [SHA-256 校验文件](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/SHA256SUMS.txt) · [对应版本源码](https://github.com/JING0c/feature-progress-tracker/tree/v0.2.0-preview.1)
 
-## 插件与安装包
+## 能做什么
 
-当前插件版本 **0.2.0（宿主对话编排）**，发行标签为 **v0.2.0-preview.1**，包含台账目标同步与功能详情去重修复。
+| 能力 | 使用方式 |
+| --- | --- |
+| 多项目管理 | 新建或导入项目，各自保存规划、台账和历史；总览集中查看进度 |
+| 规划与功能拆分 | 先梳理目标、范围和验收，再逐层拆成大功能、小功能和更细的功能点，记录技术与前期准备 |
+| GitHub 项目参考 | 搜索相似项目，由用户多选参考；初稿参考 README，最终确认时结合固定版本源码核对 |
+| 功能修改与建议采纳 | 在对话中新增、修改、拆分或调整采用范围；查看建议及差异后，按选择保存 |
+| 进度与独立验收 | 记录执行者、状态、实现证据、问题和争议；完成需要另一位 Agent 独立审核、评分及证据 |
+| 查看与导出 | 按需打开只读网页，查看嵌套功能和历史版本，导出 Excel 或 Markdown |
 
-直接下载：[双宿主完整安装包（推荐）](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-marketplace.zip) · [Codex 插件](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-codex.zip) · [Claude Code 插件](https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-claude.zip)。下载后解压并按[安装说明](docs/plugins.md)注册，不用自己构建。
+功能清单默认采用全部功能，可在对话中调整；**建议需用户选择后才采纳**。采用某项功能只表示纳入规划，不表示已经完成。
 
-如需自行构建，不需要第三方Python依赖：
+## 第一次使用
+
+安装插件并开启新会话后，先指定一个用于保存项目资料的目录，例如：
+
+> 用这个插件管理 /我的目录/项目管理。新建一个图书借阅项目，先搜索 GitHub 上的相似项目，再和我一起梳理功能清单。
+
+接下来可以这样继续：
+
+1. **确定范围：**“参考第 1、3 个项目。先做图书登记、查询和借阅，暂不做收费。”
+2. **细化功能：**“在借阅管理下面增加预约功能，拆出子功能，并补充技术、准备和验收标准。”
+3. **选择建议：**“让子智能体检查遗漏，展示建议。我选好后，先预览修改，再保存功能表。”
+4. **保存台账：**“核对所选参考项目的源码，确认规划后生成并保存功能台账。”
+5. **持续跟踪：**“打开这个项目的看板。”“登记图书已实现，记录这份证据并标为待审核。”“导出最新规划的 Excel。”
+
+新增和采纳会先生成可检查的预览，保存后才更新项目文件。修改项目目标后，重新按规划生成并保存台账，目标也会同步；旧历史保留。
+
+## 项目资料保存在哪里
+
+项目资料保存在你指定的管理目录中，与插件安装目录分开。`项目列表.md` 登记项目，每个项目独立保存 `项目规划书.md`、`功能执行情况.md` 及操作和版本记录。导入项目保留已有文件位置。
+
+**Markdown 是事实来源，Excel 是导出副本。** 可以让 AI 阅读和维护 Markdown，再通过网页查看；Excel 修改不会自动回写。聊天内容由当前宿主会话管理。
+
+网页沿用粉绿配色，父功能包含多层子功能，以不同颜色和文字显示状态，点击可展开详情。查看服务只监听本机，按需开启；文件更新后网页自动重新读取。
+
+## 文档与验证
+
+| 想了解什么 | 文档 |
+| --- | --- |
+| 安装、升级、工具用法与常见问题 | [插件说明](https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/plugins.md) |
+| 源码、安装包和项目资料的对应位置 | [项目文件说明](https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/项目文件说明.md) |
+| AI 编排与独立验收规则 | [技能说明](https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/SKILL.md) |
+| 目标同步与详情去重的测试证据 | [修复复验报告](https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/test-reports/2026-11-12-goal-detail-repairs.md) |
+
+当前为预览版。已验证两套插件包的实际工具协议、规划与台账保存、Excel 导出及只读网页；**Claude Code 的真实安装、升级和宿主内对话仍待完整验证**。独立审核只记录实际做过的检查，不用协议测试代替宿主验收。
+
+<details>
+<summary>开发者：从对应版本源码构建</summary>
+
+请使用上方“对应版本源码”链接获取 `v0.2.0-preview.1`，进入该版本的源码目录后执行：
 
 ```sh
 python3 scripts/build_plugins.py
 ```
 
-生成完整市场 `dist/feature-progress-tracker-marketplace.zip`（推荐）及两个单插件ZIP，包含自有运行文件，不依赖源码位置。解压完整市场后按[安装说明](docs/plugins.md)注册。
-
-已安装旧版的用户请按[Codex 升级步骤](docs/plugins.md#在-codex-升级到-020)选择原目录或换目录路线，并核对实际安装版本为 `0.2.0`；Claude 的更新方式与未实测范围也在同页说明。
-
-[本次发行页与校验文件](https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.2.0-preview.1)。旧 `v0.1.0-preview.1` 保留为历史版本；当前为预览版，Claude Code 真实安装与升级的未验证范围见安装说明。
-
-## 数据与流程
-
-管理目录的 `项目列表.md` 登记项目；每个项目在自己的目录保存规划书、台账、参考与操作历史。导入已有项目保留原位置和文件。新建/导入都先在宿主对话中完成有效规划，再转换和保存台账。
-
-- `create_project` / `list_projects` / `read_project`：登记与选择项目。
-- `save_plan` / `edit_features`：保存规划、结构化增删改、采用选择及多层拆分；默认编辑只预览。
-- `record_suggestions` / `preview_suggestions`：记录实际分析者的建议，用户选择后预览并保存。建议默认不采纳。
-- `search_references` / `select_references`：初稿参考真实GitHub README，用户多选参考，不自动采用仓库代码。
-- `prepare_source_review` / `submit_source_review`：最终核对固定提交源码，当前宿主分析并提交带文件行号的报告，不运行参考代码。
-- `generate_ledger` / `save_ledger`：代码转换与保存，保留已有实施和审核历史，拒绝旧版本或伪造完成。
-- `update_feature_progress`：更新状态和证据；完成需真实独立审核者、评分及证据。
-- `history` / `export_project`：回看保存历史，导出当前或历史版本Excel/Markdown。
-- `open_dashboard` / `stop_dashboard`：按需查看或停止只读网页，不影响聊天操作。
-
-功能编号稳定，多层父子表示包含，依赖单列。采用与完成独立，完成率只统计最细未取消项。保存有版本校验、备份和历史，跨宿主/跨管理目录操作同一项目串行；冲突时重读，不覆盖。Excel是副本，编辑后不会回写Markdown。
-
-网页每3秒重新读取文件，支持功能清单/文档、历史与嵌套状态卡片。旧网页POST写入与AI入口返回明确的退役提示，不能继续通过缓存页面写入。
-
-## 从源码打开只读网页
-
-需要Python 3.9+，不需要模型CLI或登录：
-
-```sh
-python3 scripts/serve_dashboard.py --workspace "$HOME/Documents/项目管理" --port 8765
-```
-
-访问输出的实际网址。端口被占用时自动选择空闲端口，不终止其他程序。关闭当前终端服务用Ctrl+C；插件启动的服务可在聊天调用stop_dashboard。兼容单项目查看：`python3 scripts/serve_dashboard.py /项目/功能执行情况.md --port 8765`。
-
-## 验证与边界
+生成的三份安装包位于 `dist/`，完整本地市场位于 `build/plugin-marketplace/`。源码中的 `plugins/` 是模板，安装请使用构建后的完整包。
 
 ```sh
 python3 -m unittest discover -s tests -v
 node tests/test_readonly_viewer.cjs
 ```
 
-旧网页聊天/写入流程的测试保留在 `tests/legacy_web/`，不代表当前版本验收。当前回归覆盖MCP双宿主协议、项目隔离、修改/建议/台账/导出闭环、版本与源码绑定、并发写保护及只读网页。
+详细构建和使用方式见上方插件说明。
 
-独立审核按[技能规范](SKILL.md)执行，代码不能证明审核身份本身真实，宿主不得编造。真实Claude Code安装和模型会话的验证结果以[本轮报告](docs/test-reports/2026-11-10-host-chat-orchestration.md)为准，不用协议测试代替实机验收。
+</details>

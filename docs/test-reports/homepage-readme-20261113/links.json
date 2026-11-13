@@ -1,0 +1,60 @@
+{
+  "reviewer": "/root/homepage_readme_review",
+  "readme_sha256": "ac400c9cf3b91f3d3c9da20e92a5b13c102e4ab1b583af43080edee62a056138",
+  "unique_links": 10,
+  "all_fixed_release": true,
+  "results": [
+    {
+      "url": "https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/SKILL.md",
+      "encoded_url": "https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/SKILL.md",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/plugins.md",
+      "encoded_url": "https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/plugins.md",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/test-reports/2026-11-12-goal-detail-repairs.md",
+      "encoded_url": "https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/test-reports/2026-11-12-goal-detail-repairs.md",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/项目文件说明.md",
+      "encoded_url": "https://github.com/JING0c/feature-progress-tracker/blob/v0.2.0-preview.1/docs/%E9%A1%B9%E7%9B%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E.md",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/SHA256SUMS.txt",
+      "encoded_url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/SHA256SUMS.txt",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-claude.zip",
+      "encoded_url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-claude.zip",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-codex.zip",
+      "encoded_url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-codex.zip",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-marketplace.zip",
+      "encoded_url": "https://github.com/JING0c/feature-progress-tracker/releases/download/v0.2.0-preview.1/feature-progress-tracker-marketplace.zip",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.2.0-preview.1",
+      "encoded_url": "https://github.com/JING0c/feature-progress-tracker/releases/tag/v0.2.0-preview.1",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/JING0c/feature-progress-tracker/tree/v0.2.0-preview.1",
+      "encoded_url": "https://github.com/JING0c/feature-progress-tracker/tree/v0.2.0-preview.1",
+      "status": 200
+    }
+  ],
+  "passed": true,
+  "scope": "read-only documentation and remote link check; no host install or rendering test"
+}
