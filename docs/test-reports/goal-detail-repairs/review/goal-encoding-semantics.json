@@ -1,0 +1,30 @@
+[
+  {
+    "input": "可筛选图书 | 状态：借出或归还。",
+    "encoded_goal": "可筛选图书 \\| 状态：借出或归还。",
+    "decoded": "可筛选图书 | 状态：借出或归还。",
+    "expected_plain_goal": "可筛选图书 | 状态：借出或归还。",
+    "stable_three_conversions": true
+  },
+  {
+    "input": "可筛选图书｜更新：按借阅时间排序。",
+    "encoded_goal": "可筛选图书&#65372;更新：按借阅时间排序。",
+    "decoded": "可筛选图书｜更新：按借阅时间排序。",
+    "expected_plain_goal": "可筛选图书｜更新：按借阅时间排序。",
+    "stable_three_conversions": true
+  },
+  {
+    "input": "支持路径 C:\\books\\ | 负责人：读者。",
+    "encoded_goal": "支持路径 C:\\\\books\\\\ \\| 负责人：读者。",
+    "decoded": "支持路径 C:\\books\\ | 负责人：读者。",
+    "expected_plain_goal": "支持路径 C:\\books\\ | 负责人：读者。",
+    "stable_three_conversions": true
+  },
+  {
+    "input": "支持 A\\|B：组合标签。",
+    "encoded_goal": "支持 A\\|B：组合标签。",
+    "decoded": "支持 A|B：组合标签。",
+    "expected_plain_goal": "支持 A|B：组合标签。",
+    "stable_three_conversions": true
+  }
+]

@@ -1,0 +1,92 @@
+{
+  "artifact": "实际解压Codex ZIP；截图展示隔离夹具数据",
+  "source_commit": "d335776",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "clicks": 13,
+  "screenshots": 14,
+  "keyboard_actions": 0,
+  "start": "项目总览",
+  "test_project": "p-19b31c5a5232",
+  "steps": [
+    {
+      "image": "01-projects.png",
+      "observed": "项目总览",
+      "next_click": "查看规划"
+    },
+    {
+      "image": "02-feature-list.png",
+      "observed": "默认功能清单4行",
+      "next_click": "展开添加图书"
+    },
+    {
+      "image": "03-details-once.png",
+      "observed": "技术和准备各一次，备注与责任组保留",
+      "next_click": "展开技术与准备列"
+    },
+    {
+      "image": "04-technical-columns.png",
+      "observed": "专门列保留技术与准备",
+      "next_click": "项目目标与场景"
+    },
+    {
+      "image": "05-current-goal.png",
+      "observed": "最新目标可见",
+      "next_click": "功能规划与验收"
+    },
+    {
+      "image": "06-feature-details-table.png",
+      "observed": "明细表，技术等列在右侧",
+      "next_click": "下载Excel"
+    },
+    {
+      "image": "07-excel-downloaded.png",
+      "observed": "浏览器下载已取得并验证XML",
+      "next_click": "操作记录"
+    },
+    {
+      "image": "08-records.png",
+      "observed": "保存与预览记录",
+      "next_click": "查看最早的当时功能表"
+    },
+    {
+      "image": "09-old-table.png",
+      "observed": "历史两行清单",
+      "next_click": "历史项目目标与场景"
+    },
+    {
+      "image": "10-old-goal.png",
+      "observed": "旧目标仍为原内容",
+      "next_click": "返回记录"
+    },
+    {
+      "image": "11-return-records.png",
+      "observed": "返回操作记录",
+      "next_click": "功能看板"
+    },
+    {
+      "image": "12-board.png",
+      "observed": "2个有效叶，0已完成",
+      "next_click": "展开搜索图书"
+    },
+    {
+      "image": "13-nested-feature.png",
+      "observed": "三级子项优先呈现",
+      "next_click": "展开筛选作者"
+    },
+    {
+      "image": "14-leaf-details.png",
+      "observed": "查看叶子验收详情",
+      "next_click": "结束"
+    }
+  ],
+  "console_warnings_errors": [],
+  "limitations": [
+    "未重跑手机、键盘可达性",
+    "未使用真实模型生成测试规划或建议",
+    "未打开原生Excel"
+  ],
+  "cleanup": "测试标签关闭，viewport重置，测试HTTP服务已停止"
+}

@@ -1,0 +1,69 @@
+test_excel_dedicated_columns_match_page_without_embedded_duplicates (test_feature_detail_projection.FeatureDetailProjectionTests) ... FAIL
+test_explicit_fields_are_not_repeated_in_notes_or_introduction (test_feature_detail_projection.FeatureDetailProjectionTests) ... test_legacy_explicit_aliases_keep_multiline_values (test_feature_detail_projection.FeatureDetailProjectionTests) ... FAIL
+test_multiline_technology_is_preserved_as_one_field (test_feature_detail_projection.FeatureDetailProjectionTests) ... FAIL
+test_parent_with_only_structured_fields_is_not_discarded (test_feature_detail_projection.FeatureDetailProjectionTests) ... ok
+test_user_written_notes_are_not_reclassified_or_removed (test_feature_detail_projection.FeatureDetailProjectionTests) ... FAIL
+
+======================================================================
+FAIL: test_excel_dedicated_columns_match_page_without_embedded_duplicates (test_feature_detail_projection.FeatureDetailProjectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_feature_detail_projection.py", line 111, in test_excel_dedicated_columns_match_page_without_embedded_duplicates
+    self.assertFalse(any('备注：采用：' in text for text in cells))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_explicit_fields_are_not_repeated_in_notes_or_introduction (test_feature_detail_projection.FeatureDetailProjectionTests) (project='parse_plan_sheet')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_feature_detail_projection.py", line 47, in test_explicit_fields_are_not_repeated_in_notes_or_introduction
+    self.assertIn('采用', fields)
+AssertionError: '采用' not found in {'大功能': 'F01 图书管理', '小功能': '', '细分功能': '', '功能介绍': '说明：管理图书记录\n验收标准：能新增并找到记录\n优先级：高\n依赖：无\n备注：采用：是\n所需技术：本地存储\n前期准备：准备测试书目\n测试夹具\n外部依据：手工确认', '所需技术': '本地存储', '前期准备': '准备测试书目'}
+
+======================================================================
+FAIL: test_explicit_fields_are_not_repeated_in_notes_or_introduction (test_feature_detail_projection.FeatureDetailProjectionTests) (project='planning_model')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_feature_detail_projection.py", line 52, in test_explicit_fields_are_not_repeated_in_notes_or_introduction
+    self.assertNotIn('所需技术：', prose)
+AssertionError: '所需技术：' unexpectedly found in '说明：管理图书记录\n验收标准：能新增并找到记录\n优先级：高\n依赖：无\n备注：采用：是\n所需技术：本地存储\n前期准备：准备测试书目\n测试夹具\n外部依据：手工确认'
+
+======================================================================
+FAIL: test_legacy_explicit_aliases_keep_multiline_values (test_feature_detail_projection.FeatureDetailProjectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_feature_detail_projection.py", line 84, in test_legacy_explicit_aliases_keep_multiline_values
+    self.assertEqual(fields['所需技术'], '本地存储\n离线缓存')
+AssertionError: '本地存储' != '本地存储\n离线缓存'
+- 本地存储
++ 本地存储
+离线缓存
+
+
+======================================================================
+FAIL: test_multiline_technology_is_preserved_as_one_field (test_feature_detail_projection.FeatureDetailProjectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_feature_detail_projection.py", line 63, in test_multiline_technology_is_preserved_as_one_field
+    self.assertEqual(fields['所需技术'], '本地存储\n离线缓存')
+AssertionError: '本地存储' != '本地存储\n离线缓存'
+- 本地存储
++ 本地存储
+离线缓存
+
+
+======================================================================
+FAIL: test_user_written_notes_are_not_reclassified_or_removed (test_feature_detail_projection.FeatureDetailProjectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_feature_detail_projection.py", line 72, in test_user_written_notes_are_not_reclassified_or_removed
+    self.assertEqual(fields['所需技术'], '本地存储')
+AssertionError: '这里只是用户备注' != '本地存储'
+- 这里只是用户备注
++ 本地存储
+
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.008s
+
+FAILED (failures=6)

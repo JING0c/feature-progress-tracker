@@ -1,0 +1,18 @@
+test_a_initial_goal_and_second_revision_sync (__main__.Independent) ... ok
+test_b_other_head_fields_and_tracking_preserved (__main__.Independent) ... ok
+test_c_goal_multiline_stops_at_other_section (__main__.Independent) ... ok
+test_d_table_labeled_goal (__main__.Independent) ... ok
+test_e_missing_goal_keeps_existing_not_feature_acceptance (__main__.Independent) ... ok
+test_f2_mixed_goal_section_table_excludes_scope_acceptance (__main__.Independent) ... ok
+test_f3_goal_with_pipe_label_remains_idempotent (__main__.Independent) ... ok
+test_f4_goal_with_reserved_metadata_label_does_not_accumulate (__main__.Independent) ... ok
+test_f_quoted_and_fenced_fake_goal_not_used (__main__.Independent) ... ok
+test_g_feature_projection_no_duplicate_metadata (__main__.Independent) ... ok
+test_h_multiline_tech_and_unknown_field_preserved (__main__.Independent) ... ok
+test_i_public_service_preview_save_export_history (__main__.Independent) ... ok
+test_j_adoption_blank_and_alias_technical_columns_consistent (__main__.Independent) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.081s
+
+OK

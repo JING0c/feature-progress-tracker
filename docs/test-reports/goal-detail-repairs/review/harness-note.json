@@ -1,0 +1,4 @@
+{
+  "initial_harness_correction": "inspect_plan exposes valid, not ready; corrected own assertion key before recorded baseline. Initial seven real failures plus one harness error are not all product failures.",
+  "recorded_baseline_exit": 1
+}

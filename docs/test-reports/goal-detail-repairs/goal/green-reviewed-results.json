@@ -1,0 +1,62 @@
+[
+  {
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_ledger_goal_sync.py",
+      "-v"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_planning_operations.py",
+      "-v"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_project_service.py",
+      "-v"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_history_growth.py",
+      "-v"
+    ],
+    "exit_code": 0
+  }
+]

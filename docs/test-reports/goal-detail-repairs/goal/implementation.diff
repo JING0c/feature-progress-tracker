@@ -1,0 +1,121 @@
+diff --git a/scripts/planning_operations.py b/scripts/planning_operations.py
+index a178aba..ce17ea2 100644
+--- a/scripts/planning_operations.py
++++ b/scripts/planning_operations.py
+@@ -3,6 +3,7 @@ import copy
+ import json
+ import re
+ from planning_editor import editable_table, replace_features
++from planning_sheet import _blocks, _FENCE, _HEADING
+ 
+ FIELDS = ('功能名称', '说明', '验收标准', '优先级', '依赖', '所需技术', '前期准备', '备注')
+ # IDs may touch Chinese prose, but are not substrings of JSON1 or F1-score.
+@@ -279,6 +280,100 @@ def replace_item_records(text, changed):
+     return ''.join(result)
+ 
+ 
++def planning_goal(content):
++    """Read explicit goal prose/fields without treating code or features as goals."""
++    goal_label = re.compile(r'目标(?!用户|人群|客户)|\b(?:goals?|objectives?)\b', re.I)
++    goal_field = re.compile(r'^(?:(?:项目|主要|辅助|业务|产品)?目标|(?:project\s+)?(?:goals?|objectives?))$', re.I)
++    other_label = re.compile(r'非目标|范围|边界|约束|功能|验收|风险|技术|准备|'
++                             r'\b(?:non[- ]?goals?|scope|features?|acceptance|risks?)\b', re.I)
++    placeholder = re.compile(r'^(?:待(?:补充|完善|规划|填写|编写|定义|确定|确认|定)|'
++                             r'(?:请|在此)?(?:填写|补充|描述)(?:项目)?目标|'
++                             r'尚未生成|未生成|todo\b|tbd\b|暂无|无$)', re.I)
++    values, sections = [], []
++
++    def append(value):
++        value = re.sub(r'\s+', ' ', value).strip()
++        if value and not placeholder.search(value) and value not in values:
++            values.append(value)
++
++    for block in _blocks(content.splitlines()):
++        kind = block['type']
++        if kind == 'heading':
++            while sections and sections[-1][0] >= block['level']:
++                sections.pop()
++            active = bool(goal_label.search(block['text']))
++            if other_label.search(block['text']):
++                active = False  # Mixed sections require an explicit goal field.
++            elif not active and sections:
++                active = sections[-1][1]
++            sections.append((block['level'], active))
++        elif kind == 'table':
++            columns = [n for n, title in enumerate(block['columns']) if goal_field.fullmatch(title.strip())]
++            labelled = any(row and goal_field.fullmatch(row[0].strip()) for row in block['rows'])
++            for row in block['rows']:
++                if columns:
++                    for n in columns:
++                        append(row[n])
++                elif row and goal_field.fullmatch(row[0].strip()):
++                    for value in row[1:]:
++                        append(value)
++                elif not labelled and sections and sections[-1][1] and not (row and other_label.search(row[0])):
++                    for value in row:
++                        append(value)
++        elif kind in ('paragraph', 'list'):
++            for line in block['text'].splitlines():
++                if line.lstrip().startswith(('>', '<!--')):
++                    continue
++                field = re.match(r'^([^：:]{1,40})[：:]\s*(.*)$', line)
++                if field and goal_field.fullmatch(field[1].strip()):
++                    append(field[2])
++                elif sections and sections[-1][1] and not (field and other_label.search(field[1])):
++                    append(line)
++    return '；'.join(values)
++
++
++def sync_ledger_goal(text, goal):
++    """Update only the top-level goal field; leave other metadata and history alone."""
++    if not goal:
++        return text
++    # The target field shares a line with optional ``| 更新：...`` metadata.
++    # Keep goal punctuation literal in Markdown, never a metadata delimiter.
++    # Fullwidth pipes are not Markdown-escapable, so use their character entity.
++    encoded_goal = goal.replace('\\', '\\\\').replace('|', r'\|').replace('｜', '&#65372;')
++    lines, fence, insertion = text.splitlines(keepends=True), None, 0
++    for index, line in enumerate(lines):
++        marker = _FENCE.match(line.rstrip())
++        if fence:
++            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence) and not marker[2].strip():
++                fence = None
++            continue
++        if marker:
++            fence = marker[1]
++            continue
++        heading = _HEADING.match(line.rstrip())
++        if heading:
++            if len(heading[1]) >= 2:
++                break
++            insertion = index + 1
++        field = re.match(r'^( {0,3}(?:项目)?目标[：:][ \t]*)(.*?)(\r?\n)?$', line)
++        if field:
++            body, suffix = field[2], ''
++            # Recognize an old unescaped goal when it exactly matches this plan.
++            # Otherwise only unescaped separators may introduce header fields.
++            start = len(goal) if body.startswith(goal) else 0
++            for separator in re.finditer(r'[|｜][ \t]*(?:更新(?:日期|时间)?|最后更新|进度|负责人|状态|版本)[：:]', body[start:]):
++                index_ = start + separator.start()
++                prefix = body[:index_]
++                if (len(prefix) - len(prefix.rstrip('\\'))) % 2:
++                    continue
++                suffix = body[index_ - (len(prefix) - len(prefix.rstrip(' \t'))):]
++                break
++            lines[index] = field[1] + encoded_goal + suffix + (field[3] or '\n')
++            return ''.join(lines)
++    lines.insert(insertion, '目标：' + encoded_goal + '\n')
++    return ''.join(lines)
++
++
+ def ledger_from_plan(content, existing, parse):
+     rows = editable_table(content)['rows']
+     replace_features(content, rows)
+@@ -294,6 +389,7 @@ def ledger_from_plan(content, existing, parse):
+     updated = sync_existing_items(groups, rows)
+     synced = replace_item_records(existing, updated)
+     output = synced.rstrip() + '\n' if synced.strip() else '# 功能执行情况\n进度：已验收 0/0（0%）\n'
++    output = sync_ledger_goal(output, planning_goal(content))
+     added, preserved = [], []
+     for root in roots:
+         root_id = root['编号']

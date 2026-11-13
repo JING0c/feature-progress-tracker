@@ -1,0 +1,7 @@
+{
+  "pid": 67706,
+  "port": 63553,
+  "stopped": true,
+  "listener_check_exit": 1,
+  "note": "SIGTERM后首次0.3秒检查尚未退出；随后再次检查端口已关闭。"
+}

@@ -1,0 +1,26 @@
+{
+  "agent": "/root/fix_feature_detail_fields",
+  "base": "fcc2862",
+  "files": [
+    "scripts/planning_sheet.py",
+    "scripts/project_service.py",
+    "scripts/serve_dashboard.py",
+    "tests/test_feature_detail_projection.py",
+    "tests/test_planning_sheet_view.cjs"
+  ],
+  "root_cause": "Explicit adoption/technology/preparation columns were copied to notes; note text was then parsed again to reconstruct dedicated fields, and the UI appended those fields twice.",
+  "change": "Project explicit field columns separately; retain raw notes/unknown fields, multiline and aliases; reuse adoption columns and only overwrite technology with explicitly present canonical fields in service/HTTP projections.",
+  "tests": {
+    "initial_red": "6 failures across 6 test methods; original DOM assertion counted 2 technology occurrences instead of 1",
+    "alias_wrapper_red": "1 failing subtest due empty canonical override",
+    "empty_adoption_red": "2 failing subtests for empty detail adoption",
+    "green_python": 7,
+    "green_dom": "existing CJS plus actual Python projection integration passed",
+    "related_existing_python": {
+      "sheet": 15,
+      "export": 10,
+      "service": 22
+    }
+  },
+  "scope": "No product-wide suite, browser or package rebuild claimed here; parent owns final integration. No commit, ledger update or business data changes."
+}

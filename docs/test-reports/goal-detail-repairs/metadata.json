@@ -1,0 +1,18 @@
+{
+  "baseline": "fcc2862",
+  "fix_commit": "d335776b3d75c9208a37d0bb6e7fccb43ff8a4f9",
+  "build_version": "0.2.0",
+  "source_sha256": {
+    "scripts/planning_operations.py": "ecb66077798314e07e8d711074600b003b6f7f33434e7b4e181c538b6622f216",
+    "scripts/planning_sheet.py": "08d355f7826fa233b84ba57056cc7b700f4077d0f01026ade75b10440ce478ad",
+    "scripts/project_service.py": "56cccc7a85aa98340c46776655cd631b90f525f2b7f899a741b7b53dd22b3481",
+    "scripts/serve_dashboard.py": "c67fda8ed1057932d2a9052ad7af4eea01792315caf166f54a3fcaf6be95a41a",
+    "scripts/planning-sheet-view.js": "48642b431ff9a55d7eab9c290bec132580f57fbc9609ed96c411775e8481a1f1"
+  },
+  "zip_sha256": {
+    "feature-progress-tracker-claude.zip": "63fdf38f92a1eb1e82b077e39cdcaf7947172592127c7742029c797832e539a3",
+    "feature-progress-tracker-marketplace.zip": "cf9dba664fd1e0f64ab7375aaad8f280e9eb1612bdccf95928a24bd54cda6752",
+    "feature-progress-tracker-codex.zip": "6850922d6835c922e8cf7713ac48917b475e49c6847bcc943001df591983ed85"
+  },
+  "not_pushed_or_published": true
+}

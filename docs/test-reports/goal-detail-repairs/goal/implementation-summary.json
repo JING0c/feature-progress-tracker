@@ -1,0 +1,17 @@
+{
+  "files": [
+    "scripts/planning_operations.py",
+    "tests/test_ledger_goal_sync.py"
+  ],
+  "tests": {
+    "new_goal_sync": 9,
+    "planning_operations": 16,
+    "project_service": 22,
+    "history_growth": 3
+  },
+  "red": "6 methods initially produced 9 expected behavior failures. An added feature-goal fixture first renamed a required column (test setup error); corrected fixture then produced 2 expected boundary failures before the final fix. All logs retained.",
+  "behavior": "Current explicit project goal replaces the ledger top-level goal on every generate/save flow; explicit goal chapters, labelled fields, goal columns and key/value tables are supported. Feature-goal column labels, placeholders, fenced examples and quoted lines are excluded. Other header metadata, feature records and historic plan snapshots remain unchanged.",
+  "limitations": "Only explicit goal labels are extracted; plain background/overview without a goal label keeps existing goal. The canonical ledger format is a single top-level Chinese goal line. Root runs the full suite/package/browser integration after both fixes.",
+  "review_followup": "Root/reviewer found mixed goal-section key/value rows including scope, non-goal headings, and pipe+colon goal text treated as inline metadata. All three red reproduced and then fixed; same-goal idempotence and subsequent goal replacement both tested. Final 49 scoped tests passed. Reviewer found whitelist was insufficient for literal 状态. This has red/green evidence in red-escaped-goal.stderr.log and final logs; 4 parameter cases cover ASCII/fullwidth/backslash pipes, 3 same-plan conversions, and change to a new goal retaining separate update metadata.",
+  "format": "Goal backslashes are Markdown escaped, ASCII pipes use \\|, fullwidth pipes use &#65372;. Only unescaped separators introduce existing standard inline header metadata; parity of preceding backslashes is checked. Goal source text is not modified."
+}

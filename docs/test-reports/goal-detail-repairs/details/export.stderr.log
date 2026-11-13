@@ -1,0 +1,15 @@
+test_feature_list_has_project_title_vertical_merges_and_two_frozen_rows (test_planning_export.ExcelPackageTest) ... ok
+test_feature_list_is_preferred_over_legacy_feature_sheet (test_planning_export.ExcelPackageTest) ... ok
+test_feature_list_long_parent_and_invalid_merge_never_discard_text (test_planning_export.ExcelPackageTest) ... ok
+test_feature_list_merges_map_long_description_continuation_rows (test_planning_export.ExcelPackageTest) ... ok
+test_inline_pipes_and_placeholder_acceptance_cannot_unlock (test_planning_export.ExcelPackageTest) ... ok
+test_invalid_and_duplicate_sheet_names_and_control_text (test_planning_export.ExcelPackageTest) ... ok
+test_long_text_and_original_newlines_are_not_truncated (test_planning_export.ExcelPackageTest) ... ok
+test_real_package_freezes_and_groups_without_executable_cells (test_planning_export.ExcelPackageTest) ... ok
+test_table_headers_or_placeholders_do_not_unlock_planning (test_planning_export.ExcelPackageTest) ... ok
+test_workbook_opens_the_first_feature_sheet (test_planning_export.ExcelPackageTest) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.037s
+
+OK

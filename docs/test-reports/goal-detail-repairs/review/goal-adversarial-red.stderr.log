@@ -1,0 +1,45 @@
+test_f2_mixed_goal_section_table_excludes_scope_acceptance (__main__.Independent) ... FAIL
+test_f3_goal_with_pipe_label_remains_idempotent (__main__.Independent) ... FAIL
+
+======================================================================
+FAIL: test_f2_mixed_goal_section_table_excludes_scope_acceptance (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 53, in test_f2_mixed_goal_section_table_excludes_scope_acceptance
+    self.assertNotIn('不支持支付和联网',result);self.assertNotIn('保存后立即显示',result)
+AssertionError: '不支持支付和联网' unexpectedly found in '# 功能执行情况\n\n目标：让读者快速查找图书；范围；不支持支付和联网；验收；保存后立即显示\n\n'
+
+======================================================================
+FAIL: test_f3_goal_with_pipe_label_remains_idempotent (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 56, in test_f3_goal_with_pipe_label_remains_idempotent
+    self.assertEqual(first,second)
+AssertionError: '# 功能[24 chars]查询图书。\n\n## 大功能 F01：图书目录\n\n- [ ] F01-01 查询图书｜[200 chars]：无\n' != '# 功能[24 chars]查询图书。 | B：两个入口查询图书。\n\n## 大功能 F01：图书目录\n\n- [ [214 chars]：无\n'
+  # 功能执行情况
+  
+- 目标：支持 A | B：两个入口查询图书。
++ 目标：支持 A | B：两个入口查询图书。 | B：两个入口查询图书。
+?          ++++++++++++++
+  
+  ## 大功能 F01：图书目录
+  
+  - [ ] F01-01 查询图书｜状态：未开始
+    - 验收：输入书名后显示匹配图书
+    - 说明：用户说明中写所需技术：Go为示例，不能删
+    - 优先级：中
+    - 依赖：无
+    - 所需技术：SQLite技术唯一值
+    - 前期准备：图书准备唯一值
+    - 备注：子项备注唯一值
+    - 执行 Agent：待分配
+    - 实现证据：无
+    - 审核 Agent：待审核
+    - 评分：待审核
+    - 问题：无
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.005s
+
+FAILED (failures=2)

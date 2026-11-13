@@ -1,0 +1,21 @@
+test_changed_acceptance_reopens_completed_preserving_exact_audit_history (test_planning_operations.OperationsTest) ... ok
+test_changed_child_reopens_completed_ancestor_without_losing_structure (test_planning_operations.OperationsTest) ... ok
+test_duplicates_declined_parents_and_invalid_proposals (test_planning_operations.OperationsTest) ... ok
+test_existing_requirements_and_metadata_are_updated_without_losing_execution (test_planning_operations.OperationsTest) ... ok
+test_fenced_heading_is_not_append_target (test_planning_operations.OperationsTest) ... ok
+test_ledger_metadata_cannot_inject_completed_status (test_planning_operations.OperationsTest) ... ok
+test_ledger_preserves_accepted_and_declines_new (test_planning_operations.OperationsTest) ... ok
+test_ledger_root_leaf_nested_and_idempotent (test_planning_operations.OperationsTest) ... ok
+test_legacy_group_summary_is_not_a_new_feature (test_planning_operations.OperationsTest) ... ok
+test_merge_assigns_nested_ids_and_preserves_base (test_planning_operations.OperationsTest) ... ok
+test_metadata_only_change_keeps_completion_and_second_conversion_is_identical (test_planning_operations.OperationsTest) ... ok
+test_multiple_changes_preserve_history_and_json_separators (test_planning_operations.OperationsTest) ... ok
+test_pending_review_reopens_and_blocked_state_is_preserved (test_planning_operations.OperationsTest) ... ok
+test_reopened_history_stays_protected_on_later_submissions (test_planning_operations.OperationsTest) ... ok
+test_reused_id_cannot_silently_inherit_existing_feature (test_planning_operations.OperationsTest) ... ok
+test_sync_keeps_non_feature_examples_and_prose_untouched (test_planning_operations.OperationsTest) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.041s
+
+OK

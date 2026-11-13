@@ -1,0 +1,11 @@
+{
+  "reviewer": "/root/review_goal_detail_repairs",
+  "mode": "independent read-only follow-up",
+  "source_hash_match": true,
+  "both_zips_tools_calls": 52,
+  "http_200": 8,
+  "report_consistent": true,
+  "verdict": "PASS",
+  "score": 95,
+  "score_remains_for_original_two_fix_scope": true
+}

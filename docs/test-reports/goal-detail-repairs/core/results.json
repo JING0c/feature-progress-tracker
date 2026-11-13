@@ -1,0 +1,89 @@
+[
+  {
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "exit_code": 0,
+    "stdout": "01-python.stdout.log",
+    "stderr": "01-python.stderr.log"
+  },
+  {
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "tests/test_adoption_dashboard.cjs"
+    ],
+    "exit_code": 0,
+    "stdout": "02-test_adoption_dashboard.stdout.log",
+    "stderr": "02-test_adoption_dashboard.stderr.log"
+  },
+  {
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "tests/test_dashboard_hierarchy_view.cjs"
+    ],
+    "exit_code": 0,
+    "stdout": "03-test_dashboard_hierarchy_view.stdout.log",
+    "stderr": "03-test_dashboard_hierarchy_view.stderr.log"
+  },
+  {
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "tests/test_dashboard_poll.cjs"
+    ],
+    "exit_code": 0,
+    "stdout": "04-test_dashboard_poll.stdout.log",
+    "stderr": "04-test_dashboard_poll.stderr.log"
+  },
+  {
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "tests/test_markdown.cjs"
+    ],
+    "exit_code": 0,
+    "stdout": "05-test_markdown.stdout.log",
+    "stderr": "05-test_markdown.stderr.log"
+  },
+  {
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "tests/test_planning_activity.cjs"
+    ],
+    "exit_code": 0,
+    "stdout": "06-test_planning_activity.stdout.log",
+    "stderr": "06-test_planning_activity.stderr.log"
+  },
+  {
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "tests/test_planning_history_races.cjs"
+    ],
+    "exit_code": 0,
+    "stdout": "07-test_planning_history_races.stdout.log",
+    "stderr": "07-test_planning_history_races.stderr.log"
+  },
+  {
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "tests/test_planning_sheet_view.cjs"
+    ],
+    "exit_code": 0,
+    "stdout": "08-test_planning_sheet_view.stdout.log",
+    "stderr": "08-test_planning_sheet_view.stderr.log"
+  },
+  {
+    "command": [
+      "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node",
+      "tests/test_readonly_viewer.cjs"
+    ],
+    "exit_code": 0,
+    "stdout": "09-test_readonly_viewer.stdout.log",
+    "stderr": "09-test_readonly_viewer.stderr.log"
+  }
+]

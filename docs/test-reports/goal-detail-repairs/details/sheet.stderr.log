@@ -1,0 +1,20 @@
+test_bold_feature_ids_and_ambiguous_group_note_remain_distinct (test_planning_sheet.PlanningSheetTest) ... ok
+test_crlf_bold_colon_and_duplicate_identity_columns_keep_content (test_planning_sheet.PlanningSheetTest) ... ok
+test_empty_and_heading_only_documents_are_not_invented (test_planning_sheet.PlanningSheetTest) ... ok
+test_feature_table_recovers_extra_divider_cell_only_for_aligned_data (test_planning_sheet.PlanningSheetTest) ... ok
+test_fences_quotes_pipes_and_extra_cells_are_preserved (test_planning_sheet.PlanningSheetTest) ... ok
+test_invalid_parent_graph_keeps_every_feature_and_explains_fallback (test_planning_sheet.PlanningSheetTest) ... ok
+test_nested_ids_use_exact_prefix_and_never_manufacture_dependencies (test_planning_sheet.PlanningSheetTest) ... ok
+test_old_heading_plan_keeps_table_children_and_surrounding_notes (test_planning_sheet.PlanningSheetTest) ... ok
+test_reference_list_does_not_merge_same_names_from_different_parents (test_planning_sheet.PlanningSheetTest) ... ok
+test_reference_list_excludes_scaffolding_and_keeps_original_detail_sheets (test_planning_sheet.PlanningSheetTest) ... ok
+test_reference_list_expresses_three_levels_and_preserves_parent_information (test_planning_sheet.PlanningSheetTest) ... ok
+test_reference_list_extends_hierarchy_columns_without_losing_deep_leaves (test_planning_sheet.PlanningSheetTest) ... ok
+test_reference_list_merges_contiguous_ancestors_but_never_blank_cells (test_planning_sheet.PlanningSheetTest) ... ok
+test_reference_list_optional_money_requires_explicit_recorded_field (test_planning_sheet.PlanningSheetTest) ... ok
+test_standard_features_follow_explicit_parents_not_row_order (test_planning_sheet.PlanningSheetTest) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.006s
+
+OK

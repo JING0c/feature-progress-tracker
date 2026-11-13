@@ -1,0 +1,36 @@
+test_f4_goal_with_reserved_metadata_label_does_not_accumulate (__main__.Independent) ... FAIL
+
+======================================================================
+FAIL: test_f4_goal_with_reserved_metadata_label_does_not_accumulate (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 60, in test_f4_goal_with_reserved_metadata_label_does_not_accumulate
+    self.assertEqual(first,second)
+AssertionError: '# 功能[23 chars]出或归还。\n\n## 大功能 F01：图书目录\n\n- [ ] F01-01 查询图书｜[200 chars]：无\n' != '# 功能[23 chars]出或归还。 | 状态：借出或归还。\n\n## 大功能 F01：图书目录\n\n- [ ] [212 chars]：无\n'
+  # 功能执行情况
+  
+- 目标：可筛选图书 | 状态：借出或归还。
++ 目标：可筛选图书 | 状态：借出或归还。 | 状态：借出或归还。
+?           ++++++++++++
+  
+  ## 大功能 F01：图书目录
+  
+  - [ ] F01-01 查询图书｜状态：未开始
+    - 验收：输入书名后显示匹配图书
+    - 说明：用户说明中写所需技术：Go为示例，不能删
+    - 优先级：中
+    - 依赖：无
+    - 所需技术：SQLite技术唯一值
+    - 前期准备：图书准备唯一值
+    - 备注：子项备注唯一值
+    - 执行 Agent：待分配
+    - 实现证据：无
+    - 审核 Agent：待审核
+    - 评分：待审核
+    - 问题：无
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+FAILED (failures=1)

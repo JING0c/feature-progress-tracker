@@ -1,0 +1,84 @@
+test_custom_header_metadata_fences_and_history_remain_intact (test_ledger_goal_sync.LedgerGoalSyncTests) ... FAIL
+test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) ... test_goal_missing_from_ledger_is_inserted_without_promoting_prose_to_nodes (test_ledger_goal_sync.LedgerGoalSyncTests) ... FAIL
+test_missing_or_placeholder_goal_does_not_erase_existing_goal (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_new_goal_and_subsequent_change_reach_ledger (test_ledger_goal_sync.LedgerGoalSyncTests) ... FAIL
+test_real_service_saves_new_goal_and_keeps_historical_plan (test_ledger_goal_sync.LedgerGoalSyncTests) ... FAIL
+
+======================================================================
+FAIL: test_custom_header_metadata_fences_and_history_remain_intact (test_ledger_goal_sync.LedgerGoalSyncTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 47, in test_custom_header_metadata_fences_and_history_remain_intact
+    self.assertIn('目标：帮助读者定位纸质书和电子书。 | 更新：2026-01-01', updated)
+AssertionError: '目标：帮助读者定位纸质书和电子书。 | 更新：2026-01-01' not found in '# 自定义项目台账\n负责人：甲\n\n目标：待规划\n\n```md\n目标：示例目标不应更改\n```\n\n## 大功能 F01：图书管理\n\n- [ ] F01-01 添加图书｜状态：未开始\n  - 验收：保存后能读取新图书\n  - 说明：录入图书\n  - 优先级：待确认\n  - 依赖：无\n  - 所需技术：待确认\n  - 前期准备：待确认\n  - 执行 Agent：待分配\n  - 实现证据：无\n  - 审核 Agent：待审核\n  - 评分：待审核\n  - 问题：无\n\n## 历史备注\n目标：历史决定不能更改\n'
+
+======================================================================
+FAIL: test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) (section='## 目标\n- 记录个人图书。\n- 避免重复购买。')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 70, in test_goal_formats_keep_only_goal_content
+    self.assertIn(phrase, goal)
+AssertionError: '记录个人图书。' not found in '目标：待规划'
+
+======================================================================
+FAIL: test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) (section='## 1. 项目目标\n### 主要目标\n更快找到藏书。\n### 辅助目标\n标记借出位置。')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 70, in test_goal_formats_keep_only_goal_content
+    self.assertIn(phrase, goal)
+AssertionError: '更快找到藏书。' not found in '目标：待规划'
+
+======================================================================
+FAIL: test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) (section='## 概览\n**项目目标：** 帮助读者查找自己的图书。\n范围：不要把这段范围当目标。')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 70, in test_goal_formats_keep_only_goal_content
+    self.assertIn(phrase, goal)
+AssertionError: '帮助读者查找自己的图书。' not found in '目标：待规划'
+
+======================================================================
+FAIL: test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) (section='## 概览\n| 项目目标 | 项目范围 |\n| --- | --- |\n| 保存并查找个人图书 | 不要把这段范围当目标 |')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 70, in test_goal_formats_keep_only_goal_content
+    self.assertIn(phrase, goal)
+AssertionError: '保存并查找个人图书' not found in '目标：待规划'
+
+======================================================================
+FAIL: test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) (section='## 概览\n| 项目 | 内容 |\n| --- | --- |\n| 目标 | 保存并搜索藏书 |\n| 范围 | 不要把这段范围当目标 |')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 70, in test_goal_formats_keep_only_goal_content
+    self.assertIn(phrase, goal)
+AssertionError: '保存并搜索藏书' not found in '目标：待规划'
+
+======================================================================
+FAIL: test_goal_missing_from_ledger_is_inserted_without_promoting_prose_to_nodes (test_ledger_goal_sync.LedgerGoalSyncTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 86, in test_goal_missing_from_ledger_is_inserted_without_promoting_prose_to_nodes
+    self.assertIn('目标：支持 F01-99 这样的业务编号，目标文本不能变成功能。', result)
+AssertionError: '目标：支持 F01-99 这样的业务编号，目标文本不能变成功能。' not found in '# 功能执行情况\n负责人：甲\n\n## 大功能 F01：图书管理\n\n- [ ] F01-01 添加图书｜状态：未开始\n  - 验收：保存后能读取新图书\n  - 说明：录入图书\n  - 优先级：待确认\n  - 依赖：无\n  - 所需技术：待确认\n  - 前期准备：待确认\n  - 执行 Agent：待分配\n  - 实现证据：无\n  - 审核 Agent：待审核\n  - 评分：待审核\n  - 问题：无\n'
+
+======================================================================
+FAIL: test_new_goal_and_subsequent_change_reach_ledger (test_ledger_goal_sync.LedgerGoalSyncTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 31, in test_new_goal_and_subsequent_change_reach_ledger
+    self.assertIn('目标：帮助管理员记录个人藏书。\n', first)
+AssertionError: '目标：帮助管理员记录个人藏书。\n' not found in '# 功能执行情况\n\n目标：待规划\n\n## 大功能 F01：图书管理\n\n- [ ] F01-01 添加图书｜状态：未开始\n  - 验收：保存后能读取新图书\n  - 说明：录入图书\n  - 优先级：待确认\n  - 依赖：无\n  - 所需技术：待确认\n  - 前期准备：待确认\n  - 执行 Agent：待分配\n  - 实现证据：无\n  - 审核 Agent：待审核\n  - 评分：待审核\n  - 问题：无\n'
+
+======================================================================
+FAIL: test_real_service_saves_new_goal_and_keeps_historical_plan (test_ledger_goal_sync.LedgerGoalSyncTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 104, in test_real_service_saves_new_goal_and_keeps_historical_plan
+    first = save_goal('帮助读者管理纸质藏书。')
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 100, in save_goal
+    self.assertIn('目标：' + goal, candidate['content'])
+AssertionError: '目标：帮助读者管理纸质藏书。' not found in '# 功能执行情况\n\n目标：待规划\n\n## 大功能 F01：图书管理\n\n- [ ] F01-01 添加图书｜状态：未开始\n  - 验收：保存后能读取新图书\n  - 说明：录入图书\n  - 优先级：待确认\n  - 依赖：无\n  - 所需技术：待确认\n  - 前期准备：待确认\n  - 执行 Agent：待分配\n  - 实现证据：无\n  - 审核 Agent：待审核\n  - 评分：待审核\n  - 问题：无\n'
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.027s
+
+FAILED (failures=9)

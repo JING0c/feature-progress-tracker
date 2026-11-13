@@ -1,0 +1,14 @@
+test_custom_header_metadata_fences_and_history_remain_intact (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_feature_goals_and_scope_tables_do_not_become_project_goal (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_goal_metadata_words_pipes_and_backslashes_roundtrip_as_literal_text (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_goal_missing_from_ledger_is_inserted_without_promoting_prose_to_nodes (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_goal_pipe_with_colon_is_not_duplicated_as_header_metadata (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_missing_or_placeholder_goal_does_not_erase_existing_goal (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_new_goal_and_subsequent_change_reach_ledger (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_real_service_saves_new_goal_and_keeps_historical_plan (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.069s
+
+OK

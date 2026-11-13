@@ -1,0 +1,114 @@
+test_a_initial_goal_and_second_revision_sync (__main__.Independent) ... FAIL
+test_b_other_head_fields_and_tracking_preserved (__main__.Independent) ... FAIL
+test_c_goal_multiline_stops_at_other_section (__main__.Independent) ... FAIL
+test_d_table_labeled_goal (__main__.Independent) ... FAIL
+test_e_missing_goal_keeps_existing_not_feature_acceptance (__main__.Independent) ... ok
+test_f2_mixed_goal_section_table_excludes_scope_acceptance (__main__.Independent) ... FAIL
+test_f3_goal_with_pipe_label_remains_idempotent (__main__.Independent) ... FAIL
+test_f4_goal_with_reserved_metadata_label_does_not_accumulate (__main__.Independent) ... FAIL
+test_f_quoted_and_fenced_fake_goal_not_used (__main__.Independent) ... FAIL
+test_g_feature_projection_no_duplicate_metadata (__main__.Independent) ... FAIL
+test_h_multiline_tech_and_unknown_field_preserved (__main__.Independent) ... FAIL
+test_i_public_service_preview_save_export_history (__main__.Independent) ... FAIL
+test_j_adoption_blank_and_alias_technical_columns_consistent (__main__.Independent) ... FAIL
+
+======================================================================
+FAIL: test_a_initial_goal_and_second_revision_sync (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 27, in test_a_initial_goal_and_second_revision_sync
+    one=converted(plan());self.assertIn(GOAL1,head(one));self.assertNotIn('待规划',head(one))
+AssertionError: '帮助读者记录并检索本地图书。' not found in '# 功能执行情况\n\n目标：待规划\n\n'
+
+======================================================================
+FAIL: test_b_other_head_fields_and_tracking_preserved (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 35, in test_b_other_head_fields_and_tracking_preserved
+    self.assertIn(GOAL2,head(second));self.assertEqual(parse(first),parse(second))
+AssertionError: '帮助社区成员预约并追踪共享图书。' not found in '# 功能执行情况\n目标：旧目标 | 更新：2026-10-01\n进度：已验收 0/1（0%）\n维护说明：保留此用户原话\n\n'
+
+======================================================================
+FAIL: test_c_goal_multiline_stops_at_other_section (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 38, in test_c_goal_multiline_stops_at_other_section
+    result=head(converted(content));self.assertIn('保存读者书单',result);self.assertIn('可按名称检索',result)
+AssertionError: '保存读者书单' not found in '# 功能执行情况\n\n目标：待规划\n\n'
+
+======================================================================
+FAIL: test_d_table_labeled_goal (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 42, in test_d_table_labeled_goal
+    self.assertTrue(inspect_plan(content)['valid']);result=head(converted(content));self.assertIn(GOAL2,result);self.assertNotIn('仅支持本地查询',result)
+AssertionError: '帮助社区成员预约并追踪共享图书。' not found in '# 功能执行情况\n\n目标：待规划\n\n'
+
+======================================================================
+FAIL: test_f2_mixed_goal_section_table_excludes_scope_acceptance (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 52, in test_f2_mixed_goal_section_table_excludes_scope_acceptance
+    result=head(converted(content));self.assertIn('让读者快速查找图书',result)
+AssertionError: '让读者快速查找图书' not found in '# 功能执行情况\n\n目标：待规划\n\n'
+
+======================================================================
+FAIL: test_f3_goal_with_pipe_label_remains_idempotent (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 57, in test_f3_goal_with_pipe_label_remains_idempotent
+    self.assertIn('两个入口查询图书',head(second))
+AssertionError: '两个入口查询图书' not found in '# 功能执行情况\n\n目标：待规划\n\n'
+
+======================================================================
+FAIL: test_f4_goal_with_reserved_metadata_label_does_not_accumulate (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 61, in test_f4_goal_with_reserved_metadata_label_does_not_accumulate
+    changed=converted(plan(GOAL2),second);self.assertNotIn('借出或归还',head(changed));self.assertIn(GOAL2,head(changed))
+AssertionError: '帮助社区成员预约并追踪共享图书。' not found in '# 功能执行情况\n\n目标：待规划\n\n'
+
+======================================================================
+FAIL: test_f_quoted_and_fenced_fake_goal_not_used (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 49, in test_f_quoted_and_fenced_fake_goal_not_used
+    result=head(converted(content));self.assertIn(GOAL1,result);self.assertNotIn('示例',result)
+AssertionError: '帮助读者记录并检索本地图书。' not found in '# 功能执行情况\n\n目标：待规划\n\n'
+
+======================================================================
+FAIL: test_g_feature_projection_no_duplicate_metadata (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 69, in test_g_feature_projection_no_duplicate_metadata
+    self.assertNotIn(tech,description);self.assertNotIn(prep,description);self.assertNotIn('采用：是',description)
+AssertionError: 'Python技术唯一值' unexpectedly found in '说明：管理图书条目\n验收标准：子功能通过各自验收\n优先级：高\n依赖：无\n备注：采用：是\n所需技术：Python技术唯一值\n前期准备：样本准备唯一值\n备注唯一值\n外加列：外加保留唯一值'
+
+======================================================================
+FAIL: test_h_multiline_tech_and_unknown_field_preserved (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 77, in test_h_multiline_tech_and_unknown_field_preserved
+    self.assertNotIn('第二技术值',row['功能介绍']);self.assertNotIn('第二准备值',row['功能介绍'])
+AssertionError: '第二技术值' unexpectedly found in '说明：用户说明中写所需技术：Go为示例，不能删\n验收标准：输入书名后显示匹配图书\n优先级：中\n依赖：无\n备注：采用：是\n所需技术：SQLite技术唯一值\n第二技术值\n前期准备：图书准备唯一值\n第二准备值\n子项备注唯一值\n外加列：子项外加唯一值'
+
+======================================================================
+FAIL: test_i_public_service_preview_save_export_history (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 83, in test_i_public_service_preview_save_export_history
+    self.assertIn(GOAL1,head(cand['content']));self.assertEqual(call('read_project')['ledger']['revision'],read['ledger']['revision'])
+AssertionError: '帮助读者记录并检索本地图书。' not found in '# 功能执行情况\n\n目标：待规划\n\n'
+
+======================================================================
+FAIL: test_j_adoption_blank_and_alias_technical_columns_consistent (__main__.Independent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/fpt_goal_detail_review.py", line 104, in test_j_adoption_blank_and_alias_technical_columns_consistent
+    self.assertIn('采用',sheet['columns']);fields=cells_for(sheet,'F01-01')
+AssertionError: '采用' not found in ['大功能', '小功能', '细分功能', '功能介绍', '所需技术', '前期准备']
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.035s
+
+FAILED (failures=12)

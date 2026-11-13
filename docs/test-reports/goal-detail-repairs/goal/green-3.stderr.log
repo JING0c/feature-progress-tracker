@@ -1,0 +1,8 @@
+test_legacy_nested_archives_remain_exact_and_preserve_original_review (test_history_growth.HistoryGrowthTests) ... ok
+test_parent_and_child_snapshots_keep_evidence_without_cross_history (test_history_growth.HistoryGrowthTests) ... ok
+test_public_mcp_repeated_progress_and_requirement_saves_grow_linearly (test_history_growth.HistoryGrowthTests) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.231s
+
+OK

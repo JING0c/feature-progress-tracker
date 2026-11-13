@@ -1,0 +1,8 @@
+test_g_feature_projection_no_duplicate_metadata (__main__.Independent) ... ok
+test_h_multiline_tech_and_unknown_field_preserved (__main__.Independent) ... ok
+test_i_public_service_preview_save_export_history (__main__.Independent) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.067s
+
+OK

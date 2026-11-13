@@ -1,0 +1,15 @@
+{
+  "cmd": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_ledger_goal_sync.py",
+    "-v"
+  ],
+  "exit_code": 0
+}

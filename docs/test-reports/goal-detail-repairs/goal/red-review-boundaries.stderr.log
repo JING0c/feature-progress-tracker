@@ -1,0 +1,30 @@
+test_custom_header_metadata_fences_and_history_remain_intact (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_feature_goals_and_scope_tables_do_not_become_project_goal (test_ledger_goal_sync.LedgerGoalSyncTests) ... FAIL
+test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) ... test_goal_missing_from_ledger_is_inserted_without_promoting_prose_to_nodes (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_missing_or_placeholder_goal_does_not_erase_existing_goal (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_new_goal_and_subsequent_change_reach_ledger (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_real_service_saves_new_goal_and_keeps_historical_plan (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+
+======================================================================
+FAIL: test_feature_goals_and_scope_tables_do_not_become_project_goal (test_ledger_goal_sync.LedgerGoalSyncTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 82, in test_feature_goals_and_scope_tables_do_not_become_project_goal
+    self.assertEqual(goal, '目标：帮助读者可靠地找到藏书。')
+AssertionError: '目标：帮助读者可靠地找到藏书。；不负责纸质图书配送。' != '目标：帮助读者可靠地找到藏书。'
+- 目标：帮助读者可靠地找到藏书。；不负责纸质图书配送。
++ 目标：帮助读者可靠地找到藏书。
+
+
+======================================================================
+FAIL: test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) (section='## 目标\n| 项目 | 内容 |\n| --- | --- |\n| 目标 | 保存并搜索藏书 |\n| 范围 | 不要把这段范围当目标 |')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 73, in test_goal_formats_keep_only_goal_content
+    self.assertNotIn('不要把这段范围当目标', goal)
+AssertionError: '不要把这段范围当目标' unexpectedly found in '目标：保存并搜索藏书；范围；不要把这段范围当目标'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.061s
+
+FAILED (failures=2)

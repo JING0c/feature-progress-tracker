@@ -1,0 +1,7 @@
+{
+  "first_attempt": "integration",
+  "result": "test harness assertion failure, not product failure",
+  "cause": "Excel first row is merged title, header is row 2; merged groups omit covered cells, so cell coordinates are required.",
+  "fix": "Locate header by values and map cells by Excel column reference, then rerun whole two-host chain in a fresh output directory.",
+  "preserved_first_attempt": true
+}

@@ -1,0 +1,33 @@
+test_custom_header_metadata_fences_and_history_remain_intact (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_feature_goals_and_scope_tables_do_not_become_project_goal (test_ledger_goal_sync.LedgerGoalSyncTests) ... ERROR
+test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) ... test_goal_missing_from_ledger_is_inserted_without_promoting_prose_to_nodes (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_missing_or_placeholder_goal_does_not_erase_existing_goal (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_new_goal_and_subsequent_change_reach_ledger (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_real_service_saves_new_goal_and_keeps_historical_plan (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+
+======================================================================
+ERROR: test_feature_goals_and_scope_tables_do_not_become_project_goal (test_ledger_goal_sync.LedgerGoalSyncTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 77, in test_feature_goals_and_scope_tables_do_not_become_project_goal
+    result = self.convert(text)
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 27, in convert
+    return ledger_from_plan(content, existing, parse)['content']
+  File "/Users/olcgb/code/protuct_plan/scripts/planning_operations.py", line 363, in ledger_from_plan
+    rows = editable_table(content)['rows']
+  File "/Users/olcgb/code/protuct_plan/scripts/planning_editor.py", line 30, in editable_table
+    raise ValueError('请先生成一份包含编号、上级编号和验收标准的单一功能表，再直接编辑。旧规划仍可阅读。')
+ValueError: 请先生成一份包含编号、上级编号和验收标准的单一功能表，再直接编辑。旧规划仍可阅读。
+
+======================================================================
+FAIL: test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) (section='## 目标与需求来源\n让个人藏书有清晰可查的目录。')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 70, in test_goal_formats_keep_only_goal_content
+    self.assertIn(phrase, goal)
+AssertionError: '让个人藏书有清晰可查的目录。' not found in '目标：待规划'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.060s
+
+FAILED (failures=1, errors=1)

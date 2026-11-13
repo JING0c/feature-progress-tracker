@@ -1,0 +1,45 @@
+test_custom_header_metadata_fences_and_history_remain_intact (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_feature_goals_and_scope_tables_do_not_become_project_goal (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_goal_formats_keep_only_goal_content (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_goal_metadata_words_pipes_and_backslashes_roundtrip_as_literal_text (test_ledger_goal_sync.LedgerGoalSyncTests) ... test_goal_missing_from_ledger_is_inserted_without_promoting_prose_to_nodes (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_goal_pipe_with_colon_is_not_duplicated_as_header_metadata (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_missing_or_placeholder_goal_does_not_erase_existing_goal (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_new_goal_and_subsequent_change_reach_ledger (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+test_real_service_saves_new_goal_and_keeps_historical_plan (test_ledger_goal_sync.LedgerGoalSyncTests) ... ok
+
+======================================================================
+FAIL: test_goal_metadata_words_pipes_and_backslashes_roundtrip_as_literal_text (test_ledger_goal_sync.LedgerGoalSyncTests) (source='可筛选图书 | 状态：借出或归还。')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 60, in test_goal_metadata_words_pipes_and_backslashes_roundtrip_as_literal_text
+    self.assertIn('目标：' + expected + ' | 更新：2026-01-01\n', first)
+AssertionError: '目标：可筛选图书 \\| 状态：借出或归还。 | 更新：2026-01-01\n' not found in '# 功能执行情况\n目标：可筛选图书 | 状态：借出或归还。 | 更新：2026-01-01\n\n## 大功能 F01：图书管理\n\n- [ ] F01-01 添加图书｜状态：未开始\n  - 验收：保存后能读取新图书\n  - 说明：录入图书\n  - 优先级：待确认\n  - 依赖：无\n  - 所需技术：待确认\n  - 前期准备：待确认\n  - 执行 Agent：待分配\n  - 实现证据：无\n  - 审核 Agent：待审核\n  - 评分：待审核\n  - 问题：无\n'
+
+======================================================================
+FAIL: test_goal_metadata_words_pipes_and_backslashes_roundtrip_as_literal_text (test_ledger_goal_sync.LedgerGoalSyncTests) (source='可筛选图书 ｜ 状态：借出或归还。')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 60, in test_goal_metadata_words_pipes_and_backslashes_roundtrip_as_literal_text
+    self.assertIn('目标：' + expected + ' | 更新：2026-01-01\n', first)
+AssertionError: '目标：可筛选图书 &#65372; 状态：借出或归还。 | 更新：2026-01-01\n' not found in '# 功能执行情况\n目标：可筛选图书 ｜ 状态：借出或归还。 | 更新：2026-01-01\n\n## 大功能 F01：图书管理\n\n- [ ] F01-01 添加图书｜状态：未开始\n  - 验收：保存后能读取新图书\n  - 说明：录入图书\n  - 优先级：待确认\n  - 依赖：无\n  - 所需技术：待确认\n  - 前期准备：待确认\n  - 执行 Agent：待分配\n  - 实现证据：无\n  - 审核 Agent：待审核\n  - 评分：待审核\n  - 问题：无\n'
+
+======================================================================
+FAIL: test_goal_metadata_words_pipes_and_backslashes_roundtrip_as_literal_text (test_ledger_goal_sync.LedgerGoalSyncTests) (source='读取 C:\\\\books \\\\\\| 状态：借出或归还。')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 60, in test_goal_metadata_words_pipes_and_backslashes_roundtrip_as_literal_text
+    self.assertIn('目标：' + expected + ' | 更新：2026-01-01\n', first)
+AssertionError: '目标：读取 C:\\\\books \\\\\\| 状态：借出或归还。 | 更新：2026-01-01\n' not found in '# 功能执行情况\n目标：读取 C:\\books \\| 状态：借出或归还。 | 更新：2026-01-01\n\n## 大功能 F01：图书管理\n\n- [ ] F01-01 添加图书｜状态：未开始\n  - 验收：保存后能读取新图书\n  - 说明：录入图书\n  - 优先级：待确认\n  - 依赖：无\n  - 所需技术：待确认\n  - 前期准备：待确认\n  - 执行 Agent：待分配\n  - 实现证据：无\n  - 审核 Agent：待审核\n  - 评分：待审核\n  - 问题：无\n'
+
+======================================================================
+FAIL: test_goal_metadata_words_pipes_and_backslashes_roundtrip_as_literal_text (test_ledger_goal_sync.LedgerGoalSyncTests) (source='读取路径 \\\\\\\\\\| 更新：保留文字。')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/olcgb/code/protuct_plan/tests/test_ledger_goal_sync.py", line 60, in test_goal_metadata_words_pipes_and_backslashes_roundtrip_as_literal_text
+    self.assertIn('目标：' + expected + ' | 更新：2026-01-01\n', first)
+AssertionError: '目标：读取路径 \\\\\\\\\\| 更新：保留文字。 | 更新：2026-01-01\n' not found in '# 功能执行情况\n目标：读取路径 \\\\| 更新：保留文字。 | 更新：2026-01-01\n\n## 大功能 F01：图书管理\n\n- [ ] F01-01 添加图书｜状态：未开始\n  - 验收：保存后能读取新图书\n  - 说明：录入图书\n  - 优先级：待确认\n  - 依赖：无\n  - 所需技术：待确认\n  - 前期准备：待确认\n  - 执行 Agent：待分配\n  - 实现证据：无\n  - 审核 Agent：待审核\n  - 评分：待审核\n  - 问题：无\n'
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.064s
+
+FAILED (failures=4)

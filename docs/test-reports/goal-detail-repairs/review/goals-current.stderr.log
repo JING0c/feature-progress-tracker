@@ -1,0 +1,11 @@
+test_a_initial_goal_and_second_revision_sync (__main__.Independent) ... ok
+test_b_other_head_fields_and_tracking_preserved (__main__.Independent) ... ok
+test_c_goal_multiline_stops_at_other_section (__main__.Independent) ... ok
+test_d_table_labeled_goal (__main__.Independent) ... ok
+test_e_missing_goal_keeps_existing_not_feature_acceptance (__main__.Independent) ... ok
+test_f_quoted_and_fenced_fake_goal_not_used (__main__.Independent) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.012s
+
+OK

@@ -1,0 +1,225 @@
+{
+  "title": "阅读清单规划书",
+  "sheets": [
+    {
+      "id": "feature-list",
+      "name": "功能清单",
+      "kind": "feature-list",
+      "title": "阅读清单规划书",
+      "hierarchyColumns": 3,
+      "columns": [
+        "采用",
+        "大功能",
+        "小功能",
+        "细分功能",
+        "功能介绍",
+        "所需技术",
+        "前期准备"
+      ],
+      "rows": [
+        {
+          "key": "feature-list-sheet-3-row-1",
+          "parent": null,
+          "depth": 0,
+          "kind": "item",
+          "cells": [
+            "是",
+            "F01 图书管理",
+            "",
+            "",
+            "说明：维护本地图书\n验收标准：可保存并查到图书\n优先级：高\n依赖：无\n备注：根模块备注\n责任组：阅读组",
+            "Python",
+            "测试书目"
+          ],
+          "feature_id": "F01"
+        },
+        {
+          "key": "feature-list-sheet-3-row-2",
+          "parent": null,
+          "depth": 0,
+          "kind": "item",
+          "cells": [
+            "是",
+            "F01 图书管理",
+            "F01-01 添加图书",
+            "",
+            "说明：录入标题并保存记录\n验收标准：拒绝空标题，保存后重启能读取新记录\n优先级：高\n依赖：无\n备注：手工备注保留\n责任组：阅读组",
+            "SQLite",
+            "三本测试书目"
+          ],
+          "feature_id": "F01-01"
+        },
+        {
+          "key": "feature-list-sheet-3-row-3",
+          "parent": null,
+          "depth": 0,
+          "kind": "item",
+          "cells": [
+            "是",
+            "F01 图书管理",
+            "F01-02 搜索图书",
+            "",
+            "说明：按标题搜索已保存的图书。\n验收标准：结果匹配标题关键词。",
+            "SQLite",
+            "含不同书名的数据"
+          ],
+          "feature_id": "F01-02"
+        },
+        {
+          "key": "feature-list-sheet-3-row-4",
+          "parent": null,
+          "depth": 0,
+          "kind": "item",
+          "cells": [
+            "是",
+            "F01 图书管理",
+            "F01-02 搜索图书",
+            "F01-02-01 筛选作者",
+            "说明：在搜索结果中按作者筛选。\n验收标准：仅显示选中作者的书籍。",
+            "",
+            ""
+          ],
+          "feature_id": "F01-02-01"
+        }
+      ],
+      "merges": [
+        {
+          "row": 0,
+          "column": 1,
+          "rowSpan": 4
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "rowSpan": 2
+        }
+      ]
+    },
+    {
+      "id": "sheet-1",
+      "name": "项目目标与场景",
+      "columns": [
+        "规划事项",
+        "内容"
+      ],
+      "rows": [
+        {
+          "key": "sheet-1-row-1",
+          "parent": null,
+          "depth": 0,
+          "cells": [
+            "说明",
+            "帮助读者按标题和作者快速查找已保存的图书。"
+          ],
+          "kind": "item"
+        }
+      ]
+    },
+    {
+      "id": "sheet-2",
+      "name": "范围与边界",
+      "columns": [
+        "规划事项",
+        "内容"
+      ],
+      "rows": [
+        {
+          "key": "sheet-2-row-1",
+          "parent": null,
+          "depth": 0,
+          "cells": [
+            "说明",
+            "本期管理本地图书；此为隔离测试，不选外部参考。"
+          ],
+          "kind": "item"
+        }
+      ]
+    },
+    {
+      "id": "sheet-3",
+      "name": "功能规划与验收",
+      "columns": [
+        "编号",
+        "功能名称",
+        "说明与验收",
+        "优先级",
+        "依赖",
+        "备注",
+        "所需技术",
+        "前期准备",
+        "采用"
+      ],
+      "rows": [
+        {
+          "key": "sheet-3-row-1",
+          "parent": null,
+          "depth": 0,
+          "cells": [
+            "F01",
+            "图书管理",
+            "说明：维护本地图书\n验收标准：可保存并查到图书",
+            "高",
+            "无",
+            "根模块备注\n责任组：阅读组",
+            "Python",
+            "测试书目",
+            "是"
+          ],
+          "kind": "section"
+        },
+        {
+          "key": "sheet-3-row-2",
+          "parent": "sheet-3-row-1",
+          "depth": 1,
+          "cells": [
+            "F01-01",
+            "添加图书",
+            "说明：录入标题并保存记录\n验收标准：拒绝空标题，保存后重启能读取新记录",
+            "高",
+            "无",
+            "手工备注保留\n责任组：阅读组",
+            "SQLite",
+            "三本测试书目",
+            "是"
+          ],
+          "kind": "item"
+        },
+        {
+          "key": "sheet-3-row-3",
+          "parent": "sheet-3-row-1",
+          "depth": 1,
+          "cells": [
+            "F01-02",
+            "搜索图书",
+            "说明：按标题搜索已保存的图书。\n验收标准：结果匹配标题关键词。",
+            "",
+            "",
+            "",
+            "SQLite",
+            "含不同书名的数据",
+            "是"
+          ],
+          "kind": "section"
+        },
+        {
+          "key": "sheet-3-row-4",
+          "parent": "sheet-3-row-3",
+          "depth": 2,
+          "cells": [
+            "F01-02-01",
+            "筛选作者",
+            "说明：在搜索结果中按作者筛选。\n验收标准：仅显示选中作者的书籍。",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "是"
+          ],
+          "kind": "item"
+        }
+      ]
+    }
+  ],
+  "revision": "3e912417660932b44f64a077b763b1c1da157c7581f7572d5151763c09ea19a5"
+}

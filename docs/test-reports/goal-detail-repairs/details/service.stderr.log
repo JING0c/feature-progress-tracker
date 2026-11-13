@@ -1,0 +1,27 @@
+test_cross_process_writes_hold_lock_before_atomic_replace (test_project_service.ProjectServiceTests) ... ok
+test_declined_children_cannot_be_silently_reintroduced (test_project_service.ProjectServiceTests) ... ok
+test_direct_save_validates_numbered_dependencies_but_allows_preparation_text (test_project_service.ProjectServiceTests) ... ok
+test_edit_preview_does_not_save_and_duplicate_revision_is_rejected (test_project_service.ProjectServiceTests) ... ok
+test_export_history_uses_unique_project_paths (test_project_service.ProjectServiceTests) ... ok
+test_export_symlink_and_invalid_review_identity_are_rejected (test_project_service.ProjectServiceTests) ... ok
+test_forged_ledger_completion_and_extra_rows_are_rejected (test_project_service.ProjectServiceTests) ... ok
+test_imported_initial_plan_cannot_relabel_existing_ledger_ids (test_project_service.ProjectServiceTests) ... ok
+test_imported_project_shared_by_two_workspaces_preserves_revision (test_project_service.ProjectServiceTests) ... ok
+test_initial_plan_required_then_history_and_ledger_roundtrip (test_project_service.ProjectServiceTests) ... ok
+test_invalid_source_evidence_cannot_be_persisted (test_project_service.ProjectServiceTests) ... ok
+test_ledger_candidate_is_bound_to_source_report_and_project (test_project_service.ProjectServiceTests) ... ok
+test_malformed_or_cross_project_payloads_are_rejected (test_project_service.ProjectServiceTests) ... ok
+test_old_plan_or_reference_binding_cannot_save_ledger (test_project_service.ProjectServiceTests) ... ok
+test_progress_changes_use_current_ledger_revision (test_project_service.ProjectServiceTests) ... ok
+test_read_existing_workspace_does_not_create_state_files (test_project_service.ProjectServiceTests) ... ok
+test_removal_cannot_leave_dependency_or_erase_every_row (test_project_service.ProjectServiceTests) ... ok
+test_replaced_suggestions_on_same_plan_reject_old_selection (test_project_service.ProjectServiceTests) ... ok
+test_source_review_rejects_plan_changes (test_project_service.ProjectServiceTests) ... ok
+test_source_review_ticket_and_reference_revisions (test_project_service.ProjectServiceTests) ... ok
+test_suggestions_record_preview_then_save_and_stale_rejection (test_project_service.ProjectServiceTests) ... ok
+test_two_services_cannot_both_save_same_revision (test_project_service.ProjectServiceTests) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 1.034s
+
+OK
