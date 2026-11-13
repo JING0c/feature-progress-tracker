@@ -179,6 +179,12 @@ def _field_kind(name):
         return 'priority'
     if name in ('依赖', '主要依赖', '前置依赖', '依赖项', '依赖编号'):
         return 'dependency'
+    if name == '采用':
+        return 'adoption'
+    if name in ('所需技术', '技术方案'):
+        return 'technology'
+    if name in ('前期准备', '准备条件'):
+        return 'preparation'
     if name in ('备注', '待确认事项', '风险与待确认', '风险', '说明事项'):
         return 'notes'
     if re.search(r'验收|说明|描述|目标|结果', name):
@@ -228,7 +234,7 @@ class _Rows:
         return result
 
 
-def _feature_rows(blocks, sheet_id, feature_keys=None):
+def _feature_rows(blocks, sheet_id, feature_keys=None, feature_fields=None):
     rows = _Rows(sheet_id, len(FEATURE_COLUMNS))
     heading_stack, current_feature = [], None
     id_refs, parent_refs = {}, {}
@@ -273,6 +279,7 @@ def _feature_rows(blocks, sheet_id, feature_keys=None):
                 continue
             for data in block['rows']:
                 cells, identity, explicit = [''] * 6, '', None
+                structured = {}
                 for column, value, field in zip(block['columns'], data, fields):
                     if field == 'id':
                         if identity:
@@ -287,11 +294,20 @@ def _feature_rows(blocks, sheet_id, feature_keys=None):
                             cells[5] += ('\n' if cells[5] else '') + column + '（重复列）：' + value
                         else:
                             explicit = value
+                    elif field in ('adoption', 'technology', 'preparation'):
+                        label = {'adoption': '采用', 'technology': '所需技术',
+                                 'preparation': '前期准备'}[field]
+                        if label in structured:
+                            cells[5] += ('\n' if cells[5] else '') + column + '（重复列）：' + value
+                        else:
+                            structured[label] = (value or '是') if field == 'adoption' else value
                     else:
                         target = {'priority': 3, 'dependency': 4, 'notes': 5}.get(field, 2 if field == 'description' else 5)
                         label = column + '：' if field in ('description', 'extra') and value else ''
                         cells[target] += ('\n' if cells[target] and value else '') + label + value
                 row = feature(rows.add(cells, heading_parent()))
+                if feature_fields is not None:
+                    feature_fields[row['key']] = structured
                 register(row, identity, explicit)
             # A following paragraph retains the section context, not the last table row.
         elif kind == 'list' and current_feature is not None:
@@ -380,7 +396,7 @@ def _general_sheet(blocks, sheet_id):
     return ['规划事项', '内容'], rows.finish()
 
 
-def _feature_list(title, sheets, feature_keys):
+def _feature_list(title, sheets, feature_keys, feature_fields):
     """Project recorded feature paths into a reference-style horizontal list.
 
     The detailed worksheets stay intact. Group merges refer to row identities,
@@ -418,7 +434,7 @@ def _feature_list(title, sheets, feature_keys):
                     details.append(label + '：' + value)
             # A parent with its own information receives its own row; child
             # descriptions are never substituted for that parent's evidence.
-            if row['key'] in children and not details:
+            if row['key'] in children and not details and not any(feature_fields.get(row['key'], {}).values()):
                 continue
             recorded_money = []
             for line in values[5].splitlines():
@@ -494,33 +510,38 @@ def parse_plan_sheet(content):
                 current = {'name': '规划概览', 'lines': []}
                 sections.append(current)
             current['lines'].append(line)
-    sheets, feature_keys = [], set()
+    sheets, feature_keys, feature_fields = [], set(), {}
     for index, section in enumerate(sections, 1):
         identity = 'sheet-' + str(index)
         blocks = list(_blocks(section['lines']))
         if '功能' in section['name'] and not re.search(r'优先|依赖|风险|阶段', section['name']):
-            columns, rows = list(FEATURE_COLUMNS), _feature_rows(blocks, identity, feature_keys)
+            columns, rows = list(FEATURE_COLUMNS), _feature_rows(blocks, identity, feature_keys, feature_fields)
         else:
             columns, rows = _general_sheet(blocks, identity)
         sheets.append({'id': identity, 'name': section['name'], 'columns': columns, 'rows': rows})
-    feature_list = _feature_list(title, sheets, feature_keys)
+    feature_list = _feature_list(title, sheets, feature_keys, feature_fields)
     if feature_list:
         sheets.insert(0, feature_list)
-    technology = {}
+    # Project only explicitly recorded columns. Reading these back from remarks
+    # both duplicated them in the UI and mistook user-written prose for fields.
+    has_adoption = any('采用' in fields for fields in feature_fields.values())
+    has_technical = any('所需技术' in fields or '前期准备' in fields
+                        for fields in feature_fields.values())
+    technical = ['所需技术', '前期准备'] if has_technical else []
     for sheet in sheets:
-        if sheet['columns'] != FEATURE_COLUMNS: continue
+        listing = sheet.get('kind') == 'feature-list'
+        if not listing and sheet['columns'] != FEATURE_COLUMNS:
+            continue
+        appended = technical + (['采用'] if has_adoption and not listing else [])
+        sheet['columns'] += appended
         for row in sheet['rows']:
-            fields = {}
-            for line in row['cells'][5].splitlines():
-                match = re.match(r'^(所需技术|技术方案|前期准备|准备条件)[：:]\s*(.*)',line)
-                if match: fields[match[1]]=match[2]
-            technology[row['key']] = [fields.get('所需技术',fields.get('技术方案','')),fields.get('前期准备',fields.get('准备条件',''))]
-    if any(any(values) for values in technology.values()):
-        for sheet in sheets:
-            if sheet['columns'] == FEATURE_COLUMNS:
-                sheet['columns'] = list(FEATURE_COLUMNS) + ['所需技术','前期准备']
-                for row in sheet['rows']: row['cells'] += technology.get(row['key'],['',''])
-            elif sheet.get('kind') == 'feature-list':
-                sheet['columns'] += ['所需技术','前期准备']
-                for row in sheet['rows']: row['cells'] += technology.get(row['key'].removeprefix('feature-list-'),['',''])
+            key = row['key'].removeprefix('feature-list-') if listing else row['key']
+            fields = feature_fields.get(key, {})
+            row['cells'] += [fields.get(label, '') for label in appended]
+            if listing and has_adoption:
+                row['cells'].insert(0, fields.get('采用', '') or '是')
+        if listing and has_adoption:
+            sheet['columns'].insert(0, '采用')
+            for merge in sheet['merges']:
+                merge['column'] += 1
     return {'title': title, 'sheets': sheets}

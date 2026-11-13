@@ -771,22 +771,27 @@ def main():
             try: table=planning_module('planning_editor').editable_table(content)
             except ValueError: return model
             choices={r['编号']:r.get('采用','是')!='否' for r in table['rows']}
-            technical={r['编号']:[r.get('所需技术',''),r.get('前期准备','')] for r in table['rows']}
+            technical={r['编号']:[r.get('所需技术'),r.get('前期准备')] for r in table['rows']}
             for sheet in model['sheets']:
                 if '所需技术' not in sheet['columns'] and ('功能名称' in sheet['columns'] or sheet.get('kind')=='feature-list'):
                     sheet['columns']+=['所需技术','前期准备']
-                    for row in sheet['rows']: row['cells']+=technical.get(row.get('feature_id',row['cells'][0]),['',''])
+                    for row in sheet['rows']: row['cells']+=[value or '' for value in technical.get(row.get('feature_id',row['cells'][0]),['',''])]
                 if '所需技术' in sheet['columns']:
                     for row in sheet['rows']:
                         values=technical.get(row.get('feature_id',row['cells'][0]))
                         if values is not None:
-                            row['cells'][sheet['columns'].index('所需技术')]=values[0]
-                            row['cells'][sheet['columns'].index('前期准备')]=values[1]
+                            for field,value in zip(('所需技术','前期准备'),values):
+                                if value is not None: row['cells'][sheet['columns'].index(field)]=value
                 if sheet.get('kind')!='feature-list': continue
-                sheet['columns'].insert(0,'采用')
+                has_adoption='采用' in sheet['columns']
+                if not has_adoption: sheet['columns'].insert(0,'采用')
+                adoption_column=sheet['columns'].index('采用')
                 for row in sheet['rows']:
-                    row['cells'].insert(0,'是' if choices.get(row.get('feature_id'),True) else '否')
-                for merge in sheet['merges']: merge['column']+=1
+                    value='是' if choices.get(row.get('feature_id'),True) else '否'
+                    if has_adoption: row['cells'][adoption_column]=value
+                    else: row['cells'].insert(adoption_column,value)
+                if not has_adoption:
+                    for merge in sheet['merges']: merge['column']+=1
             return model
 
         def research_path(self, project):

@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const {execFileSync} = require('node:child_process');
 
 class Node {
   constructor(tag) { this.tagName=tag; this.children=[]; this.attributes={}; this.handlers={}; this.style={}; this._text=''; }
@@ -94,6 +95,17 @@ function run() {
   assert.ok(bodyRows().every(r=>!r.className.includes('sheet-changed')));
   assert.ok(!container.textContent.includes('尚未保存'));
   button('查看功能明细').handlers.click();view.show({sheets:[model.sheets[0],listing]},{preferFeatures:true});assert.equal(button('功能清单').attributes['aria-pressed'],'true','newly generated plan opens its feature list');
+  const projected=JSON.parse(execFileSync('python3',['-B','-c',
+    "import sys,json;sys.path.insert(0,'scripts');sys.path.insert(0,'tests');from project_service import planning_model;from test_feature_detail_projection import PLAN;print(json.dumps(planning_model(PLAN),ensure_ascii=False))"],
+    {cwd:path.join(__dirname,'..'),encoding:'utf8'}));
+  view.show(projected,{preferFeatures:true});
+  const firstDetail=all(container,'details')[0];
+  assert.equal(firstDetail.textContent.split('所需技术：本地存储').length-1,1,'detail renders the recorded technology once');
+  assert.equal(firstDetail.textContent.split('前期准备：准备测试书目').length-1,1,'detail renders the recorded preparation once');
+  assert.ok(!firstDetail.textContent.includes('备注：采用：'),'adoption is not rendered as a note');
+  assert.match(firstDetail.textContent,/测试夹具/);
+  assert.match(firstDetail.textContent,/外部依据：手工确认/,'unknown fields survive projection and display');
+  assert.equal(all(container,'th').filter(n=>n.attributes.scope==='col'&&n.textContent==='采用').length,1,'existing adoption column is reused');
   console.log('Planning sheet view: hierarchy, nested collapse, tab state, batch controls, safe content, empty/error/cycle checks passed.');
 }
 module.exports=run;
