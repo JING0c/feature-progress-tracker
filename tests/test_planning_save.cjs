@@ -65,12 +65,12 @@ async function scenario({accept = true, changed = false, previewFails = false, i
   };
   vm.runInNewContext(script, context);
   await new Promise(resolve => setImmediate(resolve));
-  const initialDisabled = {save:node('save-ledger').disabled, generate:node('generate-ledger').disabled, plan:node('save-plan').disabled};
+  const initialDisabled = {save:node('save-ledger').disabled, generate:node('generate-ledger').disabled, plan:node('save-plan').disabled, review:node('review-source').disabled};
   if(action==='feature-timeout'){await workflowOptions.guide('拆分新增功能',true);}else if(referenceOnly){await workflowOptions.resumePlanning();}else if(action==='submit'){node('input').value='新项目需求';await node('form').handlers.submit({preventDefault(){}});}else await node(action).handlers.click();
   await new Promise(resolve => setImmediate(resolve));
   if(researchPause){workflowOptions.resumePlanning();await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));}
   if(retrySuggest){node('input').value='只生成建议';await node('form').handlers.submit({preventDefault(){}});}
-  return {calls, prompts, original, clearedTimers, suggestionsGenerated, progress:node('reference-progress-status').textContent, progressHidden:node('reference-progress').hidden, status:node('status').textContent, initialDisabled, finalDisabled:{save:node('save-ledger').disabled,generate:node('generate-ledger').disabled,plan:node('save-plan').disabled}};
+  return {calls, prompts, original, clearedTimers, suggestionsGenerated, progress:node('reference-progress-status').textContent, progressHidden:node('reference-progress').hidden, status:node('status').textContent, initialDisabled, finalDisabled:{save:node('save-ledger').disabled,generate:node('generate-ledger').disabled,plan:node('save-plan').disabled,review:node('review-source').disabled}};
 }
 
 async function run() {
@@ -107,15 +107,17 @@ async function run() {
   assert.ok(!pending.calls.some(c => ['/api/ledger/preview','/api/ledger/save'].includes(c.route)));
   assert.match(pending.status, /规划书/);
   const relocked = await scenario({initialReady:true, latestReady:false});
-  assert.equal(relocked.initialDisabled.save, false);
+  assert.equal(relocked.initialDisabled.review, false, 'a ready plan unlocks the first step of 核对与看板');
+  assert.equal(relocked.initialDisabled.save, true, 'saving waits for the earlier steps');
   assert.equal(relocked.prompts.length, 0);
   assert.ok(!relocked.calls.some(c => c.route === '/api/ledger/save'));
   const blockedGeneration = await scenario({initialReady:false, action:'generate-ledger'});
   assert.ok(!blockedGeneration.calls.some(c => c.route === '/api/planning'));
   const unlocked = await scenario({initialReady:false, action:'draft'});
   assert.equal(unlocked.calls.find(c => c.route === '/api/planning').payload.intent, 'plan');
-  assert.equal(unlocked.finalDisabled.save, false);
-  assert.equal(unlocked.finalDisabled.generate, false);
+  assert.equal(unlocked.finalDisabled.review, false, 'saving the plan unlocks the source check step');
+  assert.equal(unlocked.finalDisabled.generate, true, 'preview waits for the source check');
+  assert.equal(unlocked.finalDisabled.save, true, 'saving waits for the preview');
   const failedPlan = await scenario({initialReady:false, action:'draft', planSaveFails:true});
   assert.equal(failedPlan.finalDisabled.save, true);
   assert.equal(failedPlan.finalDisabled.generate, true);

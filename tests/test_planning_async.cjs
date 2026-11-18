@@ -102,7 +102,7 @@ async function failedPrerequisiteAndCancellationReleaseLock(){
   if(action==='save-ledger')assert.equal(h.calls.filter(c=>c.route==='/api/ledger/save').length,0);
  }
  const h=await harness();h.setGenerateFails(true);await h.node('generate-ledger').handlers.click();assert.equal(h.run('busy'),false);
- h.setGenerateFails(false);await h.node('generate-ledger').handlers.click();assert.match(h.node('status').textContent,/已按规则转换/);
+ h.setGenerateFails(false);await h.node('generate-ledger').handlers.click();assert.match(h.node('status').textContent,/变更预览已生成/);
 }
 async function ledgerSourceBindingSurvivesGenerateAndSave(){
  const h=await harness();await h.node('generate-ledger').handlers.click();
