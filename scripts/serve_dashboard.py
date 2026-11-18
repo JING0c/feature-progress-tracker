@@ -1365,6 +1365,8 @@ def main():
                     '/assets/planning-assistant.js': ('planning-assistant.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-suggestions.js': ('planning-suggestions.js', 'text/javascript; charset=utf-8'),
                     '/assets/planning-history-view.js': ('planning-history-view.js', 'text/javascript; charset=utf-8'),
+                    '/assets/project-nav.js': ('project-nav.js', 'text/javascript; charset=utf-8'),
+                    '/assets/project-nav.css': ('project-nav.css', 'text/css; charset=utf-8'),
                 }
                 if route in assets:
                     filename, kind = assets[route]

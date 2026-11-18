@@ -32,7 +32,7 @@
 .planning-workspace{max-width:1480px;display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:start}
 .planning-workspace:has(.plan-sidebar:not([hidden])){grid-template-columns:248px minmax(0,1fr)}
 .planning-main{min-width:0}
-.plan-sidebar{position:sticky;top:20px;max-height:calc(100dvh - 40px);overflow-y:auto;min-width:0;border:1px solid #eab6cd;border-radius:14px;background:#fff5fa;scrollbar-width:thin}
+.plan-sidebar{position:sticky;top:calc(var(--project-nav-height,0px) + 20px);max-height:calc(100dvh - var(--project-nav-height,0px) - 40px);overflow-y:auto;min-width:0;border:1px solid #eab6cd;border-radius:14px;background:#fff5fa;scrollbar-width:thin}
 .plan-sidebar[hidden]{display:none}
 .plan-sidebar .plan-header{display:block;padding:20px 18px 16px}
 .plan-sidebar .plan-header h2{font-size:18px;margin-bottom:10px}
@@ -98,7 +98,7 @@
 .suggestion-card h4{margin-bottom:6px}.suggestion-card details p{white-space:pre-wrap;overflow-wrap:anywhere}
 #suggestion-diff-text{white-space:pre-wrap;overflow-wrap:anywhere;max-height:360px;overflow:auto;font-size:12px}
 .planning-discussion{margin:20px 0}.planning-discussion>summary{padding:14px;background:#f9eaf1;border-radius:8px;margin-bottom:16px}
-:is(#new-feature-section,#view-section,#suggestions-section,#review-section){scroll-margin-top:20px}
+:is(#new-feature-section,#view-section,#suggestions-section,#review-section){scroll-margin-top:calc(var(--project-nav-height,0px) + 20px)}
 
 .review-ledger-actions{display:flex;gap:8px;flex-wrap:wrap;float:right;margin-left:12px}.review-ledger-actions button{font-size:13px}
 
@@ -120,9 +120,9 @@
 button:disabled{cursor:not-allowed}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
-.plan-document{overflow:clip}.plan-document-title{position:sticky;top:0;z-index:6;background:#fff;border-bottom:1px solid #ecd7e1}
+.plan-document{overflow:clip}.plan-document-title{position:sticky;top:var(--project-nav-height,0px);z-index:6;background:#fff;border-bottom:1px solid #ecd7e1}
 
-:is(#new-feature-section,#view-section,#review-section){scroll-margin-top:calc(var(--plan-toolbar-height,90px) + 16px)}
+:is(#new-feature-section,#view-section,#review-section){scroll-margin-top:calc(var(--project-nav-height,0px) + var(--plan-toolbar-height,90px) + 16px)}
 
 /* First visit starts with the need; saved projects keep the full workspace. */
 .first-use .layout{grid-template-columns:minmax(0,1fr)}
@@ -132,14 +132,12 @@ button:disabled{cursor:not-allowed}
 .first-use .planning-discussion{margin-top:0}
 .first-use .planning-discussion>summary{font-size:17px;font-weight:600}
 .first-use .composer textarea{min-height:100px}
-.plan-file-details{margin-top:8px;font-size:13px;color:#705664}
-.plan-file-details summary{cursor:pointer}.plan-file-details p{overflow-wrap:anywhere}
 .plan-sidebar .plan-header{padding:14px 16px}
 .plan-sidebar .plan-actions{gap:10px;padding:12px}
 .plan-action-group{gap:2px}.plan-action-group+.plan-action-group{padding-top:10px}
 .plan-sidebar button{min-height:34px;padding:6px 10px}
 .plan-document[data-editing=true] :is(#plan-sheet,#plan-content,#view-section,#review-section,#new-feature-section){display:none}
-.feature-editor{scroll-margin-top:calc(var(--plan-toolbar-height,90px) + 16px)}
+.feature-editor{scroll-margin-top:calc(var(--project-nav-height,0px) + var(--plan-toolbar-height,90px) + 16px)}
 .feature-editor textarea{min-width:210px;min-height:64px;font-size:14px}
 .feature-editor td[data-column="功能名称"] textarea{min-width:170px;width:170px}
 .feature-editor :is(td[data-column="编号"],td[data-column="上级编号"],td[data-column="优先级"]) textarea{min-width:95px;width:95px}
@@ -208,7 +206,7 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 .suggestions-panel #messages{max-height:320px}
 .input-error{font-size:14px;color:#832d51;margin:8px 0}
 #input[aria-invalid=true]{border:2px solid #832d51}
-#suggestion-results{scroll-margin-top:20px;outline:none}
+#suggestion-results{scroll-margin-top:calc(var(--project-nav-height,0px) + 20px);outline:none}
 #suggestion-results h3{font-size:17px;color:#294c3a;margin:18px 0 4px}
 #suggestion-selection-status{margin:4px 0 12px}
 #suggestion-results:focus-visible{outline:3px solid #447a5f;outline-offset:5px}
@@ -222,7 +220,7 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 .feature-row-actions{min-width:115px}.feature-row-actions button{display:block;margin:6px 0;font-size:13px;padding:8px}
 
 /* One timeline: a saved table is a detail of its save record. */
-.suggestion-activity{border:1px solid #e5cfda;border-radius:12px;background:#fff;margin:22px 0;scroll-margin-top:18px}
+.suggestion-activity{border:1px solid #e5cfda;border-radius:12px;background:#fff;margin:22px 0;scroll-margin-top:calc(var(--project-nav-height,0px) + 18px)}
 .suggestion-activity>summary{padding:16px 20px;font-size:16px;font-weight:600;color:#482b38;background:#faedf4;border-radius:12px}
 .suggestion-activity[open]>summary{border-radius:12px 12px 0 0;border-bottom:1px solid #e5cfda}
 #activity-count{font-size:13px;font-weight:400;color:#705664}
@@ -236,7 +234,7 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 .activity-card>p{margin:8px 0;font-size:13px}
 .activity-card>button{font-size:13px;min-height:36px;padding:8px 12px}
 .activity-entry summary>span{margin-left:0}
-.planning-activity .plan-history{border:0;padding:0;margin:0;scroll-margin-top:18px}
+.planning-activity .plan-history{border:0;padding:0;margin:0;scroll-margin-top:calc(var(--project-nav-height,0px) + 18px)}
 .plan-history h3{display:block;font-size:18px;line-height:1.6;margin:18px 0 8px}
 #activity-timeline:focus,#history-title:focus{outline:none}
 @media(max-width:600px){.suggestion-activity .planning-activity{padding:14px}.activity-heading h2{font-size:16px}.activity-card>button{width:100%}}
@@ -253,3 +251,10 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 .feature-thread h4{margin:0 0 8px;font-size:15px;color:#482b38}
 .feature-thread label{display:block;margin:12px 0 6px;font-size:14px;font-weight:600}
 .feature-thread #feature-proposal{white-space:pre-wrap;max-height:420px;overflow:auto}
+
+/* Secondary file and export tools stay out of the page's own table of contents. */
+.plan-more{border-top:1px solid #ecd7e1;padding-top:14px}
+.plan-more summary{cursor:pointer;padding:0 8px;font-size:12px;font-weight:600;color:#705664}
+.plan-more .plan-action-group{margin-top:10px}
+.plan-location-label{margin:0 8px;font-size:12px;color:#705664}
+#plan-location{margin:0 8px 6px;font-size:12px;color:#705664;overflow-wrap:anywhere}

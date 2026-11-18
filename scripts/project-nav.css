@@ -1,0 +1,16 @@
+/* Project-level bar shared by planning and board: identity on the left, the same three destinations on the right. */
+.project-nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;min-height:56px;padding:8px max(24px,calc((100vw - 1120px)/2));background:#fff;border-bottom:1px solid #efc6d9;font-size:14px}
+.project-crumb{display:flex;align-items:center;gap:8px;min-width:0}
+.project-crumb a{color:#832d51;text-decoration:none}
+.project-crumb a:hover{text-decoration:underline}
+.project-crumb strong{max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#382632;font-size:15px;letter-spacing:normal}
+.project-tabs{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.project-tab{display:inline-block;margin:0;padding:7px 14px;border:0;border-radius:999px;background:transparent;color:#71354f;font:inherit;font-size:14px;line-height:1.4;text-decoration:none;cursor:pointer}
+.project-tab:hover{background:#f9eaf1}
+.project-tab[aria-current=page]{background:#832d51;color:#fff;font-weight:650}
+.project-tab[hidden]{display:none}
+.project-tab:disabled{opacity:.5;cursor:default}
+.project-nav-status{font-size:13px;color:#447a5f}
+@media(max-width:640px){.project-nav{padding:8px 16px}.project-crumb strong{max-width:60vw}}
+/* Anything a script scrolls into view lands below the sticky bar; page-specific rules may add more room. */
+[id]{scroll-margin-top:calc(var(--project-nav-height,0px) + 12px)}
