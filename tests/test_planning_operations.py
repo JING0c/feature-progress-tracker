@@ -27,6 +27,16 @@ class OperationsTest(unittest.TestCase):
   for kept in ['（备注：待采纳）','不在待采纳清单内','保持待采纳状态直到法务确认','A， B']:
    self.assertEqual(o.adopted_note(kept),kept)
   self.assertEqual(o.adopted_note('需手机号；待采纳'),'需手机号')
+ def test_ledger_header_takes_goal_from_plan(self):
+  plan='# 规划\n## 项目目标与场景\n\n为家人提供**购物清单**网页。可以离线使用。\n\n| a | b |\n'+BASE.split('\n',1)[1]
+  result=o.ledger_from_plan(plan,'# 功能执行情况\n\n目标：待规划\n',d.parse)
+  self.assertIn('目标：为家人提供购物清单网页。',result['content'])
+  self.assertNotIn('目标：待规划',result['content'])
+  kept=o.ledger_from_plan(plan,'# 功能执行情况\n目标：已有目标\n',d.parse)
+  cases={'# p\n## 目标\n```text\nrm -rf\n```\n真正目标。\n':'真正目标。','# p\n## 目标用户\n家庭成员。\n## 项目目标\n记录商品。\n':'记录商品。',
+         '# p\n## 背景\n## 非目标\n不做支付。\n':'','# p\n## 目标\n**目标：** 记录商品。\n':'记录商品。','# p\n## 1. 目标与场景\n| a |\n给家人用。\n':'给家人用。','# p\n## 目标\n目标：待规划\n':''}
+  for text,expected in cases.items():self.assertEqual(o.plan_goal(text),expected,text)
+  self.assertIn('目标：已有目标',kept['content'])
  def test_duplicates_declined_parents_and_invalid_proposals(self):
   text=e.select_feature(BASE,'F01',False)
   result=o.merge_proposal(text,proposal([feature()]))

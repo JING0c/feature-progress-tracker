@@ -253,6 +253,30 @@ def replace_item_records(text, changed):
     return ''.join(result)
 
 
+def plan_goal(content):
+    """First prose sentence under the plan's goal heading, for the ledger header."""
+    inside, fence = False, None
+    for line in content.splitlines():
+        marker = re.match(r'^ {0,3}(`{3,}|~{3,})', line)
+        if fence:
+            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence):
+                fence = None
+            continue
+        if marker:
+            fence = marker[1]
+            continue
+        if line.startswith('#'):
+            # 项目目标 / 目标与场景 count; 非目标 and 目标用户 do not.
+            inside = bool(re.match(r'^#{1,6}\s*(?:[0-9一二三四五六七八九十]+[.、．]\s*)?(?:项目)?目标(?:$|[与和及、：:\s（(])', line))
+            continue
+        text = re.sub(r'[*_`]', '', line).strip()
+        text = re.sub(r'^(?:项目)?目标\s*[：:]\s*', '', text)
+        if inside and text and not text.startswith(('|', '-', '>', '<')):
+            goal = re.split(r'(?<=[。！？])', text)[0][:120]
+            return '' if re.fullmatch(r'(?:待规划|待补充|待确认|待定|暂无)[。]?', goal) else goal
+    return ''
+
+
 def ledger_from_plan(content, existing, parse):
     rows = editable_table(content)['rows']
     replace_features(content, rows)
@@ -305,6 +329,9 @@ def ledger_from_plan(content, existing, parse):
             output=output[:at].rstrip()+'\n'+block+'\n'+output[at:]
         else:
             output += '\n## 大功能 ' + root_id + '：' + safe_field(root['功能名称']) + '\n' + block
+    goal = plan_goal(content)
+    if goal:
+        output = re.sub(r'^目标：待规划[ \t]*$', '目标：' + safe_field(goal), output, count=1, flags=re.M)
     return {'content': output, 'added': added, 'preserved': preserved, 'updated': list(updated),
             'note': '按已采用功能同步当前规划；实施证据及旧审核留存历史，需求变化的已完成或待审核项重新打开。' if updated else ('按已采用功能转换；未变化条目与实施审核历史保留。' if preserved else '按已采用功能转换；新条目均为未开始、待审核。')}
 

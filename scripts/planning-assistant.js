@@ -26,7 +26,7 @@
    $('assistant-input-hint').textContent=!state.ready?'描述使用者、目标和主要功能，我们会先查找 GitHub 参考。':suggest?'直接写想法或检查重点，最多3000字；留空则检查当前功能表。不会直接修改已保存内容。':'先澄清范围与疑问；讨论后切换“生成修改建议”，再选择要加入功能表的内容。';
    $('input').required=!suggest;
    $('assistant-submit').textContent=state.busy?'正在处理…':!state.ready?'查找参考并开始规划':suggest?'生成修改建议':'发送讨论';
-   $('assistant-submit').className='send';$('assistant-submit').disabled=state.busy||state.dirty;
+   $('assistant-submit').className=state.referencePending?'secondary':'send';$('assistant-submit').disabled=state.busy||state.dirty;
    $('assistant-blocker').hidden=!state.ready||!state.dirty;
    $('assistant-blocker-text').textContent=state.editing?'功能表正在编辑。先保存或取消编辑，再继续。':'功能表有未保存的修改。先保存或放弃预览，再继续。';
    $('status').hidden=state.ready&&mode==='suggest';$('suggestions-status').hidden=!state.ready||mode==='chat';

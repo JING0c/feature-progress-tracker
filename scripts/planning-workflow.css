@@ -122,7 +122,7 @@ button:disabled{cursor:not-allowed}
 
 .plan-document{overflow:clip}.plan-document-title{position:sticky;top:var(--project-nav-height,0px);z-index:6;background:#fff;border-bottom:1px solid #ecd7e1}
 
-:is(#new-feature-section,#view-section,#review-section){scroll-margin-top:calc(var(--project-nav-height,0px) + var(--plan-toolbar-height,90px) + 16px)}
+:is(#new-feature-section,#view-section,#review-section,#plan-sheet,#plan-content,#ledger-code-preview,#source-review-summary){scroll-margin-top:calc(var(--project-nav-height,0px) + var(--plan-toolbar-height,90px) + 16px)}
 
 /* First visit starts with the need; saved projects keep the full workspace. */
 .first-use .layout{grid-template-columns:minmax(0,1fr)}
@@ -258,3 +258,17 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 .plan-more .plan-action-group{margin-top:10px}
 .plan-location-label{margin:0 8px;font-size:12px;color:#705664}
 #plan-location{margin:0 8px 6px;font-size:12px;color:#705664;overflow-wrap:anywhere}
+
+/* Candidates lead with what can be borrowed for this need; repository facts stay folded. */
+.reference-card .reference-summary{font-size:14px;line-height:1.7;color:#382632}
+.reference-reusable{margin:4px 0 8px;padding-left:20px;font-size:13px;line-height:1.7;color:#482b38}
+.research-summary-note{margin:4px 0 0;font-size:12px;color:#705664}
+.reference-selection-actions{margin:12px 0 16px}
+
+/* Conclusions before raw text: source check and ledger preview. */
+.review-summary{margin:12px 0;padding:12px 14px;background:#fff;border:1px solid #d8dfca;border-radius:8px;font-size:14px;line-height:1.7}
+.review-summary p{margin:0 0 6px}
+.review-summary ul,.ledger-preview-list{margin:4px 0 8px;padding-left:20px;font-size:13px;line-height:1.7}
+.ledger-raw{margin-top:8px}
+.ledger-raw summary{cursor:pointer;font-size:13px;color:#705664}
+#document-view-notice{margin:8px 0}

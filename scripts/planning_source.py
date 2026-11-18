@@ -103,7 +103,7 @@ def report_markdown(report):
         lines.append('- '+repo['name']+' @ '+repo['commit']+'；'+repo['state']+'；读取 '+str(repo['files_read'])+' 个文件')
     lines += ['', '## 功能核对', '']
     for item in report['features']:
-        lines += ['- '+item['id']+'：'+item['status']+' — '+item['finding']]
+        lines += ['- '+item['id']+'：'+item['status']+' — '+' '.join(item['finding'].split())]
         for e in item['evidence']: lines.append('  - '+e['repository']+' / '+e['path']+':'+str(e['line']))
     lines += ['', '## 版本绑定数据', '', '```json', json.dumps(report,ensure_ascii=False,indent=2), '```', '']
     return '\n'.join(lines)

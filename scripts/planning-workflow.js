@@ -15,6 +15,7 @@
    if(!data.completed){$('reference-choice-state').textContent='请先搜索候选项目。';return;}
    $('research-query').value=data.query||'';
    $('research-state').textContent=(data.repositories.length?'找到 '+data.repositories.length+' 个参考项目':'未找到相似项目，可调整关键词重新搜索')+' · '+(data.searched_at?new Date(data.searched_at).toLocaleString('zh-CN'):'');
+   $('research-summary-note').textContent=data.summary_note||data.summary_source||(data.repositories.length&&!data.repositories.some(repo=>repo.summary_zh)?'这批候选搜索于中文摘要功能之前；展开“调整搜索关键词”重新搜索即可生成摘要。':'');
    for(const repo of data.repositories){
     const card=document.createElement('article');card.className='reference-card';
     const link=text('a',repo.name);link.href=repo.url;link.target='_blank';link.rel='noopener noreferrer';
@@ -22,18 +23,23 @@
     const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=repo.selected===true;checkbox.disabled=busy;checkbox.setAttribute('aria-label','参考 '+repo.name);
     checkbox.addEventListener('change',()=>{repo.selected=checkbox.checked;referenceDirty=true;options.onReferencesChanged?.();choiceState();});referenceFields.push(checkbox);
     label.append(checkbox,text('span','参考此项目'));
+    // Lead with what can be borrowed for this need; framework and repository facts stay folded.
+    const summary=text('p',repo.summary_zh||'暂无中文摘要，可展开下方原说明。');summary.className='reference-summary';
+    card.append(label,link,summary);
+    if(repo.reusable?.length){const list=document.createElement('ul');list.className='reference-reusable';for(const item of repo.reusable)list.append(text('li',item));card.append(text('small','可借鉴：'),list);}
+    if(repo.gaps)card.append(text('small','与需求的差距：'+repo.gaps));
     const detail=document.createElement('details');detail.className='reference-description';
-    detail.append(text('summary','资料来源与更新时间'),text('small',(repo.updated_at?'仓库更新 '+new Date(repo.updated_at).toLocaleDateString('zh-CN')+' · ':'')+(repo.readme_note||'')));
-    card.append(label,link,text('p',repo.description||'暂无仓库说明，请打开项目查看资料。'),text('small',(repo.language||'未标注语言')+' · 许可证 '+(repo.license||'未标注')+' · ★ '+repo.stars),detail);box.append(card);
+    detail.append(text('summary','技术资料与原说明'),text('p',repo.description||'暂无仓库说明，请打开项目查看资料。'),text('small',(repo.language||'未标注语言')+' · 许可证 '+(repo.license||'未标注')+' · ★ '+repo.stars+(repo.updated_at?' · 仓库更新 '+new Date(repo.updated_at).toLocaleDateString('zh-CN'):'')+' · '+(repo.readme_note||'')));
+    card.append(detail);box.append(card);
    }
-   choiceState();
+   choiceState();options.onResearchRendered?.();
   }
   function choiceState(){if(research.completed&&!research.repositories.length){$('reference-choice-state').textContent='当前无候选，可继续按需求规划或修改关键词重搜。';return;}const count=research.repositories.filter(repo=>repo.selected===true).length;$('reference-choice-state').textContent=referenceDirty||!research.selection_confirmed?'已勾选 '+count+' 个；请保存参考选择后继续。':'参考选择已保存：'+(count?count+' 个项目':'明确不选任何项目');}
   const loaded=request('/api/research').then(renderResearch).catch(error=>{$('research-state').textContent=error.message;});
   async function search(need,featureIdea='',useKeyword=true){
    $('github-research').hidden=false;$('research-state').textContent='正在提取关键词并检索 GitHub…';
    const query=useKeyword?$('research-query').value.trim():'';
-   const payload=featureIdea?(query?{feature_idea:featureIdea,query}:{feature_idea:featureIdea}):query?{query}:{need};
+   const payload=featureIdea?(query?{feature_idea:featureIdea,query}:{feature_idea:featureIdea}):query?{query,need}:{need};
    try{const data=await request('/api/research',payload);renderResearch(data);return data;}
    catch(error){$('research-state').textContent=error.message;throw error;}
   }
@@ -167,6 +173,8 @@
   });
   return{
    get editing(){return editing;},
+   // A project-level search waiting for a choice makes 确认参考并继续 the one next step.
+   get referencePending(){return !!research.completed&&!research.feature_idea&&research.repositories.length>0&&(referenceDirty||!research.selection_confirmed);},
    saveEdits,
    async ensureResearch(need){await loaded;if(!research.completed)await search(need);if(referenceDirty||!research.selection_confirmed){const error=Error('请选择要参考的项目，再点击确认继续；也可以不选。');error.referenceSelection=true;throw error;}},
    setBusy(value){busy=value;for(const id of ['search-references','edit-features','add-feature-row','cancel-feature-edit','save-feature-edit','cancel-feature-edit-top','save-feature-edit-top','guide-feature','research-feature','save-reference-selection'])$(id).disabled=value;$('edit-features').disabled=value||editing;fields.forEach(f=>f.disabled=value);referenceFields.forEach(f=>f.disabled=value);},

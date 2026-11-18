@@ -3,7 +3,7 @@
 
   // The same read-only model is used by the webpage and the Excel exporter.
   global.createPlanningSheetView = function (container, options = {}) {
-    let model = { sheets: [] }, active = '', collapsed = new Set(), adoptionEnabled=true, adoptionControls=[],changedIds=new Set(),onlyChanged=false,showTechnical=false;
+    let model = { sheets: [] }, active = '', lastNote = '', collapsed = new Set(), adoptionEnabled=true, adoptionControls=[],changedIds=new Set(),onlyChanged=false,showTechnical=false;
     const el = (tag, className, text) => {
       const node = document.createElement(tag);
       if (className) node.className = className;
@@ -31,7 +31,8 @@
       const info = el('span', 'sheet-count');
       toolbar.append(info);
       if(changedIds.size&&(featureSheet||listing)){
-        const preview=el('span','sheet-preview-notice','本次建议预览 · '+changedIds.size+' 个功能已修改 · 尚未保存');
+        // The page's preview bar owns the unsaved message; the table only marks what changed.
+        const preview=el('span','sheet-preview-notice','已高亮本次修改的 '+changedIds.size+' 个功能');
         preview.setAttribute('role','status');toolbar.append(preview);
         if(featureSheet){
           const toggle=el('button','sheet-action',onlyChanged?'显示全部功能':'只看本次修改');toggle.type='button';
@@ -47,7 +48,15 @@
           const open = el('button', 'sheet-action', '查看功能明细'); open.type = 'button';
           open.addEventListener('click', () => { active = details.id; render(); }); toolbar.append(open);
         }
-      } else toolbar.append(expand, fold);
+      } else {
+        const listingSheet = sheets.find(item => item.kind === 'feature-list');
+        const detailSheet = sheets.find(item => item.kind !== 'feature-list' && (item.columns || []).includes('功能名称'));
+        if (sheet === detailSheet && listingSheet) {
+          const back = el('button', 'sheet-action', '← 返回功能清单'); back.type = 'button';
+          back.addEventListener('click', () => { active = listingSheet.id; render(); }); toolbar.append(back);
+        }
+        toolbar.append(expand, fold);
+      }
 
       const scroll = el('div', 'sheet-scroll');
       scroll.setAttribute('tabindex', '0');
@@ -149,13 +158,33 @@
       }
       expand.addEventListener('click', () => { parents.forEach(key => collapsed.delete(key)); update(); });
       fold.addEventListener('click', () => { parents.forEach(key => collapsed.add(key)); update(); });
+      // Two destinations: the feature table people work in, and the plan's narrative sections.
+      const listingHome = sheets.find(item => item.kind === 'feature-list');
+      const detailHome = sheets.find(item => item.kind !== 'feature-list' && (item.columns || []).includes('功能名称'));
+      // Only the list and its detail table belong to 功能表; other feature-like sections (e.g. 非功能需求) stay under 规划说明.
+      const isFeature = item => item === listingHome || item === detailHome;
+      const featureHome = listingHome || detailHome;
+      const notes = sheets.filter(item => !isFeature(item));
       const tabs = el('nav', 'sheet-tabs'); tabs.setAttribute('aria-label', '规划章节');
-      sheets.forEach(item => {
-        const button = el('button', 'sheet-tab', item.name); button.type = 'button';
-        button.setAttribute('aria-pressed', String(item.id === active));
-        button.addEventListener('click', () => { active = item.id; render(); }); tabs.append(button);
-      });
-      container.append(tabs, toolbar, scroll);
+      const tab = (name, pressed, target) => {
+        const button = el('button', 'sheet-tab', name); button.type = 'button';
+        button.setAttribute('aria-pressed', String(pressed));
+        button.addEventListener('click', () => { active = target; render(); }); tabs.append(button);
+      };
+      if (featureHome) tab('功能表', isFeature(sheet), featureHome.id);
+      if (notes.length) tab('规划说明', !isFeature(sheet), (notes.find(item => item.id === lastNote) || notes[0]).id);
+      container.append(tabs);
+      if (!isFeature(sheet) && notes.length > 1) {
+        lastNote = sheet.id;
+        const sections = el('nav', 'sheet-sections'); sections.setAttribute('aria-label', '规划说明章节');
+        for (const item of notes) {
+          const button = el('button', 'sheet-section', item.name); button.type = 'button';
+          button.setAttribute('aria-pressed', String(item.id === sheet.id));
+          button.addEventListener('click', () => { active = item.id; render(); }); sections.append(button);
+        }
+        container.append(sections);
+      } else if (!isFeature(sheet)) lastNote = sheet.id;
+      container.append(toolbar, scroll);
       update();
     }
     return {

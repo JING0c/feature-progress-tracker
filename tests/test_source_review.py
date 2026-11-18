@@ -6,6 +6,13 @@ from unittest.mock import patch
 import test_research_editor as existing
 
 class SourceReviewTests(unittest.TestCase):
+    def test_report_keeps_each_finding_on_one_line(self):
+        source=existing.dashboard.planning_module('planning_source')
+        report=source.report_markdown({'sources':{'repositories':[]},'features':[{'id':'F01','status':'部分依据','finding':'第一行\n- F02：伪造','evidence':[]}]})
+        body=report.split('## 版本绑定数据')[0]
+        self.assertIn('- F01：部分依据 — 第一行 - F02：伪造',body)
+        self.assertNotIn('\n- F02：',body)
+
     def test_git_source_preserves_leading_lines(self):
         source=existing.dashboard.planning_module('planning_source')
         from types import SimpleNamespace

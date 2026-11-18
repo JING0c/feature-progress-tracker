@@ -104,10 +104,10 @@ class RequestError(Exception):
         self.details = details
 
 
-def codex_reply(project, prompt):
+def codex_reply(project, prompt, step=(50, 'Codex 正在处理', '等待智能体输出；百分比按已完成阶段计算'), limit=180):
     codex = shutil.which('codex')
     if not codex: raise RequestError('未找到 Codex 命令行，请检查安装与登录状态。')
-    operation_step(50, 'Codex 正在处理', '等待智能体输出；百分比按已完成阶段计算')
+    operation_step(*step)
     command=[codex, 'exec', '--sandbox', 'read-only', '--skip-git-repo-check', '--ephemeral', '--json', '-']
     cancelled=threading.Event(); current=planning_module('planning_progress').CURRENT.get()
     with subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -126,8 +126,8 @@ def codex_reply(project, prompt):
             while True:
                 if cancelled.is_set():
                     stop();raise RequestError('操作已取消，原规划文件未改变；可以修改需求后重试。')
-                if time.monotonic()-started>=180:
-                    stop();raise subprocess.TimeoutExpired(command,180)
+                if time.monotonic()-started>=limit:
+                    stop();raise subprocess.TimeoutExpired(command,limit)
                 try:
                     output,errors=process.communicate(input=prompt if first else None,timeout=.2)
                     break
@@ -1143,6 +1143,15 @@ def main():
                 module=planning_module('planning_research'); result=module.search_repositories(query, progress=lambda stage,detail: operation_step(60,stage,detail))
                 if feature_idea:
                     result['feature_idea'] = feature_idea
+                basis=payload.get('need') if isinstance(payload.get('need'),str) else ''
+                basis=(feature_idea or basis or query)[:3000]
+                if result['repositories']:
+                    try: module.apply_summaries(result, codex_reply(project, module.summary_prompt(basis, result['repositories']),
+                        step=(80, '整理中文功能摘要', 'Codex 对照需求阅读候选资料，最长约 2 分钟；失败不影响搜索结果'), limit=120))
+                    except (RequestError, ValueError, subprocess.TimeoutExpired) as exc:
+                        if isinstance(exc,RequestError) and '已取消' in str(exc): raise
+                        # The search itself succeeded; say plainly that the comparison is missing.
+                        result['summary_note']='中文摘要未生成（'+('处理超时' if isinstance(exc,subprocess.TimeoutExpired) else str(exc))+'），可展开各项目查看原说明。'
                 path=self.research_path(project); old=read_document(path,optional=True)
                 # Retain checked candidates still present, but every new search needs confirmation.
                 if old['content']:
@@ -1150,6 +1159,10 @@ def main():
                         previous=module.read_research(old['content'])
                         selected={r['name'] for r in previous['repositories'] if r.get('selected')} if previous.get('feature_idea', '') == feature_idea else set()
                         for repo in result['repositories']:repo['selected']=repo['name'] in selected
+                        if 'summary_note' in result:
+                            # Keep earlier summaries of the same repositories rather than dropping them on a timeout.
+                            kept=module.carry_summaries(result,previous)
+                            if kept:result['summary_note']+='已保留 '+str(kept)+' 个候选的上次摘要。'
                     except ValueError:pass
                 operation_step(85, '保存参考项目', '保存检索结果及 README 摘要')
                 atomic_write(path,module.research_markdown(result),old['revision'])

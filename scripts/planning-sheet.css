@@ -47,3 +47,11 @@
 .planning-grid [hidden]{display:none}
 .sheet-intro-brief{display:block;overflow:visible;-webkit-line-clamp:unset}
 .sheet-intro-detail summary{font-size:13px}
+/* 规划说明 has its own small section switcher under the two top-level tabs. */
+.sheet-sections{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;background:#fff;border-bottom:1px solid #efe2e8}
+.sheet-section{padding:5px 12px;border-radius:999px;background:#f8f2f5;color:#705664;font-size:13px;border:0}
+.sheet-section[aria-pressed=true]{background:#447a5f;color:#fff;font-weight:650}
+
+/* The view bar now only wraps the Markdown-original notice; it adds no space of its own. */
+.plan-viewbar{padding:0;border-bottom:0;background:transparent}
+#document-view-notice{padding:10px 22px;border-bottom:1px solid #ecd7e1;background:#fff}
