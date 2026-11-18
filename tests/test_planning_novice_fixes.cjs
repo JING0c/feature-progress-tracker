@@ -148,3 +148,13 @@ async function saveStateWordingNeverContradicts(){
  if(failed)throw Error(failed+' novice-fix regressions failed');
  console.log('Novice fixes: in-place feature clarification, kept answers, consistent save/board state passed.');
 })().catch(error=>{console.error(error);process.exit(1);});
+
+// A class that sets display overrides the hidden attribute unless the stylesheet restates it.
+(()=>{
+ const html=fs.readFileSync(path.join(__dirname,'../scripts/planning.html'),'utf8');
+ const css=fs.readFileSync(path.join(__dirname,'../scripts/planning-workflow.css'),'utf8');
+ const displayed=new Set([...css.matchAll(/\.([\w-]+)\{[^}]*display:/g)].map(m=>m[1]));
+ const leaks=[...html.matchAll(/<[^>]*\bclass="([^"]+)"[^>]*\bhidden\b[^>]*>/g)].flatMap(m=>m[1].split(/\s+/)).filter(c=>displayed.has(c)&&!css.includes('.'+c+'[hidden]'));
+ assert.deepEqual(leaks,[],'hidden elements whose class sets display must have a [hidden] rule');
+ console.log('PASS hiddenAttributeWinsOverTaskBarDisplay');
+})();

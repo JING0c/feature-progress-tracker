@@ -246,6 +246,8 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 .task-bar-left{display:flex;gap:10px;flex-wrap:wrap}
 .task-bar>.send{margin-left:auto}
 .task-done{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:10px 0;padding:10px 14px;border-left:4px solid #447a5f;background:#eef3e2;color:#2f4a3b;font-size:14px}
+/* These classes set display, so restate that the hidden attribute wins. */
+.task-bar[hidden],.task-done[hidden],.feature-thread[hidden]{display:none}
 .button-link{display:inline-block;padding:8px 14px;border-radius:6px;background:#832d51;color:#fff;font-weight:700;text-decoration:none}
 .feature-thread{margin-top:14px;padding:14px 16px;background:#fff;border:1px solid #d6ddc1;border-radius:8px}
 .feature-thread h4{margin:0 0 8px;font-size:15px;color:#482b38}
