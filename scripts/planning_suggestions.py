@@ -3,6 +3,7 @@ import copy
 import json
 import re
 from planning_editor import editable_table, replace_features
+from planning_operations import adopted_note
 
 EDITABLE={'功能名称','说明','验收标准','优先级','依赖','所需技术','前期准备','备注'}
 
@@ -24,6 +25,7 @@ def apply(content,suggestions,selected,reserved_ids=()):
                     raise ValueError('功能编号 '+identity+' 已保留在现有台账中，不能作为新功能复用；请重新生成建议或使用新的编号。')
                 if identity in existing or any(not fields.get(k,'').strip() for k in ('功能名称','说明','验收标准','上级编号')):raise ValueError('新增功能编号重复或缺少名称、上级、说明、验收。')
                 row={'编号':identity,'采用':'是',**fields};rows.append(row);existing[identity]=row
+                if '备注' in row:row['备注']=adopted_note(row['备注'])
             else:
                 if identity not in existing:raise ValueError('建议修改的功能不存在。')
                 for key,value in fields.items():
@@ -31,6 +33,7 @@ def apply(content,suggestions,selected,reserved_ids=()):
                     if cell in touched and touched[cell]!=value:raise ValueError('所选建议对同一字段有不同修改，请分别预览。')
                     touched[cell]=value
                 existing[identity].update(fields)
+                if '备注' in fields:existing[identity]['备注']=adopted_note(fields['备注'])
     result=replace_features(content,rows)
     if editable_table(result)['rows']==editable_table(content)['rows']:raise ValueError('所选建议未产生功能表变化。')
     return result

@@ -17,6 +17,16 @@ class OperationsTest(unittest.TestCase):
   result=o.merge_proposal(BASE,proposal([feature('N2','N1','分页'),feature()]),['F01-02'])
   self.assertEqual(result['added'],['F01-03','F01-03-01'])
   self.assertTrue(all(all(new.get(k)==v for k,v in old.items()) for new,old in zip(e.editable_table(result['content'])['rows'],e.editable_table(BASE)['rows'])))
+ def test_adopted_proposal_drops_pending_adoption_remark(self):
+  row={**feature(),'备注':'待采纳；需要手机号'}
+  result=o.merge_proposal(BASE,proposal([row]))
+  added=[r for r in e.editable_table(result['content'])['rows'] if r['编号']==result['added'][0]][0]
+  self.assertEqual(added.get('备注',''),'需要手机号')
+  self.assertEqual(o.adopted_note('（待采纳）'),'')
+  self.assertEqual(o.adopted_note('无'),'无')
+  for kept in ['（备注：待采纳）','不在待采纳清单内','保持待采纳状态直到法务确认','A， B']:
+   self.assertEqual(o.adopted_note(kept),kept)
+  self.assertEqual(o.adopted_note('需手机号；待采纳'),'需手机号')
  def test_duplicates_declined_parents_and_invalid_proposals(self):
   text=e.select_feature(BASE,'F01',False)
   result=o.merge_proposal(text,proposal([feature()]))

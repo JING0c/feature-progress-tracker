@@ -7,6 +7,23 @@ from planning_editor import editable_table, replace_features
 FIELDS = ('功能名称', '说明', '验收标准', '优先级', '依赖', '所需技术', '前期准备', '备注')
 
 
+ADOPTION_MARKER = re.compile(r'(?:建议)?待采纳(?:提议|建议)?')
+
+
+def adopted_note(value):
+    """Drop a stand-alone 待采纳 marker once the user has adopted the row; other wording is kept as written."""
+    text = re.sub(r'[（(]\s*' + ADOPTION_MARKER.pattern + r'\s*[)）]', '', value)
+    parts = re.split(r'([；;，,、。])', text)
+    kept = []
+    for index in range(0, len(parts), 2):
+        if ADOPTION_MARKER.fullmatch(parts[index].strip()):
+            continue
+        if kept and parts[index - 1]:
+            kept.append(parts[index - 1])
+        kept.append(parts[index])
+    return re.sub(r'^[\s；;，,、。]+|[\s；;，,、]+$', '', ''.join(kept))
+
+
 def proposal_rows(text):
     matches = re.findall(r'^```json\s*\n(.*?)\n```\s*$', text, re.M | re.S)
     if len(matches) != 1:
@@ -60,6 +77,7 @@ def merge_proposal(content, proposal, reserved=()):
                 siblings = [int(i[len(prefix):]) for i in used if i.startswith(prefix) and i[len(prefix):].isdigit()]
                 identity = prefix + str(max(siblings, default=0) + 1).zfill(2)
                 row = {k: item.get(k, '') for k in FIELDS}
+                row['备注'] = adopted_note(row['备注'])
                 row.update({'编号': identity, '上级编号': parent or '无',
                             '采用': by_id[parent].get('采用', '是') if parent else '是'})
                 rows.append(row); by_id[identity] = row; used.add(identity)

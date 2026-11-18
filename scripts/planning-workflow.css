@@ -240,3 +240,14 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
 .plan-history h3{display:block;font-size:18px;line-height:1.6;margin:18px 0 8px}
 #activity-timeline:focus,#history-title:focus{outline:none}
 @media(max-width:600px){.suggestion-activity .planning-activity{padding:14px}.activity-heading h2{font-size:16px}.activity-card>button{width:100%}}
+
+/* One convention for every local task: back/cancel on the left, the single primary action on the right. */
+.task-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0}
+.task-bar-left{display:flex;gap:10px;flex-wrap:wrap}
+.task-bar>.send{margin-left:auto}
+.task-done{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:10px 0;padding:10px 14px;border-left:4px solid #447a5f;background:#eef3e2;color:#2f4a3b;font-size:14px}
+.button-link{display:inline-block;padding:8px 14px;border-radius:6px;background:#832d51;color:#fff;font-weight:700;text-decoration:none}
+.feature-thread{margin-top:14px;padding:14px 16px;background:#fff;border:1px solid #d6ddc1;border-radius:8px}
+.feature-thread h4{margin:0 0 8px;font-size:15px;color:#482b38}
+.feature-thread label{display:block;margin:12px 0 6px;font-size:14px;font-weight:600}
+.feature-thread #feature-proposal{white-space:pre-wrap;max-height:420px;overflow:auto}

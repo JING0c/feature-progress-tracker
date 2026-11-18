@@ -122,9 +122,10 @@
    if(busy)return;const used=[...reservedIds,...rows.map(row=>row['编号'])];const n=Math.max(0,...used.filter(k=>/^F\d+$/.test(k)).map(k=>Number(k.slice(1))))+1;
    const id='F'+String(n).padStart(2,'0');reservedIds.add(id);rows.push({'采用':'是','编号':id,'上级编号':'无'});renderEditor();
   });
-  $('cancel-feature-edit').addEventListener('click',()=>{
-   if(!confirm('放弃尚未保存的功能表修改？'))return;editing=false;$('feature-editor').hidden=true;options.setBusy(false);
-  });
+  function cancelEdits(){
+   if(busy||!confirm('放弃尚未保存的功能表修改？'))return;editing=false;$('feature-editor').hidden=true;options.setBusy(false);$('plan-document').scrollIntoView({block:'start'});
+  }
+  for(const id of ['cancel-feature-edit','cancel-feature-edit-top'])$(id).addEventListener('click',cancelEdits);
   async function saveEdits(){
    if(busy)return;const plan=getPlan();
    if(plan.revision!==base.revision||plan.content!==base.content){notice('规划已经变化，当前修改仍保留在页面中。请复制修改内容，核对最新规划后重新编辑。',true);return;}
@@ -132,10 +133,10 @@
    try{
     const data=await request('/api/plan/features',{content:base.content,rows});
     await onSave(data.content);
-    editing=false;$('feature-editor').hidden=true;notice('功能表已保存，后续对话与 Excel 将使用你的修改。');
+    editing=false;$('feature-editor').hidden=true;$('plan-document').scrollIntoView({block:'start'});notice('功能表已保存，后续对话与 Excel 将使用你的修改。');
    }catch(error){notice(error.message,true);}finally{options.setBusy(false);}
   }
-  $('save-feature-edit').addEventListener('click',saveEdits);
+  for(const id of ['save-feature-edit','save-feature-edit-top'])$(id).addEventListener('click',saveEdits);
   function guideFeature(idea,fromReferences=false){
    return guide('我希望新增功能：'+idea+'。请先引导我明确使用者、边界及验收，用最多两个关键问题逐轮澄清，再建议大功能/小功能/细分功能、所需技术和前期准备。现在先讨论拆分，暂不改动现有功能表。',fromReferences);
   }
@@ -168,7 +169,7 @@
    get editing(){return editing;},
    saveEdits,
    async ensureResearch(need){await loaded;if(!research.completed)await search(need);if(referenceDirty||!research.selection_confirmed){const error=Error('请选择要参考的项目，再点击确认继续；也可以不选。');error.referenceSelection=true;throw error;}},
-   setBusy(value){busy=value;for(const id of ['search-references','edit-features','add-feature-row','cancel-feature-edit','save-feature-edit','guide-feature','research-feature','save-reference-selection'])$(id).disabled=value;$('edit-features').disabled=value||editing;fields.forEach(f=>f.disabled=value);referenceFields.forEach(f=>f.disabled=value);},
+   setBusy(value){busy=value;for(const id of ['search-references','edit-features','add-feature-row','cancel-feature-edit','save-feature-edit','cancel-feature-edit-top','save-feature-edit-top','guide-feature','research-feature','save-reference-selection'])$(id).disabled=value;$('edit-features').disabled=value||editing;fields.forEach(f=>f.disabled=value);referenceFields.forEach(f=>f.disabled=value);},
    async choose(id,selected){
     if(editing)throw Error('请先完成正在编辑的功能表。');
     return request('/api/plan/features',{content:getPlan().content,selection:{id,selected}});
