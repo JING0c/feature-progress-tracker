@@ -39,7 +39,7 @@
    generation++;savedRevision=null;lastError='';options.setBusy(true);$('suggestions-progress').hidden=false;
    $('suggestions-status').textContent='独立 Codex 子智能体正在分析当前功能…';
    try{const data=await options.request('/api/plan/suggestions',{revision:state.revision,focus,discussion:options.getDiscussion?.()||''});render(data);options.onResults?.();}
-   catch(error){lastError='建议未生成：'+error.message;$('suggestions-status').textContent=lastError;}
+   catch(error){lastError=/^已取消/.test(error.message)?error.message:'建议未生成：'+error.message;$('suggestions-status').textContent=lastError;}
    finally{$('suggestions-progress').hidden=true;options.setBusy(false);}
   }
   $('generate-suggestions').addEventListener('click',generate);

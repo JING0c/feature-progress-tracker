@@ -8,7 +8,7 @@ async function run(){
  const progress=box.window.createPlanningProgress({poll:async()=>state,cancel:async id=>{cancelled=id;}});
  const task=progress.run('生成建议',()=>new Promise(r=>release=r));
  assert.equal($('operation-bar').value,0);await [...timers][0]();assert.equal($('operation-bar').value,50);assert.match($('operation-stage').textContent,/Codex/);
- assert.equal($('operation-cancel').hidden,false);await $('operation-cancel').handlers.click();assert.match(cancelled,/^op-/);assert.equal($('operation-cancel').disabled,true);
+ assert.equal($('operation-cancel').hidden,false);assert.equal($('operation-cancel-note').hidden,false);assert.match($('operation-cancel-note').textContent,/可以随时取消：已填写的内容会保留/);await $('operation-cancel').handlers.click();assert.match($('operation-cancel-note').textContent,/正在停止/);assert.match(cancelled,/^op-/);assert.equal($('operation-cancel').disabled,true);
  state.percent=20;await [...timers][0]();assert.equal($('operation-bar').value,50,'server stages never go backwards');
  release('ok');assert.equal(await task,'ok');assert.equal($('operation-bar').value,100);assert.equal(timers.size,0);
  assert.equal(timeouts.size,1,'completed notice schedules dismissal');[...timeouts][0]();assert.equal($('operation-progress-panel').hidden,true,'completed notice leaves reading space');
@@ -16,6 +16,17 @@ async function run(){
  const rejected=progress.run('保存',()=>new Promise((r,j)=>fail=j));const check=assert.rejects(rejected,/失败/);
  state.percent=75;await [...timers][0]();fail(Error('写入失败'));await check;
  assert.equal($('operation-bar').value,75);assert.equal($('operation-progress-panel')['data-state'],'failed');assert.equal(timers.size,0);
+ // A long step that cannot be cancelled says what it is doing instead of leaving the user to guess.
+ state={percent:60,stage:'搜索 GitHub',detail:'',status:'running',cancellable:false};let searchRelease;
+ const search=progress.run('搜索 GitHub 参考',()=>new Promise(r=>searchRelease=r));
+ await [...timers][0]();assert.equal($('operation-cancel').hidden,true);assert.equal($('operation-cancel-note').hidden,true,'short waits stay quiet');
+ const later=Date.now()+5000;box.Date={now:()=>later};await [...timers][0]();delete box.Date;
+ assert.equal($('operation-cancel-note').hidden,false);assert.equal($('operation-cancel-note').textContent,'这一步无法中途取消：正在搜索 GitHub，完成后即可继续操作。');
+ searchRelease();await search;
+ let exportRelease;const exporting=progress.run('导出 Excel',()=>new Promise(r=>exportRelease=r),false);
+ box.Date={now:()=>later+5000};await [...timers][0]();delete box.Date;
+ assert.equal($('operation-cancel-note').hidden,true,'quick local actions do not show an uninformative cannot-cancel line');
+ exportRelease();await exporting;state={percent:50,stage:'Codex 分析',detail:'等待输出',status:'running',cancellable:true};
  let oldRelease,newRelease;
  const old=progress.run('旧任务',()=>new Promise(r=>oldRelease=r));const latest=progress.run('新任务',()=>new Promise(r=>newRelease=r));
  oldRelease();await old;assert.equal($('operation-title').textContent,'新任务');assert.equal($('operation-bar').value,0);
@@ -26,7 +37,7 @@ async function run(){
  assert.equal($('operation-title').textContent,'长期 Codex','short local action must restore the running operation');
  assert.equal($('operation-dismiss').hidden,true);longRelease();await long;
  $('operation-dismiss').handlers.click();assert.equal($('operation-progress-panel').hidden,true);
- state={status:'cancelled',percent:50,stage:'正在停止 Codex'};await assert.rejects(progress.run('取消验证',async()=>{throw Error('已取消')}),/已取消/);assert.equal($('operation-stage').textContent,'当前步骤：已取消');assert.equal($('operation-bar').value,50);
+ state={status:'cancelled',percent:50,stage:'正在停止 Codex'};await assert.rejects(progress.run('取消验证',async()=>{throw Error('已取消')}),/已取消/);assert.equal($('operation-stage').textContent,'已取消（原有文件未改变，输入已保留）');assert.equal($('operation-cancel-note').hidden,true,'no cancel hint once it is over');assert.equal($('operation-bar').value,50);
  console.log('Progress: percentages, current step, monotonic milestones, errors, cleanup and overlapping tasks passed.');
 }
 module.exports=run;if(require.main===module)run().catch(e=>{console.error(e);process.exitCode=1;});

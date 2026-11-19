@@ -18,6 +18,15 @@ class ActivityTests(unittest.TestCase):
             activity.append(project,event)
             self.assertEqual(activity.read(project)[0]['detail'],event['detail'])
             self.assertIn('预约管理',Path(d,'规划操作记录.md').read_text())
+    def test_user_cancel_is_recorded_as_cancelled_not_failed(self):
+        message='已取消。原有文件没有改变，你填写的内容已保留，可修改后重试。'
+        record=activity.event('/api/planning',{'intent':'plan'},{'error':message,'reason':'cancelled'},400)
+        self.assertEqual(record['state'],'cancelled');self.assertTrue(record['title'].endswith('已取消'));self.assertNotIn('失败',record['title'])
+        search=activity.event('/api/research',{'query':'x'},{'error':message,'reason':'cancelled'},400)
+        self.assertEqual((search['title'],search['state']),('搜索 GitHub 参考已取消','cancelled'))
+        failed=activity.event('/api/planning',{'intent':'plan'},{'error':'智能体回复超时，请重试。'},400)
+        self.assertEqual(failed['state'],'failed');self.assertTrue(failed['title'].endswith('失败'))
+
     def test_preview_failure_and_polling(self):
         event=activity.event('/api/plan/suggestions/preview',{}, {'diff':'-old\n+new'},200,'')
         self.assertIn('尚未保存',event['title'])

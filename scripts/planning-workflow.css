@@ -313,3 +313,6 @@ button:disabled{opacity:1;background:#f3eef0;color:#887780}
  .plan-sidebar .plan-menu-toggle{display:inline-block;width:auto;flex:none;padding:6px 12px;border:1px solid #eab6cd;border-radius:999px;background:#fff;color:#71354f;font:inherit;font-size:13px;cursor:pointer}
  .plan-sidebar:not(.menu-open) .plan-actions{display:none}
 }
+
+/* Long waits: one sentence on whether this step can be cancelled. */
+.operation-cancel-note{margin:6px 0 0;font-size:12px;color:#705664}

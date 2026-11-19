@@ -9,12 +9,17 @@
    $('operation-title').textContent=task.title;
    $('operation-percent').textContent=task.percent+'%';
    const bar=$('operation-bar');bar.max=100;bar.value=task.percent;bar.setAttribute('aria-valuetext',task.percent+'%，'+task.stage);
-   $('operation-stage').textContent=task.status==='cancelled'?'当前步骤：已取消':(task.status==='failed'?'失败于：':'当前步骤：')+task.stage;
+   $('operation-stage').textContent=task.status==='cancelled'?'已取消（原有文件未改变，输入已保留）':(task.status==='failed'?'失败于：':'当前步骤：')+task.stage;
    $('operation-detail').textContent=task.detail||'';
    $('operation-elapsed').textContent='已用时 '+Math.floor((Date.now()-task.started)/1000)+' 秒';
    $('operation-dismiss').hidden=task.status==='running';
    $('operation-cancel').hidden=task.status!=='running'||!task.cancellable||!options.cancel;
    $('operation-cancel').disabled=!!task.cancelRequested;
+   // One convention for long waits: say whether this step can be cancelled, and what is kept if it is.
+   const note=$('operation-cancel-note'),waiting=Date.now()-task.started>=3000;
+   // Quick local actions (copy, export) say nothing; only real waits on the server explain themselves.
+   note.hidden=task.status!=='running'||(!task.cancellable&&(!waiting||task.local));
+   note.textContent=task.cancelRequested?'正在停止，已填写的内容会保留。':task.cancellable?'可以随时取消：已填写的内容会保留，原有文件不会改变。':'这一步无法中途取消：正在'+task.stage+'，完成后即可继续操作。';
   }
   $('operation-dismiss').addEventListener('click',()=>{if(current?.status!=='running'){current=null;panel.hidden=true;}});
   $('operation-cancel').addEventListener('click',async()=>{
@@ -25,7 +30,7 @@
   async function run(title,work,server=true){
    const id='op-'+Date.now().toString(36)+'-'+(++sequence)+'-'+Math.random().toString(36).slice(2,10);
    if(dismissTimer!==null){clearTimeout(dismissTimer);dismissTimer=null;}
-   const task={id,title,percent:0,stage:'准备请求',detail:'',status:'running',started:Date.now()};running.add(task);current=task;paint(task);
+   const task={id,title,percent:0,stage:'准备请求',detail:'',status:'running',started:Date.now(),local:!server};running.add(task);current=task;paint(task);
    let polling=false;
    const tick=async()=>{
     if(current!==task||task.status!=='running')return;
@@ -46,7 +51,7 @@
     task.status='completed';task.percent=100;task.stage='完成';task.detail='操作结果已返回';paint(task);dismissTimer=setTimeout(()=>{if(current===task&&task.status==='completed'){current=null;panel.hidden=true;}},3500);return result;
    }catch(error){
     if(server){try{const state=await options.poll(id);if(state.status!=='pending'){task.percent=Math.max(task.percent,Math.min(95,Number(state.percent)||0));task.stage=state.stage||task.stage;if(state.status==='cancelled')task.status='cancelled';}}catch(_){} }
-    task.status=task.status==='cancelled'?'cancelled':'failed';task.detail=error.message;paint(task);throw error;
+    task.status=task.status==='cancelled'?'cancelled':'failed';task.detail=task.status==='cancelled'?'':error.message;paint(task);throw error;
    }
    finally{clearInterval(timer);running.delete(task);if(current===task&&running.size){current=[...running].at(-1);paint(current);}}
   }

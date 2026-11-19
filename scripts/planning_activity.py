@@ -66,7 +66,9 @@ def changes(before,after):
 def event(route,payload,data,status,before=''):
     if route not in LABELS:return None
     title=LABELS[route];detail='';state='success'
-    if status>=400:
+    if status>=400 and data.get('reason')=='cancelled':
+        title+='已取消';state='cancelled';detail=str(data.get('error',''))
+    elif status>=400:
         title+='失败';state='failed';detail=str(data.get('error','请求失败'))
     elif route in ('/api/ledger/generate','/api/plan/merge'):
         title+='（尚未保存）';detail='由代码执行，未调用模型。\n新增条目：'+('、'.join(data.get('added',[])) or '无')+'\n'+data.get('note','')

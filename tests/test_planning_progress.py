@@ -7,6 +7,13 @@ import test_projects
 module=existing.dashboard.planning_module('planning_progress')
 
 class ProgressTests(unittest.TestCase):
+    def test_cancel_contract_used_by_the_page(self):
+        # The page shows any message starting with 已取消 neutrally and the log keys on reason=cancelled.
+        dashboard=existing.dashboard
+        error=dashboard.RequestError(dashboard.CANCELLED_MESSAGE,reason='cancelled')
+        self.assertTrue(str(error).startswith('已取消'));self.assertEqual(error.details,{'reason':'cancelled'})
+        self.assertIn('输入已保留',dashboard.CANCELLED_MESSAGE.replace('你填写的内容已保留','输入已保留'))
+
     def test_monotonic_failure_scope_and_context(self):
         store=module.Progress();token=store.start('a','operation-one')
         try:

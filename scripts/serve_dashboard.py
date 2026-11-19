@@ -97,6 +97,10 @@ def planning_converters():
     return planning_module('planning_sheet').parse_plan_sheet, planning_module('planning_xlsx').export_plan_xlsx
 
 
+# A user cancel is not a failure: the page shows it neutrally and the record says 已取消.
+CANCELLED_MESSAGE='已取消。原有文件没有改变，你填写的内容已保留，可修改后重试。'
+
+
 class RequestError(Exception):
     def __init__(self, message, status=400, **details):
         super().__init__(message)
@@ -125,7 +129,7 @@ def codex_reply(project, prompt, step=(50, 'Codex 正在处理', '等待智能�
         try:
             while True:
                 if cancelled.is_set():
-                    stop();raise RequestError('操作已取消，原规划文件未改变；可以修改需求后重试。')
+                    stop();raise RequestError(CANCELLED_MESSAGE,reason='cancelled')
                 if time.monotonic()-started>=limit:
                     stop();raise subprocess.TimeoutExpired(command,limit)
                 try:
@@ -134,7 +138,7 @@ def codex_reply(project, prompt, step=(50, 'Codex 正在处理', '等待智能�
                 except subprocess.TimeoutExpired: first=False
         finally:
             if current: current[0].disable_cancel(current[1])
-        if cancelled.is_set(): raise RequestError('操作已取消，原规划文件未改变；可以修改需求后重试。')
+        if cancelled.is_set(): raise RequestError(CANCELLED_MESSAGE,reason='cancelled')
         result=subprocess.CompletedProcess(command,process.returncode,output,errors)
     if result.returncode:
         raise RequestError('Codex 未能完成回复，请检查 Codex 登录状态及网络连接。')
@@ -1088,7 +1092,7 @@ def main():
                 store.source_progress[project['id']]={'running':False,'stage':'核对完成','message':'已保存逐项源码核对报告；未找到依据的功能仍需确认'}
                 return {'report':text,'path':str(report_path),'repositories':sources['repositories']}
             except Exception as exc:
-                store.source_progress[project['id']]={'running':False,'stage':'核对失败','message':'处理超时，请重试。' if isinstance(exc,subprocess.TimeoutExpired) else str(exc)}
+                store.source_progress[project['id']]={'running':False,'stage':'已取消' if isinstance(exc,RequestError) and exc.details.get('reason')=='cancelled' else '核对失败','message':'处理超时，请重试。' if isinstance(exc,subprocess.TimeoutExpired) else str(exc)}
                 raise
 
         def plan_history(self, project):
@@ -1149,7 +1153,7 @@ def main():
                     try: module.apply_summaries(result, codex_reply(project, module.summary_prompt(basis, result['repositories']),
                         step=(80, '整理中文功能摘要', 'Codex 对照需求阅读候选资料，最长约 2 分钟；失败不影响搜索结果'), limit=120))
                     except (RequestError, ValueError, subprocess.TimeoutExpired) as exc:
-                        if isinstance(exc,RequestError) and '已取消' in str(exc): raise
+                        if isinstance(exc,RequestError) and exc.details.get('reason')=='cancelled': raise
                         # The search itself succeeded; say plainly that the comparison is missing.
                         result['summary_note']='中文摘要未生成（'+('处理超时' if isinstance(exc,subprocess.TimeoutExpired) else str(exc))+'），可展开各项目查看原说明。'
                 path=self.research_path(project); old=read_document(path,optional=True)
