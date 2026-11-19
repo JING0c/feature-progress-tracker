@@ -25,6 +25,9 @@ function run() {
   const bodyRows=()=>all(container,'tbody')[0].children;
   const button=name=>all(container,'button').find(n=>n.textContent===name||n.attributes['aria-label']===name);
   assert.equal(bodyRows().length,4);
+  const hint=all(container,'p').find(n=>n.className==='sheet-scroll-hint');
+  assert.ok(hint&&hint.hidden,'the wide-table hint stays hidden until the table actually overflows');
+  assert.equal(hint.textContent,'表格较宽：左右滑动可查看完整内容 →','only the feature list mentions 功能介绍');
   assert.equal(all(container,'script').length,0);
   assert.match(container.textContent,/<script>alert\(1\)<\/script>/);
   assert.equal(all(container,'td').some(n=>n.textContent.includes('多行内容')),true);

@@ -19,15 +19,20 @@ async function candidatesLeadWithBorrowableFeatures(){
    {name:'org/plain',url:'https://github.com/org/plain',description:'Plain list',language:'JS',license:'MIT',stars:1}]};
  const workflow=sandbox.window.createPlanningWorkflow({request:async()=>JSON.parse(JSON.stringify(research)),notice(){},getPlan:()=>({content:'',revision:'r',ready:false}),setBusy(){},onResearchRendered:()=>rendered++});
  await new Promise(r=>setImmediate(r));
- const [first,second]=$('research-results').children;
- const texts=first.children.map(n=>n.textContent);
- assert.equal(first.children[2].textContent,'离线可用的购物清单网页','summary comes right after the choice and name');
- assert.ok(texts.includes('可借鉴：')&&texts.some(t=>t.includes('添加商品')&&t.includes('勾选已买')));
- assert.ok(texts.includes('与需求的差距：没有搜索'));
+ const [header,first,second]=$('research-results').children;
+ assert.deepEqual(header.children.map(n=>n.textContent),['项目','做什么','可借鉴','与需求的差距'],'one header row for a comparable list');
+ const cell=(card,cls)=>card.children.find(n=>n.className===cls);
+ assert.equal(first.className,'reference-card');
+ assert.match(cell(first,'reference-head').textContent,/参考此项目.*org\/shop/);
+ assert.equal(cell(first,'reference-summary').textContent,'离线可用的购物清单网页','summary sits in its own column');
+ assert.equal(cell(first,'reference-summary').attributes['data-label'],'做什么','narrow screens label each cell');
+ assert.match(cell(first,'reference-borrow').textContent,/添加商品.*勾选已买/);
+ assert.equal(cell(first,'reference-gaps').textContent,'没有搜索');
  const folded=first.children.find(n=>n.tagName==='details');
  assert.match(folded.textContent,/技术资料与原说明.*Shopping list PWA.*HTML · 许可证 MIT · ★ 82/);
- assert.ok(!texts.slice(0,-1).some(t=>t.includes('Shopping list PWA')),'English description stays inside the fold');
- assert.match(second.children[2].textContent,/暂无中文摘要/,'missing summary is stated, not invented');
+ assert.ok(!first.children.filter(n=>n.tagName!=='details').some(n=>n.textContent.includes('Shopping list PWA')),'English description stays inside the fold');
+ assert.match(cell(second,'reference-summary').textContent,/暂无中文摘要/,'missing summary is stated, not invented');
+ assert.equal(cell(second,'reference-borrow').textContent,'—');assert.equal(cell(second,'reference-gaps').textContent,'—');
  assert.match($('research-summary-note').textContent,/未核对源码/);
  assert.equal(workflow.referencePending,true,'a pending choice is the next step');
  assert.ok(rendered>0,'page is told to re-evaluate its primary button');
@@ -105,6 +110,13 @@ async function conclusionsComeBeforeRawText(){
  assert.equal(node('save-ledger').className,'secondary');assert.equal(node('review-step-save-state').textContent,'先保存功能表修改');
  vm.runInContext("dirty=false;invalidateSourceReview();ledgerSyncedRevision=null;setBusy(false)",context);
  assert.deepEqual(steps(),['current','todo','todo'],'a changed plan restarts the task from the source check');
+// U8: on narrow screens the sidebar is a 本页内容 menu that closes after a jump.
+ assert.equal(node('plan-menu-toggle').textContent,'');
+ node('plan-menu-toggle').handlers.click();
+ assert.equal(node('plan-menu-toggle').attributes['aria-expanded'],'true');assert.match(node('plan-menu-toggle').textContent,/收起本页内容/);
+ node('nav-view').handlers.click();
+ assert.equal(node('plan-menu-toggle').attributes['aria-expanded'],'false','choosing a section closes the menu');
+ assert.match(read('planning-workflow.css'),/@media\(max-width:1000px\)\{[^@]*\.plan-sidebar:not\(\.menu-open\) \.plan-actions\{display:none\}/,'menu is closed by default on narrow screens');
  const page=read('planning.html'),more=page.slice(page.indexOf('<details class="plan-more">'));
  assert.ok(more.includes('id="view-document"'),'the Markdown original is reached from 更多');
 }

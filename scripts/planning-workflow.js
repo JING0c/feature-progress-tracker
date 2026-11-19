@@ -16,6 +16,7 @@
    $('research-query').value=data.query||'';
    $('research-state').textContent=(data.repositories.length?'找到 '+data.repositories.length+' 个参考项目':'未找到相似项目，可调整关键词重新搜索')+' · '+(data.searched_at?new Date(data.searched_at).toLocaleString('zh-CN'):'');
    $('research-summary-note').textContent=data.summary_note||data.summary_source||(data.repositories.length&&!data.repositories.some(repo=>repo.summary_zh)?'这批候选搜索于中文摘要功能之前；展开“调整搜索关键词”重新搜索即可生成摘要。':'');
+   if(data.repositories.length){const header=document.createElement('div');header.className='reference-header';header.setAttribute('aria-hidden','true');for(const name of ['项目','做什么','可借鉴','与需求的差距'])header.append(text('span',name));box.append(header);}
    for(const repo of data.repositories){
     const card=document.createElement('article');card.className='reference-card';
     const link=text('a',repo.name);link.href=repo.url;link.target='_blank';link.rel='noopener noreferrer';
@@ -24,10 +25,13 @@
     checkbox.addEventListener('change',()=>{repo.selected=checkbox.checked;referenceDirty=true;options.onReferencesChanged?.();choiceState();});referenceFields.push(checkbox);
     label.append(checkbox,text('span','参考此项目'));
     // Lead with what can be borrowed for this need; framework and repository facts stay folded.
-    const summary=text('p',repo.summary_zh||'暂无中文摘要，可展开下方原说明。');summary.className='reference-summary';
-    card.append(label,link,summary);
-    if(repo.reusable?.length){const list=document.createElement('ul');list.className='reference-reusable';for(const item of repo.reusable)list.append(text('li',item));card.append(text('small','可借鉴：'),list);}
-    if(repo.gaps)card.append(text('small','与需求的差距：'+repo.gaps));
+    // One comparable row per candidate: project | what it does | what to borrow | gaps.
+    const head=document.createElement('div');head.className='reference-head';head.append(label,link);
+    const summary=text('p',repo.summary_zh||'暂无中文摘要，可展开下方原说明。');summary.className='reference-summary';summary.setAttribute('data-label','做什么');
+    const borrow=document.createElement('div');borrow.className='reference-borrow';borrow.setAttribute('data-label','可借鉴');
+    if(repo.reusable?.length){const list=document.createElement('ul');list.className='reference-reusable';for(const item of repo.reusable)list.append(text('li',item));borrow.append(list);}else borrow.append(text('span','—'));
+    const gaps=text('p',repo.gaps||'—');gaps.className='reference-gaps';gaps.setAttribute('data-label','与需求的差距');
+    card.append(head,summary,borrow,gaps);
     const detail=document.createElement('details');detail.className='reference-description';
     detail.append(text('summary','技术资料与原说明'),text('p',repo.description||'暂无仓库说明，请打开项目查看资料。'),text('small',(repo.language||'未标注语言')+' · 许可证 '+(repo.license||'未标注')+' · ★ '+repo.stars+(repo.updated_at?' · 仓库更新 '+new Date(repo.updated_at).toLocaleDateString('zh-CN'):'')+' · '+(repo.readme_note||'')));
     card.append(detail);box.append(card);

@@ -70,9 +70,23 @@ async function run() {
     assert.equal(form.requests[0].mode, mode);
     assert.deepEqual(form.navigation, ['/planning?project=new-id']);
   }
+  // U10: file mechanics are folded. The directory is an advanced setting for a new project and required (open) for an import.
+  const fresh = await page();
+  fresh.get('mode-import').checked=true;await fresh.get('mode-import').handlers.change();
+  assert.equal(fresh.get('advanced-settings').open,true,'import opens the required directory field');
+  assert.equal(fresh.get('advanced-summary').textContent,'项目目录（必填）');
+  fresh.get('mode-new').checked=true;await fresh.get('mode-new').handlers.change();
+  assert.equal(fresh.get('advanced-settings').open,false,'a new project keeps the optional directory folded');
+  fresh.get('advanced-settings').open=false;fresh.get('project-directory').handlers.invalid();
+  assert.equal(fresh.get('advanced-settings').open,true,'an invalid (required) directory opens its fold instead of failing silently');
+  assert.ok(/<details class="form-field advanced" id="advanced-settings">[\s\S]*?id="project-directory"[\s\S]*?<\/details>/.test(p.html),'directory input lives inside 高级设置');
+  assert.ok(/<details class="footer footer-details">[\s\S]*?id="workspace-path"/.test(p.html),'workspace path and sync note are folded');
+  const cardWithPath = await page([{...ready,directory:'/very/long/absolute/path'}]);
+  const pathFold = descendants(cardWithPath.get('project-list').children[0],'DETAILS')[0];
+  assert.ok(pathFold&&pathFold.textContent.includes('/very/long/absolute/path')&&pathFold.textContent.startsWith('文件位置'),'a card folds its directory under 文件位置');
   assert.ok(p.html.includes('type="radio"'));
   assert.ok(p.html.includes('<legend>项目来源</legend>'));
-  return 4;
+  return 5;
 }
 module.exports = run;
 if (require.main === module) run().then(n=>console.log('Project onboarding: '+n+' scenarios passed.')).catch(error=>{console.error(error);process.exitCode=1;});

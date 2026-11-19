@@ -3,6 +3,8 @@
 
   // The same read-only model is used by the webpage and the Excel exporter.
   global.createPlanningSheetView = function (container, options = {}) {
+    let checkOverflow = () => {};
+    if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('resize', () => checkOverflow());
     let model = { sheets: [] }, active = '', lastNote = '', collapsed = new Set(), adoptionEnabled=true, adoptionControls=[],changedIds=new Set(),onlyChanged=false,showTechnical=false;
     const el = (tag, className, text) => {
       const node = document.createElement(tag);
@@ -58,6 +60,8 @@
         toolbar.append(expand, fold);
       }
 
+      // When the table is wider than the screen, say so instead of leaving columns silently off-screen.
+      const hint = el('p', 'sheet-scroll-hint', listing ? '表格较宽：左右滑动可查看功能介绍等其他列 →' : '表格较宽：左右滑动可查看完整内容 →'); hint.hidden = true;
       const scroll = el('div', 'sheet-scroll');
       scroll.setAttribute('tabindex', '0');
       scroll.setAttribute('role', 'region');
@@ -184,7 +188,9 @@
         }
         container.append(sections);
       } else if (!isFeature(sheet)) lastNote = sheet.id;
-      container.append(toolbar, scroll);
+      container.append(toolbar, hint, scroll);
+      checkOverflow = () => { hint.hidden = !(scroll.scrollWidth > scroll.clientWidth + 4); };
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(checkOverflow);
       update();
     }
     return {
